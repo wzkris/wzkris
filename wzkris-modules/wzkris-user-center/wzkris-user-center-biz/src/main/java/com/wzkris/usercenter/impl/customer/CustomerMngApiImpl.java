@@ -8,7 +8,7 @@ import com.wzkris.common.excel.utils.ExcelUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.api.customer.request.CustomerMngPageRequest;
 import com.wzkris.usercenter.api.customer.response.CustomerInfoExportResponse;
@@ -30,7 +30,7 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     @Override
     public Result<Page<CustomerMngResponse>> queryPage(CustomerMngPageRequest request) {
         IPage<CustomerInfoDO> page = customerInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), CustomerMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerMngResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngPageRequest request) {
@@ -46,13 +46,13 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
 
     @Override
     public Result<CustomerMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(customerInfoService.getById(request.getId()), CustomerMngResponse.class));
+        return ok(BeanCopierUtil.copy(customerInfoService.getById(request.getId()), CustomerMngResponse.class));
     }
 
     @Override
     public void export(HttpServletResponse response, CustomerMngPageRequest request) {
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
-        List<CustomerInfoExportResponse> convert = BeanUtil.convert(list, CustomerInfoExportResponse.class);
+        List<CustomerInfoExportResponse> convert = BeanCopierUtil.copyList(list, CustomerInfoExportResponse.class);
         ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExportResponse.class, false, response, null);
     }
 

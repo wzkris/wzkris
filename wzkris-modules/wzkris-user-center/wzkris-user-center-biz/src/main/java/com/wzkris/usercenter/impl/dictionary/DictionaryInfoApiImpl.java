@@ -2,7 +2,7 @@ package com.wzkris.usercenter.impl.dictionary;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.dictionary.DictionaryInfoApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryInfoListRequest;
 import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
@@ -29,7 +29,7 @@ public class DictionaryInfoApiImpl extends AbstractApi implements DictionaryInfo
         }
         List<DictionaryDataResponse> result = new ArrayList<>();
         for (DictionaryInfoDO.DictData dictData : source) {
-            result.add(BeanUtil.convert(dictData, DictionaryDataResponse.class));
+            result.add(BeanCopierUtil.copy(dictData, DictionaryDataResponse.class));
         }
         return ok(result);
     }

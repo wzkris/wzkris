@@ -11,7 +11,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.api.admin.request.*;
 import com.wzkris.usercenter.api.admin.response.AdminInfoExportResponse;
@@ -98,7 +98,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(adminInfoService.getById(adminId), AdminMngResponse.class));
+        return ok(BeanCopierUtil.copy(adminInfoService.getById(adminId), AdminMngResponse.class));
     }
 
     @Override
@@ -109,7 +109,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 && adminInfoService.existByPhoneNumber(null, request.getPhoneNumber())) {
             return requestFail("添加管理员'" + request.getUsername() + "'失败，手机号码已存在");
         }
-        AdminInfoDO admin = BeanUtil.convert(request, AdminInfoDO.class);
+        AdminInfoDO admin = BeanCopierUtil.copy(request, AdminInfoDO.class);
         admin.setStatus(request.getStatus());
         String password = RandomStringUtils.secure().nextAlphabetic(8);
         admin.setPassword(password);
@@ -132,7 +132,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 && adminInfoService.existByPhoneNumber(request.getAdminId(), request.getPhoneNumber())) {
             return requestFail("修改管理员'" + request.getUsername() + "'失败，手机号码已存在");
         }
-        AdminInfoDO admin = BeanUtil.convert(request, AdminInfoDO.class);
+        AdminInfoDO admin = BeanCopierUtil.copy(request, AdminInfoDO.class);
         admin.setStatus(request.getStatus());
         return toRes(adminInfoService.updateAdmin(admin, request.getRoleIds()));
     }
@@ -170,7 +170,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
     @Override
     public void export(HttpServletResponse response, AdminMngPageRequest request) {
         List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        List<AdminInfoExportResponse> convert = BeanUtil.convert(list, AdminInfoExportResponse.class);
+        List<AdminInfoExportResponse> convert = BeanCopierUtil.copyList(list, AdminInfoExportResponse.class);
         ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExportResponse.class, false, response, null);
     }
 

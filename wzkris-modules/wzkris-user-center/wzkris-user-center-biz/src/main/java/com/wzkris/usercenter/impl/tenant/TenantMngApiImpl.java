@@ -10,7 +10,7 @@ import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.api.tenant.request.TenantMngPageRequest;
 import com.wzkris.usercenter.api.tenant.request.TenantMngSaveRequest;
@@ -111,7 +111,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
         if (adminInfoService.existByUsername(null, tenantReq.getUsername())) {
             return requestFail("登录账号'" + tenantReq.getUsername() + "'已存在");
         }
-        TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
+        TenantInfoDO tenant = BeanCopierUtil.copy(tenantReq, TenantInfoDO.class);
         tenant.setStatus(tenantReq.getStatus());
         String operPwd = StringUtil.toStringOrNull(RandomUtils.secure().randomInt(100_000, 999_999));
         tenant.setOperPwd(operPwd);
@@ -131,7 +131,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
 
     @Override
     public Result<Void> update(TenantMngUpdateRequest tenantReq) {
-        TenantInfoDO tenant = BeanUtil.convert(tenantReq, TenantInfoDO.class);
+        TenantInfoDO tenant = BeanCopierUtil.copy(tenantReq, TenantInfoDO.class);
         tenant.setStatus(tenantReq.getStatus());
         tenant.setAdministrator(null);
         tenant.setOperPwd(null);

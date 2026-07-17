@@ -8,7 +8,7 @@ import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngSaveRequest;
@@ -37,7 +37,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     @Override
     public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
         IPage<TenantPackageInfoDO> page = tenantPackageInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), TenantPackageMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), TenantPackageMngResponse.class)));
     }
 
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngPageRequest request) {
@@ -52,7 +52,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<TenantPackageMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(tenantPackageInfoService.getById(request.getId()), TenantPackageMngResponse.class));
+        return ok(BeanCopierUtil.copy(tenantPackageInfoService.getById(request.getId()), TenantPackageMngResponse.class));
     }
 
     @Override
@@ -66,14 +66,14 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
 
     @Override
     public Result<Void> save(TenantPackageMngSaveRequest request) {
-        TenantPackageInfoDO tenantPackageInfoDO = BeanUtil.convert(request, TenantPackageInfoDO.class);
+        TenantPackageInfoDO tenantPackageInfoDO = BeanCopierUtil.copy(request, TenantPackageInfoDO.class);
         tenantPackageInfoDO.setStatus(request.getStatus());
         return toRes(tenantPackageInfoService.save(tenantPackageInfoDO));
     }
 
     @Override
     public Result<Void> update(TenantPackageMngUpdateRequest request) {
-        TenantPackageInfoDO tenantPackageInfoDO = BeanUtil.convert(request, TenantPackageInfoDO.class);
+        TenantPackageInfoDO tenantPackageInfoDO = BeanCopierUtil.copy(request, TenantPackageInfoDO.class);
         tenantPackageInfoDO.setStatus(request.getStatus());
         return toRes(tenantPackageInfoService.updateById(tenantPackageInfoDO));
     }

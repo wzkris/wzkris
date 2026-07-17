@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.announcement.AnnouncementInfoApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementInfoPageRequest;
 import com.wzkris.usercenter.api.announcement.response.AnnouncementInfoResponse;
@@ -28,7 +28,7 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
                 .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
                 .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
         IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), lqw);
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AnnouncementInfoResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementInfoResponse.class)));
     }
 
 }

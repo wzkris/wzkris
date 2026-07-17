@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.role.RoleMngApi;
 import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
@@ -51,7 +51,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     @Override
     public Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request) {
         IPage<RoleInfoDO> page = roleInfoMapper.selectPageList(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), RoleMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), RoleMngResponse.class)));
     }
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {
@@ -68,7 +68,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(roleInfoService.getById(roleId), RoleMngResponse.class));
+        return ok(BeanCopierUtil.copy(roleInfoService.getById(roleId), RoleMngResponse.class));
     }
 
     @Override
@@ -114,7 +114,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     @Override
     public Result<Void> save(RoleMngSaveRequest request) {
-        RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        RoleInfoDO role = BeanCopierUtil.copy(request, RoleInfoDO.class);
         role.setStatus(request.getStatus());
         return toRes(roleInfoService.saveRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
     }
@@ -129,7 +129,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
                 .contains(request.getRoleId())) {
             return requestFail("角色继承关系存在循环");
         }
-        RoleInfoDO role = BeanUtil.convert(request, RoleInfoDO.class);
+        RoleInfoDO role = BeanCopierUtil.copy(request, RoleInfoDO.class);
         role.setStatus(request.getStatus());
         return toRes(roleInfoService.updateRole(role, request.getMenuIds(), request.getDeptIds(), request.getChildIds()));
     }

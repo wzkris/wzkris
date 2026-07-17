@@ -8,7 +8,7 @@ import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.announcement.AnnouncementMngApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngPageRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest;
@@ -28,7 +28,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     @Override
     public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
         IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AnnouncementMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementMngResponse.class)));
     }
 
     private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngPageRequest request) {
@@ -41,19 +41,19 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     @Override
     public Result<AnnouncementMngResponse> queryInfo(IdRequest request) {
         Long announcementId = request.getId();
-        return ok(BeanUtil.convert(announcementInfoService.getById(announcementId), AnnouncementMngResponse.class));
+        return ok(BeanCopierUtil.copy(announcementInfoService.getById(announcementId), AnnouncementMngResponse.class));
     }
 
     @Override
     public Result<Void> save(AnnouncementMngSaveRequest request) {
-        AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
+        AnnouncementInfoDO announcementInfoDO = BeanCopierUtil.copy(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
         return toRes(announcementInfoService.save(announcementInfoDO));
     }
 
     @Override
     public Result<Void> update(AnnouncementMngUpdateRequest request) {
-        AnnouncementInfoDO announcementInfoDO = BeanUtil.convert(request, AnnouncementInfoDO.class);
+        AnnouncementInfoDO announcementInfoDO = BeanCopierUtil.copy(request, AnnouncementInfoDO.class);
         announcementInfoDO.setStatus(request.getStatus());
         return toRes(announcementInfoService.updateById(announcementInfoDO));
     }

@@ -6,7 +6,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
@@ -31,7 +31,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     @Override
     public Result<List<DeptMngResponse>> queryList(DeptMngTreeRequest request) {
         List<DeptInfoDO> depts = deptInfoService.selectLists(buildQueryWrapper(request));
-        return ok(BeanUtil.convert(depts, DeptMngResponse.class));
+        return ok(BeanCopierUtil.copyList(depts, DeptMngResponse.class));
     }
 
     private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngTreeRequest request) {
@@ -54,7 +54,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (!deptInfoService.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(deptInfoService.getById(deptId), DeptMngResponse.class));
+        return ok(BeanCopierUtil.copy(deptInfoService.getById(deptId), DeptMngResponse.class));
     }
 
     @Override
@@ -68,7 +68,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
                 return requestFail("无法在被禁用的部门下添加下级");
             }
         }
-        DeptInfoDO deptInfoDO = BeanUtil.convert(request, DeptInfoDO.class);
+        DeptInfoDO deptInfoDO = BeanCopierUtil.copy(request, DeptInfoDO.class);
         deptInfoDO.setStatus(request.getStatus());
         return toRes(deptInfoService.saveDept(deptInfoDO));
     }
@@ -81,7 +81,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
         if (Objects.equals(request.getParentId(), request.getDeptId())) {
             return requestFail("修改部门'" + request.getDeptName() + "'失败，上级部门不能是自己");
         }
-        DeptInfoDO deptInfoDO = BeanUtil.convert(request, DeptInfoDO.class);
+        DeptInfoDO deptInfoDO = BeanCopierUtil.copy(request, DeptInfoDO.class);
         deptInfoDO.setStatus(request.getStatus());
         return toRes(deptInfoService.updateDept(deptInfoDO));
     }

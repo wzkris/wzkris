@@ -12,7 +12,7 @@ import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +43,7 @@ public class OnlineSessionApiImpl implements OnlineSessionApi {
         for (Map.Entry<String, OnlineSession> entry : onlineCache.entrySet()) {
             String sessionSid = entry.getKey();
             OnlineSessionResponse sessionResp = new OnlineSessionResponse();
-            BeanUtil.convert(entry.getValue(), sessionResp);
+            BeanCopierUtil.copy(entry.getValue(), sessionResp);
             sessionResp.setSid(sessionSid);
             if (StringUtil.equals(sid, sessionSid)) {
                 sessionResp.setCurrent(true);

@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
@@ -35,7 +35,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     @Override
     public Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request) {
         LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        TenantInfoDO tenantInfoDO = BeanUtil.convert(request, new TenantInfoDO(tenantUser.getTenantId()));
+        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(tenantUser.getTenantId()));
         return toRes(tenantInfoService.updateById(tenantInfoDO));
     }
 

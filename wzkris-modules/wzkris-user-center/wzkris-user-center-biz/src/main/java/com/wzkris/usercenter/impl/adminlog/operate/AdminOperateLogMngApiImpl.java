@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.adminlog.operate.AdminOperateLogMngApi;
 import com.wzkris.usercenter.api.adminlog.operate.request.AdminOperateLogMngPageRequest;
 import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogMngResponse;
@@ -27,7 +27,7 @@ public class AdminOperateLogMngApiImpl
     @Override
     public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngPageRequest request) {
         IPage<AdminOperateLogDO> page = adminOperateLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), AdminOperateLogMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminOperateLogMngResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogMngPageRequest request) {

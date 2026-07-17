@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.oauth2.OAuth2ClientMngApi;
 import com.wzkris.usercenter.api.oauth2.request.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngPageRequest;
@@ -32,7 +32,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     @Override
     public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
         IPage<OAuth2ClientDO> page = oAuth2ClientService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), OAuth2ClientMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), OAuth2ClientMngResponse.class)));
     }
 
     private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientMngPageRequest request) {
@@ -43,12 +43,12 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
 
     @Override
     public Result<OAuth2ClientMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(oAuth2ClientService.getById(request.getId()), OAuth2ClientMngResponse.class));
+        return ok(BeanCopierUtil.copy(oAuth2ClientService.getById(request.getId()), OAuth2ClientMngResponse.class));
     }
 
     @Override
     public Result<Void> update(OAuth2ClientMngUpdateRequest request) {
-        OAuth2ClientDO oauth2ClientDO = BeanUtil.convert(request, OAuth2ClientDO.class);
+        OAuth2ClientDO oauth2ClientDO = BeanCopierUtil.copy(request, OAuth2ClientDO.class);
         oauth2ClientDO.setStatus(request.getStatus());
         return toRes(oAuth2ClientService.updateById(oauth2ClientDO));
     }
@@ -63,7 +63,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
 
     @Override
     public Result<String> save(OAuth2ClientMngSaveRequest request) {
-        OAuth2ClientDO client = BeanUtil.convert(request, OAuth2ClientDO.class);
+        OAuth2ClientDO client = BeanCopierUtil.copy(request, OAuth2ClientDO.class);
         client.setStatus(request.getStatus());
         String secret = RandomStringUtils.secure().nextAlphabetic(16);
         client.setClientSecret(passwordEncoder.encode(secret));

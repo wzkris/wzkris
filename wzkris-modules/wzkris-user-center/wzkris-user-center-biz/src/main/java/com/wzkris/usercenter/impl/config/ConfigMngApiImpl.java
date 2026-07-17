@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.config.ConfigMngApi;
 import com.wzkris.usercenter.api.config.request.ConfigMngPageRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngSaveRequest;
@@ -27,7 +27,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     @Override
     public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
         IPage<ConfigInfoDO> page = configInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), ConfigInfoResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), ConfigInfoResponse.class)));
     }
 
     private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngPageRequest request) {
@@ -45,7 +45,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     @Override
     public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
         Long configId = request.getId();
-        return ok(BeanUtil.convert(configInfoService.getById(configId), ConfigInfoResponse.class));
+        return ok(BeanCopierUtil.copy(configInfoService.getById(configId), ConfigInfoResponse.class));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
         if (configInfoService.checkUsedByConfigKey(null, request.getConfigKey())) {
             return requestFail("新增参数'" + request.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(configInfoService.insertConfig(BeanUtil.convert(request, ConfigInfoDO.class)));
+        return toRes(configInfoService.insertConfig(BeanCopierUtil.copy(request, ConfigInfoDO.class)));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
         if (configInfoService.checkUsedByConfigKey(request.getConfigId(), request.getConfigKey())) {
             return requestFail("修改参数'" + request.getConfigName() + "'失败，参数键名已存在");
         }
-        return toRes(configInfoService.updateConfig(BeanUtil.convert(request, ConfigInfoDO.class)));
+        return toRes(configInfoService.updateConfig(BeanCopierUtil.copy(request, ConfigInfoDO.class)));
     }
 
     @Override

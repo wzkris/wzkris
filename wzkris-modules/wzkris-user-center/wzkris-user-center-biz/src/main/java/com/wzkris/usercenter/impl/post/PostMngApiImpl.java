@@ -10,7 +10,7 @@ import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
 import com.wzkris.usercenter.api.post.request.PostMngSaveRequest;
@@ -39,7 +39,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     @Override
     public Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request) {
         IPage<PostInfoDO> page = postInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanUtil.convert(page.getRecords(), PostMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), PostMngResponse.class)));
     }
 
     private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngPageRequest request) {
@@ -51,7 +51,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<PostMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(postInfoService.getById(request.getId()), PostMngResponse.class));
+        return ok(BeanCopierUtil.copy(postInfoService.getById(request.getId()), PostMngResponse.class));
     }
 
     @Override
@@ -68,14 +68,14 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
         if (!tenantInfoService.checkPostLimit(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId())) {
             return requestFail("当前租户职位数量已达到上限");
         }
-        PostInfoDO post = BeanUtil.convert(request, PostInfoDO.class);
+        PostInfoDO post = BeanCopierUtil.copy(request, PostInfoDO.class);
         post.setStatus(request.getStatus());
         return toRes(postInfoService.savePost(post, request.getMenuIds()));
     }
 
     @Override
     public Result<Void> update(PostMngUpdateRequest request) {
-        PostInfoDO post = BeanUtil.convert(request, PostInfoDO.class);
+        PostInfoDO post = BeanCopierUtil.copy(request, PostInfoDO.class);
         post.setStatus(request.getStatus());
         return toRes(postInfoService.updatePost(post, request.getMenuIds()));
     }

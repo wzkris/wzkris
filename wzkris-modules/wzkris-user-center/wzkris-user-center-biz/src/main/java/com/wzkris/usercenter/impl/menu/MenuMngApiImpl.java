@@ -6,7 +6,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
@@ -33,7 +33,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     @Override
     public Result<List<MenuMngResponse>> queryList(MenuMngTreeRequest request) {
         List<MenuInfoDO> menus = menuInfoService.list(this.buildQueryWrapper(request));
-        return ok(BeanUtil.convert(menus, MenuMngResponse.class));
+        return ok(BeanCopierUtil.copyList(menus, MenuMngResponse.class));
     }
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngTreeRequest request) {
@@ -51,7 +51,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
 
     @Override
     public Result<MenuMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanUtil.convert(menuInfoService.getById(request.getId()), MenuMngResponse.class));
+        return ok(BeanCopierUtil.copy(menuInfoService.getById(request.getId()), MenuMngResponse.class));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
                 && !StringUtil.ishttp(request.getPath())) {
             return requestFail("新增菜单'" + request.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
-        MenuInfoDO menuInfoDO = BeanUtil.convert(request, MenuInfoDO.class);
+        MenuInfoDO menuInfoDO = BeanCopierUtil.copy(request, MenuInfoDO.class);
         menuInfoDO.setStatus(request.getStatus());
         return toRes(menuInfoService.save(menuInfoDO));
     }
@@ -75,7 +75,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
         } else if (request.getMenuId().equals(request.getParentId())) {
             return requestFail("修改菜单'" + request.getMenuName() + "'失败，上级菜单不能选择自己");
         }
-        MenuInfoDO menuInfoDO = BeanUtil.convert(request, MenuInfoDO.class);
+        MenuInfoDO menuInfoDO = BeanCopierUtil.copy(request, MenuInfoDO.class);
         menuInfoDO.setStatus(request.getStatus());
         return toRes(menuInfoService.updateById(menuInfoDO));
     }

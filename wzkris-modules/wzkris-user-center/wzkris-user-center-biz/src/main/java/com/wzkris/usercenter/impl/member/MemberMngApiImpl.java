@@ -11,7 +11,7 @@ import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.member.MemberMngApi;
 import com.wzkris.usercenter.api.member.request.*;
 import com.wzkris.usercenter.api.member.response.MemberMngResponse;
@@ -70,7 +70,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
         if (tenantInfoService.checkAdministrator(memberId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(memberInfoService.getById(memberId), MemberMngResponse.class));
+        return ok(BeanCopierUtil.copy(memberInfoService.getById(memberId), MemberMngResponse.class));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
                 && memberInfoService.existByPhoneNumber(null, memberReq.getPhoneNumber())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
-        MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
+        MemberInfoDO member = BeanCopierUtil.copy(memberReq, MemberInfoDO.class);
         member.setStatus(memberReq.getStatus());
         String password = RandomStringUtils.secure().nextAlphabetic(8);
         member.setPassword(password);
@@ -116,7 +116,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
                 && memberInfoService.existByPhoneNumber(memberReq.getMemberId(), memberReq.getPhoneNumber())) {
             return requestFail("修改成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
-        MemberInfoDO member = BeanUtil.convert(memberReq, MemberInfoDO.class);
+        MemberInfoDO member = BeanCopierUtil.copy(memberReq, MemberInfoDO.class);
         member.setStatus(memberReq.getStatus());
         return toRes(memberInfoService.updateMember(member, memberReq.getPostIds()));
     }

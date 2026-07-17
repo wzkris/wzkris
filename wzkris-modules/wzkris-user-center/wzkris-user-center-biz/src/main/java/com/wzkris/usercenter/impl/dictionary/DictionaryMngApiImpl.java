@@ -7,7 +7,7 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.dictionary.DictionaryMngApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryDataInfo;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngPageRequest;
@@ -85,7 +85,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         if (source == null) {
             return null;
         }
-        DictionaryMngResponse target = BeanUtil.convert(source, DictionaryMngResponse.class);
+        DictionaryMngResponse target = BeanCopierUtil.copy(source, DictionaryMngResponse.class);
         DictionaryInfoDO.DictData[] sourceArray = source.getDictValue();
         if (sourceArray == null) {
             target.setDictValue(null);
@@ -93,20 +93,20 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         }
         DictionaryDataResponse[] targetArray = new DictionaryDataResponse[sourceArray.length];
         for (int i = 0; i < sourceArray.length; i++) {
-            targetArray[i] = BeanUtil.convert(sourceArray[i], DictionaryDataResponse.class);
+            targetArray[i] = BeanCopierUtil.copy(sourceArray[i], DictionaryDataResponse.class);
         }
         target.setDictValue(targetArray);
         return target;
     }
 
     private DictionaryInfoDO toDictInfoDO(DictionaryMngSaveRequest source) {
-        DictionaryInfoDO target = BeanUtil.convert(source, DictionaryInfoDO.class);
+        DictionaryInfoDO target = BeanCopierUtil.copy(source, DictionaryInfoDO.class);
         target.setDictValue(toDictData(source.getDictValue()));
         return target;
     }
 
     private DictionaryInfoDO toDictInfoDO(DictionaryMngUpdateRequest source) {
-        DictionaryInfoDO target = BeanUtil.convert(source, DictionaryInfoDO.class);
+        DictionaryInfoDO target = BeanCopierUtil.copy(source, DictionaryInfoDO.class);
         target.setDictValue(toDictData(source.getDictValue()));
         return target;
     }
@@ -117,7 +117,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         }
         DictionaryInfoDO.DictData[] targetArray = new DictionaryInfoDO.DictData[sourceArray.length];
         for (int i = 0; i < sourceArray.length; i++) {
-            targetArray[i] = BeanUtil.convert(sourceArray[i], DictionaryInfoDO.DictData.class);
+            targetArray[i] = BeanCopierUtil.copy(sourceArray[i], DictionaryInfoDO.DictData.class);
         }
         return targetArray;
     }
