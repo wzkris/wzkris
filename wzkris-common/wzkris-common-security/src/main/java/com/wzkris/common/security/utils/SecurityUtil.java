@@ -69,15 +69,11 @@ public final class SecurityUtil {
      */
     @Nullable
     public static RoleContext getRoleContext() {
-        try {
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-            if (authentication instanceof RoleContextAuthenticationToken token) {
-                return token.getRoleContext();
-            }
-            return null;
-        } catch (Exception e) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+        if (authentication instanceof RoleContextAuthenticationToken token) {
+            return token.getRoleContext();
         }
+        throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
     }
 
     /**
