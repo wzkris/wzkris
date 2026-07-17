@@ -21,41 +21,50 @@ public interface IServicePlus<T> extends IService<T> {
      * <p>典型场景：插入后获取自增回填的主键 ID</p>
      *
      * @param entity 实体
-     * @param func   插入后从实体中提取字段的函数
+     * @param mapper 插入后从实体中提取字段的函数
      * @param <R>    返回字段类型
      * @return 函数返回的值，插入失败返回 null
      */
-    <R> R saveAndGet(T entity, Function<T, R> func);
+    <R> R saveAndGet(T entity, Function<T, R> mapper);
 
     /**
      * 根据 ID 更新后，通过 function 从实体中提取指定字段
      *
      * @param entity 实体（必须包含 ID）
-     * @param func   更新后从实体中提取字段的函数
+     * @param mapper 更新后从实体中提取字段的函数
      * @param <R>    返回字段类型
      * @return 函数返回的值，更新失败返回 null
      */
-    <R> R updateByIdAndGet(T entity, Function<T, R> func);
+    <R> R updateByIdAndGet(T entity, Function<T, R> mapper);
 
     /**
      * 查询一条记录并提取指定字段
      *
      * @param wrapper 查询条件
-     * @param func    目标处理
+     * @param mapper  目标处理
      * @param <R>     返回字段类型
      * @return 字段值，未查到返回 null
      */
     @Override
-    <R> R getObj(Wrapper<T> wrapper, Function<? super Object, R> func);
+    <R> R getObj(Wrapper<T> wrapper, Function<? super Object, R> mapper);
 
     /**
      * 根据单个字段值查询单条记录
      *
-     * @param condition 条件字段引用
-     * @param value     字段值
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
      * @return 实体，未找到返回 null
      */
-    T getOneByObj(SFunction<T, ?> condition, Object value);
+    T getOneByObj(SFunction<T, ?> condition, Object conditionValue);
+
+    /**
+     * 根据单个字段值查询列表记录
+     *
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
+     * @return 实体，未找到返回 null
+     */
+    List<T> listByObj(SFunction<T, ?> condition, Object conditionValue);
 
     /**
      * 根据单个字段值查询单条记录，并提取指定字段

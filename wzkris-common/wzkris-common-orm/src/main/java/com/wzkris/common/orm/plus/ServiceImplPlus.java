@@ -17,23 +17,28 @@ import java.util.function.Function;
 public class ServiceImplPlus<M extends BaseMapperPlus<T>, T> extends ServiceImpl<M, T> implements IServicePlus<T> {
 
     @Override
-    public <R> R saveAndGet(T entity, Function<T, R> func) {
-        return baseMapper.insertAndGet(entity, func);
+    public <R> R saveAndGet(T entity, Function<T, R> mapper) {
+        return baseMapper.insertAndGet(entity, mapper);
     }
 
     @Override
-    public <R> R updateByIdAndGet(T entity, Function<T, R> func) {
-        return baseMapper.updateByIdAndGet(entity, func);
+    public <R> R updateByIdAndGet(T entity, Function<T, R> mapper) {
+        return baseMapper.updateByIdAndGet(entity, mapper);
     }
 
     @Override
-    public <V> V getObj(Wrapper<T> wrapper, Function<? super Object, V> func) {
-        return baseMapper.selectObj(wrapper, func);
+    public <V> V getObj(Wrapper<T> wrapper, Function<? super Object, V> mapper) {
+        return baseMapper.selectObj(wrapper, mapper);
     }
 
     @Override
     public T getOneByObj(SFunction<T, ?> field, Object value) {
         return baseMapper.selectOneByObj(field, value);
+    }
+
+    @Override
+    public List<T> listByObj(SFunction<T, ?> condition, Object conditionValue) {
+        return baseMapper.selectListByObj(condition, conditionValue);
     }
 
     @Override

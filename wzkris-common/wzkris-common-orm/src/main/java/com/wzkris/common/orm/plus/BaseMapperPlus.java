@@ -57,12 +57,23 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
     /**
      * 根据单个字段值查询单条记录
      *
-     * @param field 字段引用（如 Entity::getName）
-     * @param value 字段值
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
      * @return 实体，未找到返回 null
      */
-    default T selectOneByObj(SFunction<T, ?> field, Object value) {
-        return this.selectOne(new LambdaQueryWrapper<T>().eq(field, value));
+    default T selectOneByObj(SFunction<T, ?> condition, Object conditionValue) {
+        return this.selectOne(new LambdaQueryWrapper<T>().eq(condition, conditionValue));
+    }
+
+    /**
+     * 根据单个字段值查询列表记录
+     *
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
+     * @return 实体，未找到返回 null
+     */
+    default List<T> selectListByObj(SFunction<T, ?> condition, Object conditionValue) {
+        return this.selectList(new LambdaQueryWrapper<T>().eq(condition, conditionValue));
     }
 
     /**
@@ -72,23 +83,23 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      * @param <R>     返回字段的类型
      * @return 查找到的字段值，若未找到返回 null
      */
-    default <R> R selectObj(Wrapper<T> wrapper, Function<Object, R> func) {
+    default <R> R selectObj(Wrapper<T> wrapper, Function<Object, R> mapper) {
         T t = selectOne(wrapper);
-        return t == null ? null : func.apply(t);
+        return t == null ? null : mapper.apply(t);
     }
 
     /**
      * 根据单个字段值查询单条记录，并提取指定字段
      *
-     * @param condition  查询字段引用
-     * @param value      字段值
-     * @param queryField 目标字段引用
-     * @param <R>        返回字段类型
+     * @param queryField     查询字段
+     * @param condition      条件字段
+     * @param conditionValue 条件字段值
+     * @param <R>            返回字段类型
      * @return 提取的字段值，未找到返回 null
      */
-    default <R> R selectObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object value) {
+    default <R> R selectObjByObj(SFunction<T, R> queryField, SFunction<T, ?> condition, Object conditionValue) {
         List<Object> objs = this.selectObjs(
-                new LambdaQueryWrapper<T>().select(queryField).eq(condition, value).last("LIMIT 1 OFFSET 0"));
+                new LambdaQueryWrapper<T>().select(queryField).eq(condition, conditionValue).last("LIMIT 1 OFFSET 0"));
         if (CollectionUtils.isEmpty(objs)) {
             return null;
         }
@@ -121,24 +132,24 @@ public interface BaseMapperPlus<T> extends BaseMapper<T> {
      * <p>典型场景：插入后获取自增回填的主键 ID</p>
      *
      * @param entity 实体
-     * @param func   插入后从实体中提取字段的函数
+     * @param mapper 插入后从实体中提取字段的函数
      * @param <R>    返回字段类型
      * @return 函数返回的值，插入失败返回 null
      */
-    default <R> R insertAndGet(T entity, Function<T, R> func) {
-        return this.insert(entity) > 0 ? func.apply(entity) : null;
+    default <R> R insertAndGet(T entity, Function<T, R> mapper) {
+        return this.insert(entity) > 0 ? mapper.apply(entity) : null;
     }
 
     /**
      * 根据 ID 更新后，通过 function 从实体中提取指定字段
      *
      * @param entity 实体（必须包含 ID）
-     * @param func   更新后从实体中提取字段的函数
+     * @param mapper 更新后从实体中提取字段的函数
      * @param <R>    返回字段类型
      * @return 函数返回的值，更新失败返回 null
      */
-    default <R> R updateByIdAndGet(T entity, Function<T, R> func) {
-        return this.updateById(entity) > 0 ? func.apply(entity) : null;
+    default <R> R updateByIdAndGet(T entity, Function<T, R> mapper) {
+        return this.updateById(entity) > 0 ? mapper.apply(entity) : null;
     }
 
 }
