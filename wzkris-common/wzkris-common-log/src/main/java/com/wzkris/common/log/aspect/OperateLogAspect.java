@@ -5,12 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.context.UserContextProvider;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.remote.request.OperateLogEvent;
-import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +53,10 @@ public class OperateLogAspect {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    public OperateLogAspect() {
+    private final UserContextProvider userContextProvider;
+
+    public OperateLogAspect(UserContextProvider userContextProvider) {
+        this.userContextProvider = userContextProvider;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
@@ -90,14 +92,11 @@ public class OperateLogAspect {
 
         // 设置用户信息
         operateLogEvent.setOperatorId(SecurityUtil.getUid());
-        AuthTypeEnum authType = SecurityUtil.getAuthType();
-        operateLogEvent.setAuthType(authType);
+        operateLogEvent.setAuthType(SecurityUtil.getAuthType());
         operateLogEvent.setOperName(SecurityUtil.getLoginUser().getName());
 
         // 设置租户ID
-        if (authType == AuthTypeEnum.TENANT) {
-            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId());
-        }
+        operateLogEvent.setTenantId(userContextProvider.getTenantId());
 
         // 设置操作信息
         operateLogEvent.setOperType(operateLog.type().getValue());

@@ -1,10 +1,8 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.context.UserContextProvider;
 import com.wzkris.common.orm.plus.config.TenantProperties;
-import com.wzkris.common.security.model.LoginTenantUser;
-import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -20,15 +18,21 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     private final TenantProperties tenantProperties;
 
+    private final UserContextProvider userContextProvider;
+
     @Override
     public Expression getTenantId() {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        return new LongValue(tenantUser.getTenantId());
+        Long tenantId = userContextProvider.getTenantId();
+        if (tenantId == null) {
+            throw new IllegalStateException("租户上下文缺失，无法解析 tenantId");
+        }
+        return new LongValue(tenantId);
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        return !SecurityUtil.isAuth(AuthTypeEnum.TENANT) || !tenantProperties.getIncludes().contains(tableName);
+        Long tenantId = userContextProvider.getTenantId();
+        return tenantId == null || !tenantProperties.getIncludes().contains(tableName);
     }
 
 }

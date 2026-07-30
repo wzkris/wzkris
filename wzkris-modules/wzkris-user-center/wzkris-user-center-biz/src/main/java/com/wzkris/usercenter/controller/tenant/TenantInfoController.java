@@ -11,7 +11,6 @@ import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +40,6 @@ public class TenantInfoController {
     @Operation(summary = "修改操作密码")
     @OperateLog(title = "商户信息", subTitle = "修改操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update-operpwd")
-    @PreAuthorize("@su.isSuper()")
     public Result<Void> updateOperPwd(@RequestBody @Validated(PasswordUpdateRequest.OperPwd.class) PasswordUpdateRequest request) {
         return tenantInfoApi.updateOperPwd(request);
     }

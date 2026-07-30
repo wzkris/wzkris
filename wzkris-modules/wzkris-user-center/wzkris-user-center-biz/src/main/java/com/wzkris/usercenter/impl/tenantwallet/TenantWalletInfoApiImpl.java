@@ -3,10 +3,10 @@ package com.wzkris.usercenter.impl.tenantwallet;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.model.AbstractApi;
+import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
@@ -38,8 +38,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<TenantWalletInfoResponse> queryInfo() {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        return ok(tenantWalletInfoService.getById2VO(tenantUser.getTenantId(), TenantWalletInfoResponse.class));
+        return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId(), TenantWalletInfoResponse.class));
     }
 
     @Override
@@ -51,8 +50,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<Void> withdrawal(WalletWithdrawalRequest request) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        TenantInfoDO tenantInfoDO = tenantInfoService.getById(tenantUser.getTenantId());
+        TenantInfoDO tenantInfoDO = tenantInfoService.getById(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId());
         if (!passwordEncoder.matches(request.getOperPwd(), tenantInfoDO.getOperPwd())) {
             return Result.requestFail("密码错误");
         }
@@ -60,9 +58,8 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     }
 
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordInfoPageRequest request) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
-                .eq(TenantWalletRecordDO::getTenantId, tenantUser.getTenantId())
+                .eq(TenantWalletRecordDO::getTenantId, SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId())
                 .like(Objects.nonNull(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,

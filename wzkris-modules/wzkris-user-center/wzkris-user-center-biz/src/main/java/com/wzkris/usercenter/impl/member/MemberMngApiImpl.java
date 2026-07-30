@@ -84,8 +84,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Void> save(MemberMngSaveRequest memberReq) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        if (!tenantInfoService.checkAccountLimit(tenantUser.getTenantId())) {
+        if (!tenantInfoService.checkAccountLimit(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId())) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(null, memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -100,7 +99,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
         boolean success = memberInfoService.saveMember(member, memberReq.getPostIds());
         if (success) {
             SpringUtil.getContext()
-                    .publishEvent(new CreateMemberEvent(tenantUser.getUid(), memberReq.getUsername(), password));
+                    .publishEvent(new CreateMemberEvent(SecurityUtil.getUid(), memberReq.getUsername(), password));
         }
         return toRes(success);
     }

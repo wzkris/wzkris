@@ -14,7 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @DisplayName("租户工具测试用例")
 @SpringBootTest
-public class TenantContextUtilTest {
+public class SkipTenantInterceptorUtilTest {
 
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
@@ -57,11 +57,6 @@ public class TenantContextUtilTest {
     private static final class TestLoginUser extends AbsBaseLoginUser {
 
         private String username;
-
-        @Override
-        public String getUsername() {
-            return username;
-        }
 
         public void setUsername(String username) {
             this.username = username;

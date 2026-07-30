@@ -23,9 +23,6 @@ public class RoleContext implements Serializable {
 
     private List<UserRole> roles;
 
-    /**
-     * 是否超级用户（从 LoginUser 复制，供规则层判断）
-     */
     private boolean superUser;
 
     public RoleContext(List<UserRole> roles) {

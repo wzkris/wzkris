@@ -28,29 +28,27 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
 
     @Override
     public Result<TenantInfoResponse> queryInfo() {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        return ok(tenantInfoMapper.selectVOById(tenantUser.getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId()));
     }
 
     @Override
     public Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
-        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(tenantUser.getTenantId()));
+        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId()));
         return toRes(tenantInfoService.updateById(tenantInfoDO));
     }
 
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
-        LoginTenantUser tenantUser = SecurityUtil.getLoginUser(LoginTenantUser.class);
+        Long tenantId = SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId();
         String operPwd = tenantInfoService.getObjByObj(TenantInfoDO::getOperPwd,
-                TenantInfoDO::getTenantId, tenantUser.getTenantId());
+                TenantInfoDO::getTenantId, tenantId);
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {
             return requestFail("修改密码失败，旧密码错误");
         }
         if (passwordEncoder.matches(request.getNewPassword(), operPwd)) {
             return requestFail("新密码不能与旧密码相同");
         }
-        TenantInfoDO update = new TenantInfoDO(tenantUser.getTenantId());
+        TenantInfoDO update = new TenantInfoDO(tenantId);
         update.setOperPwd(passwordEncoder.encode(request.getNewPassword()));
         return toRes(tenantInfoService.updateById(update));
     }

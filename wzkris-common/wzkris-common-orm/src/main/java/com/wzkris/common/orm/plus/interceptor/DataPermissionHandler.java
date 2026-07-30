@@ -1,13 +1,13 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
+import com.wzkris.common.core.context.UserContextProvider;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.rule.DataColumnConfig;
 import com.wzkris.common.orm.rule.DataPermissionRule;
 import com.wzkris.common.orm.rule.DataPermissionType;
-import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.BooleanValue;
@@ -55,9 +55,12 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
 
     private final Map<String, DataScope> annotationCache = new ConcurrentHashMap<>();
 
-    public DataPermissionHandler(List<DataPermissionRule> rules) {
+    private final UserContextProvider userContextProvider;
+
+    public DataPermissionHandler(List<DataPermissionRule> rules, UserContextProvider userContextProvider) {
         this.ruleMap = rules.stream()
                 .collect(Collectors.toMap(DataPermissionRule::getType, r -> r));
+        this.userContextProvider = userContextProvider;
         log.info("DataPermissionHandler initialized with rules: {}", ruleMap.keySet());
     }
 
@@ -68,7 +71,12 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
             return null;
         }
 
-        RoleContext roleContext = SecurityUtil.getRoleContext();
+        RoleContext roleContext = userContextProvider.getRoleContext();
+
+        // 无角色上下文（如定时任务等无登录场景）时，不应用任何数据权限规则
+        if (roleContext == null) {
+            return null;
+        }
 
         Expression result = null;
         boolean hasMatchedRule = false;
