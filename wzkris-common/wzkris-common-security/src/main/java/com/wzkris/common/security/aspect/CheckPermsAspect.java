@@ -30,20 +30,14 @@ import java.util.Set;
  */
 @Slf4j
 @Aspect
-@Order(-1)
+@Order(-100)
 public class CheckPermsAspect {
 
-    @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckAdminPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckClientPerms)"
-            + "|| @annotation(com.wzkris.common.security.annotation.CheckTenantPerms)")
+    @Pointcut("@annotation(com.wzkris.common.security.annotation.CheckPerms)")
     public void pointCutMethod() {
     }
 
-    @Pointcut("@within(com.wzkris.common.security.annotation.CheckPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckAdminPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckClientPerms)"
-            + "|| @within(com.wzkris.common.security.annotation.CheckTenantPerms)")
+    @Pointcut("@within(com.wzkris.common.security.annotation.CheckPerms)")
     public void pointCutClass() {
     }
 
@@ -71,6 +65,10 @@ public class CheckPermsAspect {
      */
     private void validatePermission(CheckPerms checkPerms) {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        if (loginUser == null) {
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        }
+
         validatePrincipalType(loginUser, checkPerms);
 
         String[] fullPerms = buildFullPermissions(checkPerms);
@@ -90,17 +88,21 @@ public class CheckPermsAspect {
      * 验证主体类型
      */
     private void validatePrincipalType(BaseLoginUser loginUser, CheckPerms checkPerms) {
-        if (loginUser == null) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
-        }
-
-        AuthTypeEnum expectedType = checkPerms.checkType();
         AuthTypeEnum actualType = loginUser.getAuthType();
+        AuthTypeEnum[] expectedTypes = checkPerms.checkTypes();
 
-        if (actualType != expectedType) {
-            throw new AccessDeniedException(
-                    String.format("认证类型不匹配: 需要[%s]，实际[%s]", expectedType.getValue(), actualType.getValue()));
+        if (ArrayUtils.isEmpty(expectedTypes)) {
+            return;
         }
+
+        for (AuthTypeEnum expectedType : expectedTypes) {
+            if (actualType == expectedType) {
+                return;
+            }
+        }
+
+        throw new AccessDeniedException(
+                String.format("认证类型不匹配: 需要%s，实际[%s]", Arrays.toString(expectedTypes), actualType.getValue()));
     }
 
     /**

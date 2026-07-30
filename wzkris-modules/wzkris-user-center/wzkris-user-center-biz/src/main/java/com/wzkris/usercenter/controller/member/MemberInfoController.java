@@ -3,6 +3,7 @@ package com.wzkris.usercenter.controller.member;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
+import com.wzkris.common.security.annotation.CheckTenantPerms;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.api.member.request.MemberInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.member.response.MemberInfoResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/member-info")
 @RequiredArgsConstructor
+@CheckTenantPerms
 public class MemberInfoController {
 
     private final MemberInfoApi memberInfoApi;

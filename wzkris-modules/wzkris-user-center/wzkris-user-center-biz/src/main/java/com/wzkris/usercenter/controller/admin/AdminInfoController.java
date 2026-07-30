@@ -3,6 +3,7 @@ package com.wzkris.usercenter.controller.admin;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
+import com.wzkris.common.security.annotation.CheckAdminPerms;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/admin-info")
 @RequiredArgsConstructor
+@CheckAdminPerms
 public class AdminInfoController {
 
     private final String info_prefix = "userinfo";
