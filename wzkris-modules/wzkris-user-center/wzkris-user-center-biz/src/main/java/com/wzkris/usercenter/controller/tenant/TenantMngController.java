@@ -33,18 +33,20 @@ import java.util.List;
 @RequestMapping("/tenant-manage")
 public class TenantMngController {
 
+    private static final String PERM_PREFIX = "user-mod:tenant-mng:";
+
     private final TenantMngApi tenantMngApi;
 
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<TenantMngResponse>> queryPage(@ParameterObject TenantMngPageRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<TenantMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantMngApi.queryInfo(request);
     }
@@ -57,8 +59,8 @@ public class TenantMngController {
 
     @Operation(summary = "套餐选择列表")
     @GetMapping("/query-package-select")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"add", "edit"},
             mode = CheckMode.OR)
     public Result<List<SelectResponse>> queryPackageSelect(@ParameterObject TenantPackageMngListRequest request) {
         return tenantMngApi.queryPackageSelect(request);
@@ -67,7 +69,7 @@ public class TenantMngController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Validated @RequestBody TenantMngSaveRequest tenantReq) {
         return tenantMngApi.save(tenantReq);
     }
@@ -75,7 +77,7 @@ public class TenantMngController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@Validated @RequestBody TenantMngUpdateRequest tenantReq) {
         return tenantMngApi.update(tenantReq);
     }
@@ -83,7 +85,7 @@ public class TenantMngController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:reset-operpwd")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody PwdResetRequest request) {
         return tenantMngApi.resetOperPwd(request);
     }
@@ -91,7 +93,7 @@ public class TenantMngController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return tenantMngApi.remove(request);
     }

@@ -26,18 +26,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class OAuth2ClientMngController {
 
+    private static final String PERM_PREFIX = "user-mod:oauth2client-mng:";
+
     private final OAuth2ClientMngApi oAuth2ClientMngApi;
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<OAuth2ClientMngResponse>> queryPage(@ParameterObject OAuth2ClientMngPageRequest request) {
         return oAuth2ClientMngApi.queryPage(request);
     }
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
     public Result<OAuth2ClientMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return oAuth2ClientMngApi.queryInfo(request);
     }
@@ -45,7 +47,7 @@ public class OAuth2ClientMngController {
     @Operation(summary = "根据id修改客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改客户端", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@RequestBody @Valid OAuth2ClientMngUpdateRequest request) {
         return oAuth2ClientMngApi.update(request);
     }
@@ -53,7 +55,7 @@ public class OAuth2ClientMngController {
     @Operation(summary = "修改密钥")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "修改密钥", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update-secret")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:edit-secret")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit-secret")
     public Result<Void> updateSecret(@RequestBody @Valid ClientSecretUpdateRequest request) {
         return oAuth2ClientMngApi.updateSecret(request);
     }
@@ -61,7 +63,7 @@ public class OAuth2ClientMngController {
     @Operation(summary = "添加客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "添加客户端", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<String> save(@RequestBody @Valid OAuth2ClientMngSaveRequest request) {
         return oAuth2ClientMngApi.save(request);
     }
@@ -69,7 +71,7 @@ public class OAuth2ClientMngController {
     @Operation(summary = "删除客户端")
     @OperateLog(title = "OAuth2客户端管理", subTitle = "删除客户端", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:oauth2client-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return oAuth2ClientMngApi.remove(request);
     }

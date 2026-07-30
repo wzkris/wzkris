@@ -31,26 +31,28 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class RoleMngController {
 
+    private static final String PERM_PREFIX = "user-mod:role-mng:";
+
     private final RoleMngApi roleMngApi;
 
     @Operation(summary = "角色分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<RoleMngResponse>> queryPage(@ParameterObject RoleMngPageRequest request) {
         return roleMngApi.queryPage(request);
     }
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
     public Result<RoleMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return roleMngApi.queryInfo(request);
     }
 
     @Operation(summary = "角色 - 菜单选择树")
     @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"edit", "add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
         return roleMngApi.queryMenuSelectTree(request);
@@ -58,8 +60,8 @@ public class RoleMngController {
 
     @Operation(summary = "角色 - 部门选择树")
     @GetMapping({"/query-dept-checked-selecttree/", "/query-dept-checked-selecttree/{id}"})
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"edit", "add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryDeptSelectTree(@ParameterObject IdRequest request) {
         return roleMngApi.queryDeptSelectTree(request);
@@ -67,8 +69,8 @@ public class RoleMngController {
 
     @Operation(summary = "角色 - 继承选择列表")
     @GetMapping({"/query-hierarchy-checked-select/", "/query-hierarchy-checked-select/{id}"})
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"edit", "add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectResponse> queryRoleInheritedSelect(@ParameterObject IdRequest request) {
         return roleMngApi.queryRoleInheritedSelect(request);
@@ -77,7 +79,7 @@ public class RoleMngController {
     @Operation(summary = "新增角色")
     @OperateLog(title = "角色管理", subTitle = "新增角色", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Validated @RequestBody RoleMngSaveRequest request) {
         return roleMngApi.save(request);
     }
@@ -85,7 +87,7 @@ public class RoleMngController {
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@Validated @RequestBody RoleMngUpdateRequest request) {
         return roleMngApi.update(request);
     }
@@ -93,7 +95,7 @@ public class RoleMngController {
     @Operation(summary = "删除角色")
     @OperateLog(title = "角色管理", subTitle = "删除角色", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return roleMngApi.remove(request);
     }

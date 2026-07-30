@@ -28,18 +28,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AnnouncementMngController {
 
+    private static final String PERM_PREFIX = "system-mod:announcement-mng:";
+
     private final AnnouncementMngApi announcementMngApi;
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<AnnouncementMngResponse>> queryPage(@ParameterObject AnnouncementMngPageRequest request) {
         return announcementMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<AnnouncementMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return announcementMngApi.queryInfo(request);
     }
@@ -47,7 +49,7 @@ public class AnnouncementMngController {
     @Operation(summary = "添加草稿")
     @OperateLog(title = "系统消息", subTitle = "添加草稿", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Valid @RequestBody AnnouncementMngSaveRequest request) {
         return announcementMngApi.save(request);
     }
@@ -55,7 +57,7 @@ public class AnnouncementMngController {
     @Operation(summary = "修改草稿")
     @OperateLog(title = "系统消息", subTitle = "修改草稿", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@RequestBody AnnouncementMngUpdateRequest request) {
         return announcementMngApi.update(request);
     }
@@ -63,7 +65,7 @@ public class AnnouncementMngController {
     @Operation(summary = "删除草稿")
     @OperateLog(title = "系统消息", subTitle = "删除草稿", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return announcementMngApi.remove(request);
     }

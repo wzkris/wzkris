@@ -27,18 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CustomerMngController {
 
+    private static final String PERM_PREFIX = "user-mod:customer-mng:";
+
     private final CustomerMngApi customerMngApi;
 
     @Operation(summary = "客户分页列表")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<CustomerMngResponse>> queryPage(@ParameterObject CustomerMngPageRequest request) {
         return customerMngApi.queryPage(request);
     }
 
     @Operation(summary = "客户详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
     public Result<CustomerMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return customerMngApi.queryInfo(request);
     }
@@ -46,7 +48,7 @@ public class CustomerMngController {
     @Operation(summary = "导出")
     @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:export")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "export")
     public void export(HttpServletResponse response, @ParameterObject CustomerMngPageRequest request) {
         customerMngApi.export(response, request);
     }

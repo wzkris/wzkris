@@ -27,18 +27,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class DictionaryMngController {
 
+    private static final String PERM_PREFIX = "system-mod:dictionary-mng:";
+
     private final DictionaryMngApi dictionaryMngApi;
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<DictionaryMngResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
         return dictionaryMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<DictionaryMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return dictionaryMngApi.queryInfo(request);
     }
@@ -46,7 +48,7 @@ public class DictionaryMngController {
     @Operation(summary = "新增")
     @OperateLog(title = "数据字典", subTitle = "添加字典", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@RequestBody DictionaryMngSaveRequest request) {
         return dictionaryMngApi.save(request);
     }
@@ -54,7 +56,7 @@ public class DictionaryMngController {
     @Operation(summary = "修改")
     @OperateLog(title = "数据字典", subTitle = "修改字典", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@RequestBody DictionaryMngUpdateRequest request) {
         return dictionaryMngApi.update(request);
     }
@@ -62,14 +64,14 @@ public class DictionaryMngController {
     @Operation(summary = "删除")
     @OperateLog(title = "数据字典", subTitle = "删除字典", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return dictionaryMngApi.remove(request);
     }
 
     @Operation(summary = "刷新字典缓存")
     @PostMapping("/refresh-cache")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:dictionary-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<?> refreshCache() {
         return dictionaryMngApi.refreshCache();
     }

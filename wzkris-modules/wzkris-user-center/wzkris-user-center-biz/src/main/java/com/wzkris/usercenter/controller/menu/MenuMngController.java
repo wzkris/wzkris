@@ -27,18 +27,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MenuMngController {
 
+    private static final String PERM_PREFIX = "user-mod:menu-mng:";
+
     private final MenuMngApi menuMngApi;
 
     @Operation(summary = "菜单列表（无分页）")
     @GetMapping("/query-list")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:menu-mng:list")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
     public Result<List<MenuMngResponse>> queryList(@ParameterObject MenuMngTreeRequest request) {
         return menuMngApi.queryList(request);
     }
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:menu-mng:list")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
     public Result<MenuMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return menuMngApi.queryInfo(request);
     }
@@ -46,7 +48,7 @@ public class MenuMngController {
     @Operation(summary = "新增菜单")
     @OperateLog(title = "菜单管理", subTitle = "新增菜单", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:menu-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Validated @RequestBody MenuMngSaveRequest request) {
         return menuMngApi.save(request);
     }
@@ -54,7 +56,7 @@ public class MenuMngController {
     @Operation(summary = "修改菜单")
     @OperateLog(title = "菜单管理", subTitle = "修改菜单", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:menu-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@Validated @RequestBody MenuMngUpdateRequest request) {
         return menuMngApi.update(request);
     }
@@ -62,7 +64,7 @@ public class MenuMngController {
     @Operation(summary = "删除菜单")
     @OperateLog(title = "菜单管理", subTitle = "删除菜单", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:menu-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return menuMngApi.remove(request);
     }

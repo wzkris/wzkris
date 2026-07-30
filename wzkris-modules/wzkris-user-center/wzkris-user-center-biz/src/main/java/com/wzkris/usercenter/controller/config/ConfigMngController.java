@@ -27,18 +27,20 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ConfigMngController {
 
+    private static final String PERM_PREFIX = "system-mod:config-mng:";
+
     private final ConfigMngApi configMngApi;
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<ConfigInfoResponse>> queryPage(@ParameterObject ConfigMngPageRequest request) {
         return configMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<ConfigInfoResponse> queryInfo(@ParameterObject IdRequest request) {
         return configMngApi.queryInfo(request);
     }
@@ -46,7 +48,7 @@ public class ConfigMngController {
     @Operation(summary = "添加参数")
     @OperateLog(title = "参数管理", subTitle = "添加参数", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@RequestBody ConfigMngSaveRequest request) {
         return configMngApi.save(request);
     }
@@ -54,7 +56,7 @@ public class ConfigMngController {
     @Operation(summary = "修改参数")
     @OperateLog(title = "参数管理", subTitle = "修改参数", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@RequestBody ConfigMngUpdateRequest request) {
         return configMngApi.update(request);
     }
@@ -62,14 +64,14 @@ public class ConfigMngController {
     @Operation(summary = "删除参数")
     @OperateLog(title = "参数管理", subTitle = "删除参数", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return configMngApi.remove(request);
     }
 
     @Operation(summary = "刷新参数缓存")
     @PostMapping("/refresh-cache")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:config-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> refreshCache() {
         return configMngApi.refreshCache();
     }

@@ -30,11 +30,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TenantPackageMngController {
 
+    private static final String PERM_PREFIX = "user-mod:tenantpackage-mng:";
+
     private final TenantPackageMngApi tenantPackageMngApi;
 
     @Operation(summary = "套餐分页")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<TenantPackageMngResponse>> queryPage(@ParameterObject TenantPackageMngPageRequest request) {
         return tenantPackageMngApi.queryPage(request);
     }
@@ -48,9 +50,7 @@ public class TenantPackageMngController {
 
     @Operation(summary = "套餐菜单选择树")
     @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:tenantpackage-mng:add", "user-mod:tenantpackage-mng:edit"},
-            mode = CheckMode.OR)
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = {"add", "edit"}, mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
         return tenantPackageMngApi.queryMenuSelectTree(request);
     }
@@ -58,7 +58,7 @@ public class TenantPackageMngController {
     @Operation(summary = "新增租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "新增套餐", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Valid @RequestBody TenantPackageMngSaveRequest request) {
         return tenantPackageMngApi.save(request);
     }
@@ -66,7 +66,7 @@ public class TenantPackageMngController {
     @Operation(summary = "修改租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "修改套餐", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@Valid @RequestBody TenantPackageMngUpdateRequest request) {
         return tenantPackageMngApi.update(request);
     }
@@ -74,7 +74,7 @@ public class TenantPackageMngController {
     @Operation(summary = "删除租户套餐")
     @OperateLog(title = "租户套餐", subTitle = "删除套餐", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return tenantPackageMngApi.remove(request);
     }

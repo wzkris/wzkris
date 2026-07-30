@@ -27,18 +27,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeptMngController {
 
+    private static final String PERM_PREFIX = "user-mod:dept-mng:";
+
     private final DeptMngApi deptMngApi;
 
     @Operation(summary = "部门列表 (不带分页)")
     @GetMapping("/query-list")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:dept-mng:list")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
     public Result<List<DeptMngResponse>> queryList(@ParameterObject DeptMngTreeRequest request) {
         return deptMngApi.queryList(request);
     }
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:dept-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
     public Result<DeptMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return deptMngApi.queryInfo(request);
     }
@@ -46,7 +48,7 @@ public class DeptMngController {
     @Operation(summary = "新增部门")
     @OperateLog(title = "部门管理", subTitle = "新增部门", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:dept-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<?> save(@Validated @RequestBody DeptMngSaveRequest request) {
         return deptMngApi.save(request);
     }
@@ -54,7 +56,7 @@ public class DeptMngController {
     @Operation(summary = "修改部门")
     @OperateLog(title = "部门管理", subTitle = "修改部门", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:dept-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<?> update(@Validated @RequestBody DeptMngUpdateRequest request) {
         return deptMngApi.update(request);
     }
@@ -62,7 +64,7 @@ public class DeptMngController {
     @Operation(summary = "删除部门")
     @OperateLog(title = "部门管理", subTitle = "删除部门", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:dept-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<?> remove(@RequestBody @Valid IdRequest request) {
         return deptMngApi.remove(request);
     }

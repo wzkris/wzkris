@@ -33,19 +33,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminMngController {
 
+    private static final String PERM_PREFIX = "user-mod:admin-mng:";
+
     private final AdminMngApi adminMngApi;
 
     @Operation(summary = "管理员分页列表")
     @GetMapping("/query-page")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<Page<AdminMngResponse>> queryPage(@ParameterObject AdminMngPageRequest request) {
         return adminMngApi.queryPage(request);
     }
 
     @Operation(summary = "管理员 - 部门选择树")
     @GetMapping("/query-dept-selecttree")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"edit", "add"},
             mode = CheckMode.OR)
     public Result<List<SelectTreeResponse>> queryDeptSelectTree(@ParameterObject AdminMngDeptSelectRequest request) {
         return adminMngApi.queryDeptSelectTree(request);
@@ -53,8 +55,8 @@ public class AdminMngController {
 
     @Operation(summary = "管理员 - 角色选择列表")
     @GetMapping("/query-role-checked-select")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
-            value = {"user-mod:admin-mng:edit", "user-mod:admin-mng:add"},
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX,
+            value = {"edit", "add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectResponse> queryRoleSelect(@ParameterObject AdminMngRoleSelectRequest request) {
         return adminMngApi.queryRoleSelect(request);
@@ -62,7 +64,7 @@ public class AdminMngController {
 
     @Operation(summary = "管理员详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
     public Result<AdminMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return adminMngApi.queryInfo(request);
     }
@@ -70,7 +72,7 @@ public class AdminMngController {
     @Operation(summary = "新增管理员")
     @OperateLog(title = "管理员管理", subTitle = "新增管理员", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "add")
     public Result<Void> save(@Validated @RequestBody AdminMngSaveRequest request) {
         return adminMngApi.save(request);
     }
@@ -78,7 +80,7 @@ public class AdminMngController {
     @Operation(summary = "修改管理员")
     @OperateLog(title = "管理员管理", subTitle = "修改管理员", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "edit")
     public Result<Void> update(@Validated @RequestBody AdminMngUpdateRequest request) {
         return adminMngApi.update(request);
     }
@@ -86,7 +88,7 @@ public class AdminMngController {
     @Operation(summary = "管理员授权角色")
     @OperateLog(title = "管理员管理", subTitle = "授权管理员角色", type = OperateTypeEnum.GRANT)
     @PostMapping("/grant-role")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:grant-role")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "grant-role")
     public Result<Void> grantRoles(@RequestBody @Valid AdminMngGrantRequest request) {
         return adminMngApi.grantRoles(request);
     }
@@ -94,7 +96,7 @@ public class AdminMngController {
     @Operation(summary = "删除管理员")
     @OperateLog(title = "管理员管理", subTitle = "删除管理员", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return adminMngApi.remove(request);
     }
@@ -102,7 +104,7 @@ public class AdminMngController {
     @Operation(summary = "重置密码")
     @OperateLog(title = "管理员管理", subTitle = "重置密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-password")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = PERM_PREFIX + "edit")
     public Result<Void> resetPwd(@RequestBody @Valid PwdResetRequest request) {
         return adminMngApi.resetPwd(request);
     }
@@ -110,7 +112,7 @@ public class AdminMngController {
     @Operation(summary = "导出")
     @OperateLog(title = "管理员管理", subTitle = "导出管理员数据", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:admin-mng:export")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = PERM_PREFIX + "export")
     public void export(HttpServletResponse response, @ParameterObject AdminMngPageRequest request) {
         adminMngApi.export(response, request);
     }
