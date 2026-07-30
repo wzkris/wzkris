@@ -1,12 +1,13 @@
 package com.wzkris.usercenter.controller.post;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
@@ -33,21 +34,22 @@ public class PostMngController {
 
     @Operation(summary = "职位分页")
     @GetMapping("/query-page")
-    @CheckTenantPerms("user-mod:post-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:post-mng:page")
     public Result<Page<PostMngResponse>> queryPage(@ParameterObject PostMngPageRequest request) {
         return postMngApi.queryPage(request);
     }
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckTenantPerms("user-mod:post-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:post-mng:page")
     public Result<PostMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return postMngApi.queryInfo(request);
     }
 
     @Operation(summary = "职位-菜单选择树")
     @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
-    @CheckTenantPerms(
+    @CheckPerms(
+            checkTypes = AuthTypeEnum.TENANT,
             value = {"user-mod:post-mng:edit", "user-mod:post-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
@@ -57,7 +59,7 @@ public class PostMngController {
     @Operation(summary = "新增职位")
     @OperateLog(title = "职位管理", subTitle = "新增职位", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckTenantPerms("user-mod:post-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:post-mng:add")
     public Result<Void> save(@Validated @RequestBody PostMngSaveRequest request) {
         return postMngApi.save(request);
     }
@@ -65,7 +67,7 @@ public class PostMngController {
     @Operation(summary = "修改职位")
     @OperateLog(title = "职位管理", subTitle = "修改职位", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckTenantPerms("user-mod:post-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:post-mng:edit")
     public Result<Void> update(@Validated @RequestBody PostMngUpdateRequest request) {
         return postMngApi.update(request);
     }
@@ -73,7 +75,7 @@ public class PostMngController {
     @Operation(summary = "删除职位")
     @OperateLog(title = "职位管理", subTitle = "删除职位", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckTenantPerms("user-mod:post-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:post-mng:remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return postMngApi.remove(request);
     }

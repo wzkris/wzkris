@@ -1,7 +1,8 @@
 package com.wzkris.gateway.controller;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.gateway.api.apicall.ApiCallInfoApi;
 import com.wzkris.gateway.api.apicall.request.ApiCallDailyStatRequest;
 import com.wzkris.gateway.api.apicall.request.ApiCallRealtimeStatRequest;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api-call-info")
 @RequiredArgsConstructor
-@CheckAdminPerms("gateway-mod:statistics:pvuv")
+@CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value ="gateway-mod:statistics:pvuv")
 public class ApiCallInfoController {
 
     private final ApiCallInfoApi apiCallInfoApi;

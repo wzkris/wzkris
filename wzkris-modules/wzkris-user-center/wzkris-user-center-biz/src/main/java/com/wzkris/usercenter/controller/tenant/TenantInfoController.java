@@ -1,9 +1,10 @@
 package com.wzkris.usercenter.controller.tenant;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "租户信息")
 @Validated
 @RestController
-@CheckTenantPerms("user-mod:tenant-info")
+@CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:tenant-info")
 @RequestMapping("/tenant-info")
 @RequiredArgsConstructor
 public class TenantInfoController {
@@ -32,7 +33,7 @@ public class TenantInfoController {
 
     @Operation(summary = "修改信息")
     @PostMapping("/update-basic")
-    @CheckTenantPerms("user-mod:tenant-info:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:tenant-info:edit")
     public Result<Void> updateBasicInfo(@RequestBody TenantInfoBasicUpdateRequest request) {
         return tenantInfoApi.updateBasicInfo(request);
     }

@@ -1,8 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleInheritanceDO;
 import com.wzkris.usercenter.domain.RoleToDeptDO;

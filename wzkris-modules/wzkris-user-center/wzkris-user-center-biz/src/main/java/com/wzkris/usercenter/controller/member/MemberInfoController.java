@@ -1,9 +1,10 @@
 package com.wzkris.usercenter.controller.member;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.api.member.request.MemberInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.member.response.MemberInfoResponse;
@@ -16,12 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "租户成员信息")
-@Validated
+@Tag(name = "会员用户")
 @RestController
 @RequestMapping("/member-info")
 @RequiredArgsConstructor
-@CheckTenantPerms
+@CheckPerms(checkTypes = AuthTypeEnum.TENANT)
 public class MemberInfoController {
 
     private final MemberInfoApi memberInfoApi;

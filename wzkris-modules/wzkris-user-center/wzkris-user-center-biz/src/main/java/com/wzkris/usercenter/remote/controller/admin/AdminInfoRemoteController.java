@@ -2,8 +2,8 @@ package com.wzkris.usercenter.remote.controller.admin;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.AdminInfoRemoteApi;
-import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;

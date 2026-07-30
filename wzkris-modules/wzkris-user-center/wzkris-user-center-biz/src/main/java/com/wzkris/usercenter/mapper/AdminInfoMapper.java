@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;

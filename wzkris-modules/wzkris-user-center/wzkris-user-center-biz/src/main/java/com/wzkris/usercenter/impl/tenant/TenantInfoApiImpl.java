@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.impl.tenant;
 
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;

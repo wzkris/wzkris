@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.notification.request.SimpleMessageRequest;
 import com.wzkris.usercenter.domain.NotificationInfoDO;

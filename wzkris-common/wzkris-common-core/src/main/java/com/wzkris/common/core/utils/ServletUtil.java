@@ -416,7 +416,7 @@ public abstract class ServletUtil {
      * @param response        响应对象{@link HttpServletResponse}
      * @param name            cookie名
      * @param value           cookie值
-     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. &gt;0 : Cookie存在的秒数.
+     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. >0 : Cookie存在的秒数.
      * @param path            Cookie的有效路径
      * @param domain          the domain name within which this cookie is visible; form is according to RFC 2109
      */
@@ -439,7 +439,7 @@ public abstract class ServletUtil {
      * @param response        响应对象{@link HttpServletResponse}
      * @param name            cookie名
      * @param value           cookie值
-     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. &gt;0 : Cookie存在的秒数.
+     * @param maxAgeInSeconds -1: 关闭浏览器清除Cookie. 0: 立即清除Cookie. >0 : Cookie存在的秒数.
      */
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAgeInSeconds) {
         addCookie(response, name, value, maxAgeInSeconds, "/", null);

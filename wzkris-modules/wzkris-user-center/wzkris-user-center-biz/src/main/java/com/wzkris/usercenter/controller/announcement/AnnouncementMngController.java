@@ -1,12 +1,13 @@
 package com.wzkris.usercenter.controller.announcement;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.announcement.AnnouncementMngApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngPageRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest;
@@ -31,14 +32,14 @@ public class AnnouncementMngController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckAdminPerms("system-mod:announcement-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:page")
     public Result<Page<AnnouncementMngResponse>> queryPage(@ParameterObject AnnouncementMngPageRequest request) {
         return announcementMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
-    @CheckAdminPerms("system-mod:announcement-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:page")
     public Result<AnnouncementMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return announcementMngApi.queryInfo(request);
     }
@@ -46,7 +47,7 @@ public class AnnouncementMngController {
     @Operation(summary = "添加草稿")
     @OperateLog(title = "系统消息", subTitle = "添加草稿", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckAdminPerms("system-mod:announcement-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:add")
     public Result<Void> save(@Valid @RequestBody AnnouncementMngSaveRequest request) {
         return announcementMngApi.save(request);
     }
@@ -54,7 +55,7 @@ public class AnnouncementMngController {
     @Operation(summary = "修改草稿")
     @OperateLog(title = "系统消息", subTitle = "修改草稿", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckAdminPerms("system-mod:announcement-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:edit")
     public Result<Void> update(@RequestBody AnnouncementMngUpdateRequest request) {
         return announcementMngApi.update(request);
     }
@@ -62,7 +63,7 @@ public class AnnouncementMngController {
     @Operation(summary = "删除草稿")
     @OperateLog(title = "系统消息", subTitle = "删除草稿", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckAdminPerms("system-mod:announcement-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:announcement-mng:remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return announcementMngApi.remove(request);
     }

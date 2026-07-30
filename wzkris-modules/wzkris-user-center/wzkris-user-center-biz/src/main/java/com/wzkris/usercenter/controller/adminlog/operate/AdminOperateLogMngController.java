@@ -1,8 +1,9 @@
 package com.wzkris.usercenter.controller.adminlog.operate;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.adminlog.operate.AdminOperateLogMngApi;
 import com.wzkris.usercenter.api.adminlog.operate.request.AdminOperateLogMngPageRequest;
 import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogMngResponse;
@@ -24,7 +25,7 @@ public class AdminOperateLogMngController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckAdminPerms("system-mod:admin-operatelog-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:admin-operatelog-mng:page")
     public Result<Page<AdminOperateLogMngResponse>> queryPage(@ParameterObject AdminOperateLogMngPageRequest request) {
         return adminOperateLogMngApi.queryPage(request);
     }

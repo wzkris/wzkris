@@ -1,8 +1,9 @@
 package com.wzkris.usercenter.controller.tenantlog.operate;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantlog.operate.TenantOperateLogMngApi;
 import com.wzkris.usercenter.api.tenantlog.operate.request.TenantOperateLogMngPageRequest;
 import com.wzkris.usercenter.api.tenantlog.operate.response.TenantOperateLogMngResponse;
@@ -24,7 +25,7 @@ public class TenantOperateLogMngController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    @CheckTenantPerms("system-mod:tenant-operatelog-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "system-mod:tenant-operatelog-mng:page")
     public Result<Page<TenantOperateLogMngResponse>> queryPage(@ParameterObject TenantOperateLogMngPageRequest request) {
         return tenantOperateLogMngApi.queryPage(request);
     }

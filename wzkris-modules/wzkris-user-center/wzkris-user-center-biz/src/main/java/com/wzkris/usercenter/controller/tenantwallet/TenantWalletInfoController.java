@@ -1,10 +1,11 @@
 package com.wzkris.usercenter.controller.tenantwallet;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/tenant-wallet")
-@CheckTenantPerms("user-mod:tenant-wallet-info")
+@CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:tenant-wallet-info")
 @RequiredArgsConstructor
 public class TenantWalletInfoController {
 
@@ -43,7 +44,7 @@ public class TenantWalletInfoController {
     @Operation(summary = "提现")
     @OperateLog(title = "商户信息", subTitle = "提现", type = OperateTypeEnum.OTHER)
     @PostMapping("/withdrawal")
-    @CheckTenantPerms("user-mod:tenant-wallet-info:withdrawal")
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:tenant-wallet-info:withdrawal")
     public Result<Void> withdrawal(@RequestBody @Valid WalletWithdrawalRequest request) {
         return tenantWalletInfoApi.withdrawal(request);
     }

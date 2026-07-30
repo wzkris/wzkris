@@ -186,7 +186,7 @@ class XssValidatorTest {
     @DisplayName("测试包含HTML实体编码")
     void testHtmlEntities() {
         // HTML实体编码不应该被检测为HTML标签
-        String text = "&lt;script&gt;alert('xss')&lt;/script&gt;";
+        String text = "<script>alert('xss')</script>";
         assertFalse(XssValidator.containsHtml(text));
         assertTrue(validator.isValid(text, context));
     }

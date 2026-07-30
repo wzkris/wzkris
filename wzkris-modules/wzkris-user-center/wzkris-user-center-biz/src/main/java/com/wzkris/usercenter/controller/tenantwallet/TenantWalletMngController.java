@@ -1,8 +1,9 @@
 package com.wzkris.usercenter.controller.tenantwallet;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletMngApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordMngPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
@@ -26,7 +27,7 @@ public class TenantWalletMngController {
 
     @Operation(summary = "钱包记录分页")
     @GetMapping("/record/page")
-    @CheckAdminPerms("user-mod:tenant-wallet-mng:record-page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-wallet-mng:record-page")
     public Result<Page<TenantWalletRecordResponse>> queryRecordPage(@ParameterObject TenantWalletRecordMngPageRequest request) {
         return tenantWalletMngApi.queryRecordPage(request);
     }

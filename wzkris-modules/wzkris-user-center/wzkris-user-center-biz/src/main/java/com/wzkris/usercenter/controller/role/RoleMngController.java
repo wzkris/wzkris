@@ -1,12 +1,13 @@
 package com.wzkris.usercenter.controller.role;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.role.RoleMngApi;
 import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
@@ -34,21 +35,21 @@ public class RoleMngController {
 
     @Operation(summary = "角色分页")
     @GetMapping("/query-page")
-    @CheckAdminPerms("user-mod:role-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:page")
     public Result<Page<RoleMngResponse>> queryPage(@ParameterObject RoleMngPageRequest request) {
         return roleMngApi.queryPage(request);
     }
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckAdminPerms("user-mod:role-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:query")
     public Result<RoleMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return roleMngApi.queryInfo(request);
     }
 
     @Operation(summary = "角色 - 菜单选择树")
     @GetMapping({"/query-menu-checked-selecttree/", "/query-menu-checked-selecttree/{id}"})
-    @CheckAdminPerms(
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryMenuSelectTree(@ParameterObject IdRequest request) {
@@ -57,7 +58,7 @@ public class RoleMngController {
 
     @Operation(summary = "角色 - 部门选择树")
     @GetMapping({"/query-dept-checked-selecttree/", "/query-dept-checked-selecttree/{id}"})
-    @CheckAdminPerms(
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectTreeResponse> queryDeptSelectTree(@ParameterObject IdRequest request) {
@@ -66,7 +67,7 @@ public class RoleMngController {
 
     @Operation(summary = "角色 - 继承选择列表")
     @GetMapping({"/query-hierarchy-checked-select/", "/query-hierarchy-checked-select/{id}"})
-    @CheckAdminPerms(
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
             value = {"user-mod:role-mng:edit", "user-mod:role-mng:add"},
             mode = CheckMode.OR)
     public Result<CheckedSelectResponse> queryRoleInheritedSelect(@ParameterObject IdRequest request) {
@@ -76,7 +77,7 @@ public class RoleMngController {
     @Operation(summary = "新增角色")
     @OperateLog(title = "角色管理", subTitle = "新增角色", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckAdminPerms("user-mod:role-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:add")
     public Result<Void> save(@Validated @RequestBody RoleMngSaveRequest request) {
         return roleMngApi.save(request);
     }
@@ -84,7 +85,7 @@ public class RoleMngController {
     @Operation(summary = "修改角色")
     @OperateLog(title = "角色管理", subTitle = "修改角色", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckAdminPerms("user-mod:role-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:edit")
     public Result<Void> update(@Validated @RequestBody RoleMngUpdateRequest request) {
         return roleMngApi.update(request);
     }
@@ -92,7 +93,7 @@ public class RoleMngController {
     @Operation(summary = "删除角色")
     @OperateLog(title = "角色管理", subTitle = "删除角色", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckAdminPerms("user-mod:role-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:role-mng:remove")
     public Result<Void> remove(@RequestBody @Valid IdListRequest request) {
         return roleMngApi.remove(request);
     }

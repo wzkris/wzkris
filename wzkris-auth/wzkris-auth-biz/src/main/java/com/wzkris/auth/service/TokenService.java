@@ -3,6 +3,7 @@ package com.wzkris.auth.service;
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import jakarta.annotation.Nullable;
 
@@ -18,7 +19,7 @@ public interface TokenService {
     TokenPair loginRefresh(BaseLoginUser loginUser, RoleContext roleContext, String refreshToken);
 
     @Nullable
-    BaseLoginUser loadLoginUserByUid(String type, Serializable uid);
+    LoginUser loadLoginUserByUid(String type, Serializable uid);
 
     @Nullable
     RoleContext loadRoleContextByUid(String type, Serializable uid);

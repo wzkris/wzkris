@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.controller.menu;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
-import com.wzkris.common.security.annotation.CheckTenantPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.usercenter.api.menu.MenuInfoApi;
 import com.wzkris.usercenter.api.menu.response.RouterResponse;
@@ -25,14 +25,14 @@ public class MenuInfoController {
 
     @Operation(summary = "系统路由")
     @GetMapping("/query-system-route")
-    @CheckAdminPerms
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN)
     public Result<List<RouterResponse>> querySystemRoute() {
         return menuInfoApi.querySystemRoute(SecurityUtil.getUid());
     }
 
     @Operation(summary = "租户路由")
     @GetMapping("/query-tenant-route")
-    @CheckTenantPerms
+    @CheckPerms(checkTypes = AuthTypeEnum.TENANT)
     public Result<List<RouterResponse>> queryTenantRoute() {
         return menuInfoApi.queryTenantRoute(SecurityUtil.getUid());
     }

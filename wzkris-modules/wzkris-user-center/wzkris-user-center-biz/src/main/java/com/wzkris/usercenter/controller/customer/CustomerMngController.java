@@ -1,11 +1,12 @@
 package com.wzkris.usercenter.controller.customer;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.api.customer.request.CustomerMngPageRequest;
 import com.wzkris.usercenter.api.customer.response.CustomerMngResponse;
@@ -30,14 +31,14 @@ public class CustomerMngController {
 
     @Operation(summary = "客户分页列表")
     @GetMapping("/query-page")
-    @CheckAdminPerms("user-mod:customer-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:page")
     public Result<Page<CustomerMngResponse>> queryPage(@ParameterObject CustomerMngPageRequest request) {
         return customerMngApi.queryPage(request);
     }
 
     @Operation(summary = "客户详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckAdminPerms("user-mod:customer-mng:query")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:query")
     public Result<CustomerMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return customerMngApi.queryInfo(request);
     }
@@ -45,7 +46,7 @@ public class CustomerMngController {
     @Operation(summary = "导出")
     @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
-    @CheckAdminPerms("user-mod:customer-mng:export")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:customer-mng:export")
     public void export(HttpServletResponse response, @ParameterObject CustomerMngPageRequest request) {
         customerMngApi.export(response, request);
     }

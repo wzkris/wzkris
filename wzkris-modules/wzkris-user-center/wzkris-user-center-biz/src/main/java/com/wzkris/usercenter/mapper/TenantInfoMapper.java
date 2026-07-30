@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
 import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;

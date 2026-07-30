@@ -8,6 +8,7 @@ import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.auth.utils.TokenKeyBuilder;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
@@ -137,9 +138,9 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public BaseLoginUser loadLoginUserByUid(String type, Serializable uid) {
+    public LoginUser loadLoginUserByUid(String type, Serializable uid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        return (BaseLoginUser) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_USER);
+        return (LoginUser) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_USER);
     }
 
     @Override

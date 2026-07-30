@@ -1,11 +1,12 @@
 package com.wzkris.usercenter.controller.tenant;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.api.tenant.request.TenantMngPageRequest;
@@ -36,14 +37,14 @@ public class TenantMngController {
 
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
-    @CheckAdminPerms("user-mod:tenant-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:page")
     public Result<Page<TenantMngResponse>> queryPage(@ParameterObject TenantMngPageRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/query-info/{id}")
-    @CheckAdminPerms("user-mod:tenant-mng:page")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:page")
     public Result<TenantMngResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantMngApi.queryInfo(request);
     }
@@ -56,7 +57,7 @@ public class TenantMngController {
 
     @Operation(summary = "套餐选择列表")
     @GetMapping("/query-package-select")
-    @CheckAdminPerms(
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN,
             value = {"user-mod:tenant-mng:add", "user-mod:tenant-mng:edit"},
             mode = CheckMode.OR)
     public Result<List<SelectResponse>> queryPackageSelect(@ParameterObject TenantPackageMngListRequest request) {
@@ -66,7 +67,7 @@ public class TenantMngController {
     @Operation(summary = "新增租户")
     @OperateLog(title = "租户管理", subTitle = "新增租户", type = OperateTypeEnum.INSERT)
     @PostMapping("/save")
-    @CheckAdminPerms("user-mod:tenant-mng:add")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:add")
     public Result<Void> save(@Validated @RequestBody TenantMngSaveRequest tenantReq) {
         return tenantMngApi.save(tenantReq);
     }
@@ -74,7 +75,7 @@ public class TenantMngController {
     @Operation(summary = "修改租户")
     @OperateLog(title = "租户管理", subTitle = "修改租户", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update")
-    @CheckAdminPerms("user-mod:tenant-mng:edit")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:edit")
     public Result<Void> update(@Validated @RequestBody TenantMngUpdateRequest tenantReq) {
         return tenantMngApi.update(tenantReq);
     }
@@ -82,7 +83,7 @@ public class TenantMngController {
     @Operation(summary = "重置租户操作密码")
     @OperateLog(title = "租户管理", subTitle = "重置操作密码", type = OperateTypeEnum.UPDATE)
     @PostMapping("/reset-operpwd")
-    @CheckAdminPerms("user-mod:tenant-mng:reset-operpwd")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:reset-operpwd")
     public Result<Void> resetOperPwd(@RequestBody PwdResetRequest request) {
         return tenantMngApi.resetOperPwd(request);
     }
@@ -90,7 +91,7 @@ public class TenantMngController {
     @Operation(summary = "删除租户")
     @OperateLog(title = "租户管理", subTitle = "删除租户", type = OperateTypeEnum.DELETE)
     @PostMapping("/remove")
-    @CheckAdminPerms("user-mod:tenant-mng:remove")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenant-mng:remove")
     public Result<Void> remove(@RequestBody @Valid IdRequest request) {
         return tenantMngApi.remove(request);
     }

@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.impl.dictionary;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.core.utils.BeanCopierUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.dictionary.DictionaryInfoApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryInfoListRequest;
 import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
