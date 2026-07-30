@@ -59,7 +59,7 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
     @Override
     protected Authentication attemptSwitchUser(HttpServletRequest request) {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        if (!SecurityUtil.isAuth(AuthTypeEnum.ADMIN)) {
+        if (!SecurityUtil.checkAuthType(AuthTypeEnum.ADMIN)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
                     "invalidParameter.param.invalid");
@@ -73,7 +73,7 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
     @Override
     protected Authentication attemptExitUser(HttpServletRequest request) {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        if (!SecurityUtil.isAuth(AuthTypeEnum.TENANT)) {
+        if (!SecurityUtil.checkAuthType(AuthTypeEnum.TENANT)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
                     "invalidParameter.param.invalid");

@@ -43,7 +43,7 @@ public final class SecurityUtil {
      */
     @Nullable
     public static BaseLoginUser getLoginUser() {
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         if (authentication == null) {
             return null;
         }
@@ -58,7 +58,7 @@ public final class SecurityUtil {
      */
     @Nullable
     public static RoleContext getRoleContext() {
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         if (authentication instanceof RoleContextAuthenticationToken token) {
             return token.getRoleContext();
         }
@@ -95,30 +95,29 @@ public final class SecurityUtil {
     /**
      * 是否认证
      */
-    public static boolean isAuth() {
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-        return authentication != null
-                && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof BaseLoginUser;
+    public static boolean isLogin() {
+        Authentication authentication = getAuthentication();
+        return authentication instanceof RoleContextAuthenticationToken && authentication.isAuthenticated();
     }
 
     /**
      * 是否对应认证类型
      */
-    public static boolean isAuth(AuthTypeEnum authTypeEnum) {
-        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-        return authentication != null
-                && authentication.isAuthenticated()
-                && authentication.getPrincipal() instanceof BaseLoginUser
-                && ((BaseLoginUser) authentication.getPrincipal()).getAuthType() == authTypeEnum;
+    public static boolean checkAuthType(AuthTypeEnum authTypeEnum) {
+        Authentication authentication = getAuthentication();
+        if (!(authentication instanceof RoleContextAuthenticationToken rca && authentication.isAuthenticated())) {
+            return false;
+        }
+        return ((BaseLoginUser) rca.getPrincipal()).getAuthType() == authTypeEnum;
     }
 
     /**
      * 获取请求的token
      */
+    @Nullable
     public static String getTokenValue() {
         try {
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+            Authentication authentication = getAuthentication();
             return authentication == null ? null : authentication.getCredentials().toString();
         } catch (Exception e) {
             return null;

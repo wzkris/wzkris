@@ -38,7 +38,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    SecurityUtil.isAuth() ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
+                    SecurityUtil.isLogin() ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToAdminDO> list = adminIds.stream()
@@ -56,7 +56,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setNotificationType(messageDTO.getType());
             notificationInfoDO.setContent(messageDTO.getContent());
             notificationInfoDO.setCreatorId(
-                    SecurityUtil.isAuth() ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
+                    SecurityUtil.isLogin() ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToTenantDO> list = memberIds.stream()

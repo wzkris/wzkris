@@ -56,7 +56,7 @@ public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerRe
         try {
             AuthTypeEnum authType = null;
             Long userId = null;
-            if (SecurityUtil.isAuth()) {
+            if (SecurityUtil.isLogin()) {
                 BaseLoginUser loginUser = SecurityUtil.getLoginUser();
                 authType = loginUser.getAuthType();
                 userId = loginUser.getUid();

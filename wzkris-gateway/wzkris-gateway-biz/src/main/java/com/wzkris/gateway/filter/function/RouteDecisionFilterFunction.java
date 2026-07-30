@@ -48,7 +48,7 @@ public class RouteDecisionFilterFunction implements HandlerFilterFunction<Server
 
     private ServerResponse handleOpen(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
         try {
-            if (!SecurityUtil.isAuth()) {
+            if (!SecurityUtil.isLogin()) {
                 return next.handle(request);
             }
 
