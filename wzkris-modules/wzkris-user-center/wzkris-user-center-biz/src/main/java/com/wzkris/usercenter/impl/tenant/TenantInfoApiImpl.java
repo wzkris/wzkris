@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.impl.tenant;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.common.core.utils.BeanCopierUtil;
@@ -28,18 +27,18 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
 
     @Override
     public Result<TenantInfoResponse> queryInfo() {
-        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getLoginUser().getTenantId()));
     }
 
     @Override
     public Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request) {
-        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId()));
+        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(SecurityUtil.getLoginUser().getTenantId()));
         return toRes(tenantInfoService.updateById(tenantInfoDO));
     }
 
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
-        Long tenantId = SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId();
+        Long tenantId = SecurityUtil.getLoginUser().getTenantId();
         String operPwd = tenantInfoService.getObjByObj(TenantInfoDO::getOperPwd,
                 TenantInfoDO::getTenantId, tenantId);
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {

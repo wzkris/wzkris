@@ -11,12 +11,11 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.ActorInfo;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
-import com.wzkris.common.security.model.LoginAdminUser;
-import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -60,7 +59,7 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
     @Override
     protected Authentication attemptSwitchUser(HttpServletRequest request) {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        if (!(loginUser instanceof LoginAdminUser adminUser)) {
+        if (!SecurityUtil.isAuth(AuthTypeEnum.ADMIN)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
                     "invalidParameter.param.invalid");
@@ -68,19 +67,19 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
         }
 
         TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
-        return completeEnter(switchUserService.switchToTenant(adminUser, parseTenantId(request), claims.getSid()));
+        return completeEnter(switchUserService.switchToTenant((LoginUser) loginUser, parseTenantId(request), claims.getSid()));
     }
 
     @Override
     protected Authentication attemptExitUser(HttpServletRequest request) {
         BaseLoginUser loginUser = SecurityUtil.getLoginUser();
-        if (!(loginUser instanceof LoginTenantUser tenantUser)) {
+        if (!SecurityUtil.isAuth(AuthTypeEnum.TENANT)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizBaseCodeEnum.ACCESS_DENIED.value(), OAuth2ErrorCodes.ACCESS_DENIED,
                     "invalidParameter.param.invalid");
             return null;
         }
-        ActorInfo actor = tenantUser.getActor();
+        ActorInfo actor = loginUser.getActor();
         if (actor == null || actor.getAuthType() != AuthTypeEnum.ADMIN || StringUtil.isBlank(actor.getSid())) {
             OAuth2ExceptionUtil.throwError(
                     BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
@@ -92,10 +91,10 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
                     BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST,
                     "switch target user not found");
         }
-        BaseLoginUser adminUser = (BaseLoginUser) authenticated.getPrincipal();
+        BaseLoginUser tenantUser = (BaseLoginUser) authenticated.getPrincipal();
         RoleContext roleContext = authenticated instanceof RoleContextAuthenticationToken rcToken
                 ? rcToken.getRoleContext() : null;
-        authenticated.setDetails(tokenService.loginReuse(adminUser, roleContext, actor.getSid()));
+        authenticated.setDetails(tokenService.loginReuse(tenantUser, roleContext, actor.getSid()));
 
         TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
         tokenService.revoke(tenantUser, claims.getSid());

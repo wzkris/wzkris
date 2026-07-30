@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.mapper.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.AbsBaseLoginUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
@@ -19,10 +19,10 @@ public class SkipTenantInterceptorUtilTest {
     static final String SQL = "SELECT * FROM t_sys_user WHERE user_id=?";
 
     static {
-        TestLoginUser loginUser = new TestLoginUser();
+        LoginUser loginUser = new LoginUser();
         loginUser.setUid(1L);
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setUsername("admin");
+        loginUser.setName("admin");
         SecurityContextHolder.getContext()
                 .setAuthentication(
                         new UsernamePasswordAuthenticationToken(loginUser, ""));
@@ -52,21 +52,6 @@ public class SkipTenantInterceptorUtilTest {
 
     void list() {
         tenantMapper.selectList(null);
-    }
-
-    private static final class TestLoginUser extends AbsBaseLoginUser {
-
-        private String username;
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        @Override
-        public String getName() {
-            return username;
-        }
-
     }
 
 }

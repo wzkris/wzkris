@@ -1,7 +1,8 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
@@ -18,21 +19,19 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     private final TenantProperties tenantProperties;
 
-    private final UserContextProvider userContextProvider;
+    private final UserContextHelper userContextHelper;
 
     @Override
     public Expression getTenantId() {
-        Long tenantId = userContextProvider.getTenantId();
-        if (tenantId == null) {
-            throw new IllegalStateException("租户上下文缺失，无法解析 tenantId");
-        }
-        return new LongValue(tenantId);
+        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        return new LongValue(loginUser.getTenantId());
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        Long tenantId = userContextProvider.getTenantId();
-        return tenantId == null || !tenantProperties.getIncludes().contains(tableName);
+        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        return loginUser == null || loginUser.getTenantId() == null
+                || !tenantProperties.getIncludes().contains(tableName);
     }
 
 }

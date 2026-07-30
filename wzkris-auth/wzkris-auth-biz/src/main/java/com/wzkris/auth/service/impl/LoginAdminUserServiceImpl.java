@@ -18,7 +18,7 @@ import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.LoginAdminUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -104,16 +104,15 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
-        LoginAdminUser adminUser = new LoginAdminUser();
-        adminUser.setUid(adminInfoResponse.getAdminId());
-        adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setPhoneNumber(adminInfoResponse.getPhoneNumber());
-        adminUser.setUsername(adminInfoResponse.getUsername());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(adminInfoResponse.getAdminId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setName(adminInfoResponse.getUsername());
 
         RoleContext roleContext = new RoleContext(permissions.getRoles(),
                 SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId()));
 
-        return RoleContextAuthenticationToken.authenticated(adminUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     /**
@@ -131,14 +130,14 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
      */
     private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginAdminUser adminUser = new LoginAdminUser();
-        adminUser.setUid(userResp.getAdminId());
-        adminUser.setAuthType(AuthTypeEnum.ADMIN);
-        adminUser.setUsername(userResp.getUsername());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(userResp.getAdminId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setName(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        adminUser,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,

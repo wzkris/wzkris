@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.DataPermissionInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.orm.plus.extension.ExtenseSqlInjector;
 import com.wzkris.common.orm.plus.handler.BaseFieldFillHandler;
 import com.wzkris.common.orm.plus.interceptor.DataPermissionHandler;
@@ -33,14 +33,14 @@ public class MybatisPlusConfig {
 
     private final List<DataPermissionRule> dataPermissionRules;
 
-    private final UserContextProvider userContextProvider;
+    private final UserContextHelper userContextHelper;
 
     public MybatisPlusConfig(TenantProperties tenantProperties,
                              List<DataPermissionRule> dataPermissionRules,
-                             UserContextProvider userContextProvider) {
+                             UserContextHelper userContextHelper) {
         this.tenantProperties = tenantProperties;
         this.dataPermissionRules = dataPermissionRules;
-        this.userContextProvider = userContextProvider;
+        this.userContextHelper = userContextHelper;
     }
 
     /**
@@ -51,10 +51,10 @@ public class MybatisPlusConfig {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
         // 数据权限处理
         interceptor.addInnerInterceptor(new DataPermissionInterceptor(
-                new DataPermissionHandler(dataPermissionRules, userContextProvider)));
+                new DataPermissionHandler(dataPermissionRules, userContextHelper)));
         // 多租户
         interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(
-                new TenantLineHandlerImpl(tenantProperties, userContextProvider)));
+                new TenantLineHandlerImpl(tenantProperties, userContextHelper)));
         // 分页插件
         PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
         paginationInterceptor.setMaxLimit(500L); // 单页限制条数
@@ -77,7 +77,7 @@ public class MybatisPlusConfig {
      */
     @Bean
     public MetaObjectHandler metaObjectHandler() {
-        return new BaseFieldFillHandler(userContextProvider);
+        return new BaseFieldFillHandler(userContextHelper);
     }
 
     /**

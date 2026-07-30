@@ -9,19 +9,29 @@ import org.springframework.lang.Nullable;
 import java.time.Instant;
 
 /**
- * BaseLoginUser 的通用基础实现，仅承载所有用户类型共享字段。
+ * 统一登录用户模型
+ *
+ * <p>取代原 LoginAdminUser / LoginTenantUser / LoginCustomerUser / LoginClientUser 四套子类，
+ * 通过 {@link #authType} 字段区分用户类型，差异化信息由认证流程在构建时填入 {@link #name} 和 {@link #tenantId}。
+ *
+ * @author wzkris
  */
 @Getter
 @Setter
 @ToString
-public abstract class AbsBaseLoginUser implements BaseLoginUser {
+public class LoginUser implements BaseLoginUser {
 
     private Long uid;
 
     private AuthTypeEnum authType;
 
+    private String name;
+
     @Nullable
     private String hint;
+
+    @Nullable
+    private Long tenantId;
 
     @Nullable
     private Instant userExpiredTime;
@@ -29,10 +39,12 @@ public abstract class AbsBaseLoginUser implements BaseLoginUser {
     @Nullable
     private String userExpiredReason;
 
-    /**
-     * 代操作实际操作者
-     */
     @Nullable
     private ActorInfo actor;
+
+    @Override
+    public String getName() {
+        return this.name;
+    }
 
 }

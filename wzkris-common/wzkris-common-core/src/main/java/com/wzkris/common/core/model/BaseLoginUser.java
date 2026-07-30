@@ -1,6 +1,5 @@
 package com.wzkris.common.core.model;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import org.springframework.lang.Nullable;
 
@@ -8,14 +7,21 @@ import java.security.Principal;
 import java.time.Instant;
 
 /**
- * 统一用户抽象视图，用于承载各类用户（管理员、租户、C 端等）的公共能力。
+ * 统一登录用户抽象视图，用于承载各类用户（管理员、租户、C 端等）的公共能力。
+ *
+ * <p>唯一实现为 {@link LoginUser}，通过 {@link #getAuthType()} 区分用户类型。
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS)
 public interface BaseLoginUser extends Principal {
 
     Long getUid();
 
     AuthTypeEnum getAuthType();
+
+    /**
+     * 租户ID，仅 TENANT 类型用户有值，其余为 null
+     */
+    @Nullable
+    Long getTenantId();
 
     /**
      * 标签

@@ -1,6 +1,6 @@
 package com.wzkris.common.log.config;
 
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.log.aspect.OperateLogAspect;
 import com.wzkris.common.log.listener.OperateEventListener;
 import com.wzkris.common.log.remote.IOperateLogRemote;
@@ -18,8 +18,8 @@ public class LogAutoConfiguration {
     }
 
     @Bean
-    public OperateLogAspect operateLogAspect(UserContextProvider userContextProvider) {
-        return new OperateLogAspect(userContextProvider);
+    public OperateLogAspect operateLogAspect(UserContextHelper userContextHelper) {
+        return new OperateLogAspect(userContextHelper);
     }
 
 }

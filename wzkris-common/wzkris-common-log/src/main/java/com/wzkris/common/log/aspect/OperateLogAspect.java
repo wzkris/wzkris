@@ -5,12 +5,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.remote.request.OperateLogEvent;
-import com.wzkris.common.security.utils.SecurityUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -53,10 +53,10 @@ public class OperateLogAspect {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    private final UserContextProvider userContextProvider;
+    private final UserContextHelper userContextHelper;
 
-    public OperateLogAspect(UserContextProvider userContextProvider) {
-        this.userContextProvider = userContextProvider;
+    public OperateLogAspect(UserContextHelper userContextHelper) {
+        this.userContextHelper = userContextHelper;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
@@ -91,12 +91,13 @@ public class OperateLogAspect {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        operateLogEvent.setOperatorId(SecurityUtil.getUid());
-        operateLogEvent.setAuthType(SecurityUtil.getAuthType());
-        operateLogEvent.setOperName(SecurityUtil.getLoginUser().getName());
+        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        operateLogEvent.setOperatorId(loginUser.getUid());
+        operateLogEvent.setAuthType(loginUser.getAuthType());
+        operateLogEvent.setOperName(loginUser.getName());
 
         // 设置租户ID
-        operateLogEvent.setTenantId(userContextProvider.getTenantId());
+        operateLogEvent.setTenantId(loginUser.getTenantId());
 
         // 设置操作信息
         operateLogEvent.setOperType(operateLog.type().getValue());

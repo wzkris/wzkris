@@ -2,7 +2,6 @@ package com.wzkris.usercenter.impl.tenantpackage;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.security.model.LoginTenantUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
@@ -83,7 +82,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
 
     @Override
     public Result<TenantPackageInfoResponse> queryInfo() {
-        TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getLoginUser(LoginTenantUser.class).getTenantId());
+        TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getLoginUser().getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");
         }

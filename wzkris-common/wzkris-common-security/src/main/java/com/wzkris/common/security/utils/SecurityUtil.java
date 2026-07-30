@@ -1,7 +1,6 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
@@ -12,7 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author : wzkris
@@ -37,35 +39,24 @@ public final class SecurityUtil {
     }
 
     /**
-     * 获取当前登录用户信息,未登录抛出异常
+     * 获取当前登录用户信息,未登录返回null
      *
-     * @return 当前用户（实际运行时类型可能为具体 BaseUser 子类）
+     * @return 当前用户（实际运行时类型可能为具体 BaseUser 子类），未登录时为 null
      */
+    @Nullable
     public static BaseLoginUser getLoginUser() {
-        try {
-            Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
-            return (BaseLoginUser) authentication.getPrincipal();
-        } catch (Exception e) {
-            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        Authentication authentication = securityContextHolderStrategy.getContext().getAuthentication();
+        if (authentication == null) {
+            return null;
         }
+        Object principal = authentication.getPrincipal();
+        return principal instanceof BaseLoginUser baseLoginUser ? baseLoginUser : null;
     }
 
     /**
-     * 获取当前登录用户并转换为指定子类，类型不匹配时抛出异常。
-     */
-    public static <T extends BaseLoginUser> T getLoginUser(Class<T> loginUserClass) {
-        Objects.requireNonNull(loginUserClass, "loginUserClass must not be null");
-        BaseLoginUser loginUser = getLoginUser();
-        if (loginUserClass.isInstance(loginUser)) {
-            return loginUserClass.cast(loginUser);
-        }
-        throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
-    }
-
-    /**
-     * 获取当前登录用户的角色上下文
+     * 获取当前登录用户的角色上下文,未登录返回null
      *
-     * @return 角色上下文
+     * @return 角色上下文，未登录时为 null
      */
     @Nullable
     public static RoleContext getRoleContext() {
@@ -73,13 +64,13 @@ public final class SecurityUtil {
         if (authentication instanceof RoleContextAuthenticationToken token) {
             return token.getRoleContext();
         }
-        throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
+        return null;
     }
 
     /**
-     * 获取当前登录用户权限,未登录抛出异常
+     * 获取当前登录用户权限,未登录返回空集合
      *
-     * @return 当前用户
+     * @return 当前用户权限
      */
     public static Set<String> getPermission() {
         RoleContext roleContext = getRoleContext();
@@ -137,30 +128,35 @@ public final class SecurityUtil {
     }
 
     /**
-     * 获取当前ID
+     * 获取当前ID,未登录返回null
      *
-     * @return 登录ID
+     * @return 登录ID，未登录时为 null
      */
+    @Nullable
     public static Long getUid() {
-        return getLoginUser().getUid();
+        BaseLoginUser loginUser = getLoginUser();
+        return loginUser == null ? null : loginUser.getUid();
     }
 
     /**
-     * 获取当前认证类型,未登录抛出异常
+     * 获取当前认证类型,未登录返回null
      *
-     * @return 登录类型
+     * @return 登录类型，未登录时为 null
      */
+    @Nullable
     public static AuthTypeEnum getAuthType() {
-        return getLoginUser().getAuthType();
+        BaseLoginUser loginUser = getLoginUser();
+        return loginUser == null ? null : loginUser.getAuthType();
     }
 
     /**
-     * 获取当前标签
+     * 获取当前标签,未登录返回空字符串
      *
      * @return 标签
      */
     public static String getHint() {
-        return StringUtil.defaultIfEmpty(getLoginUser().getHint(), StringUtil.EMPTY);
+        BaseLoginUser loginUser = getLoginUser();
+        return loginUser == null ? StringUtil.EMPTY : StringUtil.defaultIfEmpty(loginUser.getHint(), StringUtil.EMPTY);
     }
 
 }

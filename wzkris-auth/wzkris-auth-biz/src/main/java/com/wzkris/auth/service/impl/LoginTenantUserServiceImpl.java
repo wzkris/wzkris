@@ -18,7 +18,7 @@ import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.LoginTenantUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -108,11 +108,11 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         }
         MemberPermissionResponse permissions = permissionsResult.getData();
 
-        LoginTenantUser tenantUser = new LoginTenantUser();
-        tenantUser.setUid(memberInfoResponse.getMemberId());
-        tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setUsername(memberInfoResponse.getUsername());
-        tenantUser.setTenantId(memberInfoResponse.getTenantId());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberInfoResponse.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setName(memberInfoResponse.getUsername());
+        loginUser.setTenantId(memberInfoResponse.getTenantId());
 
         // 租户管理员通过角色名判断
         boolean isSuperUser = permissions.getRoles() != null && permissions.getRoles().stream()
@@ -120,7 +120,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
 
         RoleContext roleContext = new RoleContext(permissions.getRoles(), isSuperUser);
 
-        return RoleContextAuthenticationToken.authenticated(tenantUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     /**
@@ -148,15 +148,15 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     private void recordFailedLog(MemberInfoResponse memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginTenantUser tenantUser = new LoginTenantUser();
-        tenantUser.setUid(memberResp.getMemberId());
-        tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setUsername(memberResp.getUsername());
-        tenantUser.setTenantId(memberResp.getTenantId());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberResp.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setName(memberResp.getUsername());
+        loginUser.setTenantId(memberResp.getTenantId());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        tenantUser,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,

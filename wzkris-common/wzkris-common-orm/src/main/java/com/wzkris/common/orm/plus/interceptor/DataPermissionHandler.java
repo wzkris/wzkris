@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
@@ -55,12 +55,12 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
 
     private final Map<String, DataScope> annotationCache = new ConcurrentHashMap<>();
 
-    private final UserContextProvider userContextProvider;
+    private final UserContextHelper userContextHelper;
 
-    public DataPermissionHandler(List<DataPermissionRule> rules, UserContextProvider userContextProvider) {
+    public DataPermissionHandler(List<DataPermissionRule> rules, UserContextHelper userContextHelper) {
         this.ruleMap = rules.stream()
                 .collect(Collectors.toMap(DataPermissionRule::getType, r -> r));
-        this.userContextProvider = userContextProvider;
+        this.userContextHelper = userContextHelper;
         log.info("DataPermissionHandler initialized with rules: {}", ruleMap.keySet());
     }
 
@@ -71,7 +71,7 @@ public class DataPermissionHandler implements MultiDataPermissionHandler {
             return null;
         }
 
-        RoleContext roleContext = userContextProvider.getRoleContext();
+        RoleContext roleContext = userContextHelper.getRoleContext();
 
         // 无角色上下文（如定时任务等无登录场景）时，不应用任何数据权限规则
         if (roleContext == null) {

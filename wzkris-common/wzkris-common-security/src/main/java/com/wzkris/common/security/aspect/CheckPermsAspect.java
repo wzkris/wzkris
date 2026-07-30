@@ -1,6 +1,7 @@
 package com.wzkris.common.security.aspect;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.exception.token.TokenExpiredException;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
@@ -90,7 +91,7 @@ public class CheckPermsAspect {
      */
     private void validatePrincipalType(BaseLoginUser loginUser, CheckPerms checkPerms) {
         if (loginUser == null) {
-            throw new AccessDeniedException("未找到认证信息，请先登录");
+            throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
 
         AuthTypeEnum expectedType = checkPerms.checkType();

@@ -8,7 +8,7 @@ import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
-import com.wzkris.common.security.model.LoginClientUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.remote.api.loginuser.ILoginUserRemote;
@@ -92,12 +92,13 @@ public class TokenValidateServiceImpl implements TokenValidateService {
     }
 
     private Authentication authenticateClient(Jwt jwt, String token) {
-        LoginClientUser clientUser = new LoginClientUser();
-        clientUser.setClientId(jwt.getSubject());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setAuthType(AuthTypeEnum.CLIENT);
+        loginUser.setName(jwt.getSubject());
         List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);
         RoleContext roleContext = new RoleContext(
                 List.of(new UserRole(0L, "client", null, null, new ArrayList<>(scope))));
-        return RoleContextAuthenticationToken.authenticated(clientUser, token, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, token, roleContext);
     }
 
     private Authentication introspectCustom(AuthTypeEnum authTypeEnum, Long uid, String token, String sid) {

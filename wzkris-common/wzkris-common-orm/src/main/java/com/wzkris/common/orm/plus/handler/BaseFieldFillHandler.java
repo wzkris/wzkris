@@ -2,7 +2,7 @@ package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.context.UserContextProvider;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
@@ -21,10 +21,10 @@ import java.time.OffsetDateTime;
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
 
-    private final UserContextProvider userContextProvider;
+    private final UserContextHelper userContextHelper;
 
-    public BaseFieldFillHandler(UserContextProvider userContextProvider) {
-        this.userContextProvider = userContextProvider;
+    public BaseFieldFillHandler(UserContextHelper userContextHelper) {
+        this.userContextHelper = userContextHelper;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      * 当前操作者用户ID，无登录上下文时兜底为系统用户
      */
     private Long currentUserId() {
-        BaseLoginUser loginUser = userContextProvider.getBaseLoginUser();
+        BaseLoginUser loginUser = userContextHelper.getLoginUser();
         return loginUser != null ? loginUser.getUid() : SecurityConstants.SYSTEM_USER_ID;
     }
 
@@ -70,7 +70,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      * 当前操作者标签
      */
     private String currentHint() {
-        BaseLoginUser loginUser = userContextProvider.getBaseLoginUser();
+        BaseLoginUser loginUser = userContextHelper.getLoginUser();
         return loginUser != null ? loginUser.getHint() : null;
     }
 

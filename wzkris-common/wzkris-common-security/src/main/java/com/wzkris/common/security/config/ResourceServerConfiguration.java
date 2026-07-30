@@ -1,11 +1,9 @@
 package com.wzkris.common.security.config;
 
-import com.wzkris.common.core.context.UserContextProvider;
 import com.wzkris.common.security.component.CustomSecurityContextRepository;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.common.security.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
-import com.wzkris.common.security.provider.SecurityUserContextProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -65,12 +63,6 @@ public class ResourceServerConfiguration {
     @ConditionalOnMissingBean
     public PasswordEncoderDelegate passwordEncoder() {
         return new PasswordEncoderDelegate();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public UserContextProvider userContextProvider() {
-        return new SecurityUserContextProvider();
     }
 
 }

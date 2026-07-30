@@ -76,7 +76,7 @@ spring:
       client:
         sessionRegistration:
           auth-center:                    # registrationId（可自定义）
-            provider: wzkris              # 对应 provider 名称
+            provider: wzkris              # 对应 support 名称
             client-id: oauth_client_demo   # 必须与数据库一致
             client-secret: secret          # 必须与数据库一致
             authorization-grant-type: authorization_code

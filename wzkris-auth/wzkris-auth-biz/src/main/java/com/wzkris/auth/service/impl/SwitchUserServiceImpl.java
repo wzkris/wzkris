@@ -18,8 +18,7 @@ import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
-import com.wzkris.common.security.model.LoginAdminUser;
-import com.wzkris.common.security.model.LoginTenantUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken switchToTenant(LoginAdminUser adminUser, Long tenantId, String actorSid) {
+    public UsernamePasswordAuthenticationToken switchToTenant(LoginUser loginUser, Long tenantId, String actorSid) {
         Result<MemberInfoResponse> memberResult = memberInfoRemote.queryAdministratorByTenantId(
                 new TenantIdRequest(tenantId));
         if (!ResultUtil.check(memberResult)) {
@@ -48,8 +47,8 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         MemberInfoResponse memberResp = memberResult.getData();
 
         UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
-        LoginTenantUser tenantUser = (LoginTenantUser) token.getPrincipal();
-        tenantUser.setActor(ActorInfo.of(adminUser.getUid(), AuthTypeEnum.ADMIN, actorSid));
+        LoginUser switchedUser = (LoginUser) token.getPrincipal();
+        switchedUser.setActor(ActorInfo.of(loginUser.getUid(), AuthTypeEnum.ADMIN, actorSid));
         return token;
     }
 
@@ -57,13 +56,13 @@ public class SwitchUserServiceImpl implements SwitchUserService {
     @Override
     public UsernamePasswordAuthenticationToken switchBack(Long actorUid, AuthTypeEnum authTypeEnum) {
         var loadedUser = tokenService.loadLoginUserByUid(authTypeEnum.getValue(), actorUid);
-        if (!(loadedUser instanceof LoginAdminUser adminUser)) {
+        if (!(loadedUser instanceof LoginUser loginUser)) {
             return null;
         }
 
         RoleContext roleContext = tokenService.loadRoleContextByUid(authTypeEnum.getValue(), actorUid);
 
-        return RoleContextAuthenticationToken.authenticated(adminUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(MemberInfoResponse memberInfoResponse) {
@@ -78,11 +77,11 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         }
         MemberPermissionResponse permissions = permissionsResult.getData();
 
-        LoginTenantUser tenantUser = new LoginTenantUser();
-        tenantUser.setUid(memberInfoResponse.getMemberId());
-        tenantUser.setAuthType(AuthTypeEnum.TENANT);
-        tenantUser.setUsername(memberInfoResponse.getUsername());
-        tenantUser.setTenantId(memberInfoResponse.getTenantId());
+        LoginUser loginUser = new LoginUser();
+        loginUser.setUid(memberInfoResponse.getMemberId());
+        loginUser.setAuthType(AuthTypeEnum.TENANT);
+        loginUser.setName(memberInfoResponse.getUsername());
+        loginUser.setTenantId(memberInfoResponse.getTenantId());
 
         // 租户管理员通过角色名判断
         boolean isSuperUser = permissions.getRoles() != null && permissions.getRoles().stream()
@@ -90,7 +89,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
 
         RoleContext roleContext = new RoleContext(permissions.getRoles(), isSuperUser);
 
-        return RoleContextAuthenticationToken.authenticated(tenantUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     private void checkTenantAccount(MemberInfoResponse memberResp) {
