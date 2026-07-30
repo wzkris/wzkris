@@ -11,6 +11,8 @@ import org.springframework.lang.Nullable;
  */
 public interface UserContextHelper {
 
+    String BEAN_NAME = "uch";
+
     /**
      * 当前登录用户，无登录上下文时返回 null
      */

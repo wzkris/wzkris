@@ -32,7 +32,7 @@ public class AdminInfoController {
 
     @Operation(summary = "账户信息")
     @GetMapping("/query-info")
-    @Cacheable(value = info_prefix + "#600_000", key = "@su.getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
+    @Cacheable(value = info_prefix + "#600_000", key = "@uch.getLoginUser().getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
     public Result<AdminInfoResponse> queryInfo() {
         return adminInfoApi.queryInfo();
     }
@@ -40,7 +40,7 @@ public class AdminInfoController {
     @Operation(summary = "修改基本信息")
     @OperateLog(title = "个人信息", subTitle = "修改基本信息", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update-basic")
-    @CacheEvict(value = info_prefix, key = "@su.getUid()")
+    @CacheEvict(value = info_prefix, key = "@uch.getLoginUser().getUid()")
     public Result<Void> updateBasicInfo(@RequestBody AdminInfoBasicUpdateRequest request) {
         return adminInfoApi.updateBasicInfo(request);
     }
@@ -48,7 +48,7 @@ public class AdminInfoController {
     @Operation(summary = "修改手机号")
     @OperateLog(title = "个人信息", subTitle = "修改手机号", type = OperateTypeEnum.UPDATE)
     @PostMapping("/update-phonenumber")
-    @CacheEvict(value = info_prefix, key = "@su.getUid()")
+    @CacheEvict(value = info_prefix, key = "@uch.getLoginUser().getUid()")
     public Result<Void> updatePhoneNumber(@RequestBody @Valid PhoneNumberUpdateRequest request) {
         return adminInfoApi.updatePhoneNumber(request);
     }

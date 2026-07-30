@@ -27,14 +27,14 @@ public class CustomerInfoController {
 
     @Operation(summary = "获取信息")
     @GetMapping("/query-info")
-    @Cacheable(value = info_prefix + "#3_600_000", key = "@su.getUid()", sync = true)
+    @Cacheable(value = info_prefix + "#3_600_000", key = "@uch.getLoginUser().getUid()", sync = true)
     public Result<CustomerInfoResponse> queryInfo() {
         return customerInfoApi.queryInfo();
     }
 
     @Operation(summary = "修改信息")
     @PostMapping("/update-basic")
-    @CacheEvict(value = info_prefix, key = "@su.getUid()")
+    @CacheEvict(value = info_prefix, key = "@uch.getLoginUser().getUid()")
     public Result<?> updateBasicInfo(@RequestBody CustomerInfoBasicUpdateRequest request) {
         return customerInfoApi.updateBasicInfo(request);
     }

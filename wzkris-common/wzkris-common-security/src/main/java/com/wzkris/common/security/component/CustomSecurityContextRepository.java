@@ -2,6 +2,7 @@ package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
 import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
@@ -51,7 +52,7 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
             return ctx;
         }
 
-        BaseLoginUser baseLoginUser = JsonUtil.parseObject(loginUserHeader, BaseLoginUser.class);
+        BaseLoginUser baseLoginUser = JsonUtil.parseObject(loginUserHeader, LoginUser.class);
 
         // 从角色上下文头读取权限信息（X_ROLE_CONTEXT）
         RoleContext roleContext = null;

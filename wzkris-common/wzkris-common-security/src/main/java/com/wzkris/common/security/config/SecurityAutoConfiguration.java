@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 @AutoConfiguration
 public class SecurityAutoConfiguration {
 
-    @Bean
+    @Bean(UserContextHelper.BEAN_NAME)
     @ConditionalOnMissingBean
     public UserContextHelper userContextHelper() {
         return new SecurityUserContextHelper();

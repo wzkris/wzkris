@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -23,7 +22,6 @@ import java.util.Set;
  * @create : 2024/04/22 12:22
  * @update : 2024/12/20 16:35
  */
-@Component("su")
 public final class SecurityUtil {
 
     private static final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder
