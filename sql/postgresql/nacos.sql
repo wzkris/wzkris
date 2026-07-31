@@ -1530,14 +1530,6 @@ security:
     - /*/v3/api-docs/**
     # 监控端点
     - /actuator/**', '47ea56c303d4ff6ac25ace696a3b60b0', '2023-06-19 02:28:00', '2026-07-14 19:36:52', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (3, 'wzkris-auth.yml', 'APPLICATION_GROUP', '
-# springdoc配置
-springdoc:
-  enabled: false
-
-# 打印忽略
-controller-log:
-  ignoreUrls: /qr-code/**', 'd2c993fb5b6d909cf1d1c5cbf30bf40d', '2023-06-19 02:28:00', '2026-05-09 11:19:21', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (4, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
 spring:
   # datasource:
@@ -1579,44 +1571,6 @@ spring:
       ui:
         title: 服务状态监控
 ', 'dd19c14e3cebc473140e1fc8733a339d', '2023-06-19 02:28:00', '2023-06-19 02:28:00', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (7, 'sentinel-gateway', 'APPLICATION_GROUP', '[
-    {
-        "resource": "wzkris-auth",
-        "count": 2000,
-        "grade": 1,
-        "limitApp": "default",
-        "strategy": 0,
-        "controlBehavior": 0,
-        "clusterMode": false
-    },
-	{
-        "resource": "wzkris-system",
-        "count": 1000,
-        "grade": 1,
-        "limitApp": "default",
-        "strategy": 0,
-        "controlBehavior": 0,
-        "clusterMode": false
-    },
-    {
-        "resource": "wzkris-user-center",
-        "count": 1000,
-        "grade": 1,
-        "limitApp": "default",
-        "strategy": 0,
-        "controlBehavior": 0,
-        "clusterMode": false
-    },
-    {
-        "resource": "wzkris-monitor-admin",
-        "count": 300,
-        "grade": 1,
-        "limitApp": "default",
-        "strategy": 0,
-        "controlBehavior": 0,
-        "clusterMode": false
-    }
-]', '0c01771ac42e7ee302dc5ec79947b677', '2023-06-19 02:28:00', '2026-02-25 15:08:59', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '网关限流策略', '', '', 'json', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (10, 'redis.yml', 'COMMON_GROUP', 'spring:
   redis:
     redisson:
@@ -1793,75 +1747,6 @@ mybatis-plus:
       logic-delete-value: ''true''
       logic-not-delete-value: ''false''
 ', '874d10bfc0e95bdebce974e5ef4671d4', '2023-06-19 02:28:00', '2026-07-17 14:47:25', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '公共配置', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            # 认证中心
-            - id: wzkris-auth
-              uri: lb://wzkris-auth
-              predicates:
-                - Path=/wzkris-auth-api/**
-              # 用户中心服务
-            - id: wzkris-user-center
-              uri: lb://wzkris-user-center
-              predicates:
-                - Path=/wzkris-user-center-api/**
-            # 验证码模块
-            - id: wzkris-captcha
-              uri: lb://wzkris-captcha
-              predicates:
-                - Path=/wzkris-captcha-api/**
-
-# 路由策略
-route-decision:
-  policy: OPEN
-  forceConfig: 
-    hintValue: 0.1
-  openConfig: 
-    defaultHintValue: ""
-
-# knife4j:
-#   # 聚合swagger文档
-#   gateway:
-#     enabled: true
-#     strategy: discover
-#     discover:
-#       version: openapi3
-#       enabled: true
-#     tags-sorter: order
-#     operations-sorter: order
-
-# 网关放行
-security:
-  ignores:
-    # 验证码放行
-    - /wzkris-captcha-api/captcha/**
-    - /wzkris-captcha-api/risk-pass/exchange
-    # 登录接口
-    - /wzkris-auth-api/login
-    # oauth2接口
-    - /wzkris-auth-api/oauth2/token
-    # 二维码登录
-    - /wzkris-auth-api/qr-code
-    - /wzkris-auth-api/qr-code/poll-status
-    # 回调接口
-    - /wzkris-auth-api/authorization_code_callback
-    - /wzkris-user-center-api/nacos/**
-    # swagger接口放行
-    - /doc.html
-    - /favicon.ico
-    - /webjars/**
-    - /v3/api-docs/**
-    - /*/v3/api-docs/**
-    # 监控端点
-    - /actuator/**
-  risk-captcha:
-    enabled: true
-    enforcedPaths:
-      - /wzkris-auth-api/login', 'e625916bd4ba4897561bcfa14d46ed8d', '2023-06-19 02:28:00', '2026-07-14 19:36:39', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (14, 'wzkris-auth.yml', 'APPLICATION_GROUP', '
 # springdoc配置
 springdoc:
@@ -1875,68 +1760,31 @@ springdoc:
 controller-log:
   ignoreUrls: /qr-code/**
 
-# jwt-rs256:
-#   previousPublicKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1cdDeVUgQzB22IcCAHVKij1Csn+tOWIGu2deRxSWQU1CIkrrKyB2zWJ8RX4lp8ssxspnybsuycHmvavNBE7EBVW3bEYIN2ebOFFdOxZPnCC7mBikQBtag3TfmXSO3Mcg/rN4ulqWloDX1Wv3vdAh/eCxYlDNATAAFxEoEdzEe3MapdOygRZWbj9DEfEF1bU3ObxrBV9ExFnPLAUx0CE0MDLhAF3s+qtkcFlpG1h+Q/XDxF8wp53bTqsgFslqFCsJXL8GqFTOnCTPlUybwfa8Mtos9s/djJpm9KZWndrXlDshysnd7bQqG5HGh6Y5AHIfwcUxKFdSMk7jVI472aY4CwIDAQAB-----END PUBLIC KEY-----
-#   previousPrivateKey: -----BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVx0N5VSBDMHbYhwIAdUqKPUKyf605Yga7Z15HFJZBTUIiSusrIHbNYnxFfiWnyyzGymfJuy7Jwea9q80ETsQFVbdsRgg3Z5s4UV07Fk+cILuYGKRAG1qDdN+ZdI7cxyD+s3i6WpaWgNfVa/e90CH94LFiUM0BMAAXESgR3MR7cxql07KBFlZuP0MR8QXVtTc5vGsFX0TEWc8sBTHQITQwMuEAXez6q2RwWWkbWH5D9cPEXzCnndtOqyAWyWoUKwlcvwaoVM6cJM+VTJvB9rwy2iz2z92Mmmb0plad2teUOyHKyd3ttCobkcaHpjkAch/BxTEoV1IyTuNUjjvZpjgLAgMBAAECggEBAMgCerqWTm0OduL2zYSoOGlGD5T5p5Q8hpfnimludXX7VpjHB2d+JCjcr/BEqe5nRSloTdqL6qaRZ9SlXFdfaj6jh80haKaNpMf4OAYERc+JQHp485OXBARh4KGuT8t38wLZ32ZbQvDk8wqWzV8lz+e7xbp6ZpNp2Wu7fYXYy2vC+7Zje6qYCYi+JMF6a2ujKEflLI9dDl2fkDyS7P4O2bcdbXCVV6SkaeNCNk5ZAbbRgA5wdCQE/z45cJaciTKwah+pHcN4ytcy8I5zbg410CrA9z5PWAfFxdjQ1EyuvqheDGFbnFDsZJsBP3/7P6/JU3qgep2uM6YYbY8dVpVuf6ECgYEA6xAo1O6U6gW5T7qpZ0CX3MOJVw1aFSTYoa8Rrnyq/ljLGkmNtnp9K+DDGdETAlBemfEc3sntqubIxC0/twQfErFdn0gLnS0gLBbBeYPZUmmAtIyR3dCmwlaJmok+YCTNDgz+RsbFRrS6V9WVREguEpY5NsTGltrmOLZ7WlWmsWcCgYEA6NHGg0PDuTF/MoUgL6ZnzdCtEoN+uV+NAq85C/smngbfFNR+ttFteKzLsbyJydfBFgTS2cnPXyuK/NY6Qa/lXZfxxcfmqv7mreBKc3usSqveXRRbqm6wMz6kSXWk8/2HzywRX9JPNauW13Otyl8l/myC69nAHzVbQey8sy1eab0CgYBb08o/tJxT97x22xLGlUM+KN0ENuEUFXrTXtLneShLiGB/enBz8tHnTDyrXzOv2bm7JagDmJrSAqo3iP20/1UsNkG+saRn2HMTBii60bkaKsDux2NMZfBfRvMmfaryYC4C6SyEda4nev64xWU0cYYeGLVtId36nLUHPrJdjcw6zQKBgQC74zc6DcDxPpGxGqBb9AYHoeVacIYfYY4x4Wi/U4LZux/i9o4AScj3vzNvj4D/REAN3fyvR98zpbc3zkcbZbFLs+iovWdZDfbp0X0j72WeqU79fQVw6H0IDgCVS/y/7xXfymeHFflYjc5gt3lEPT8zMS0C2yrhxLSN4lhynSV5XQKBgA2jWpc40dHIKJaIYgJp1wS4QCP21J06EdYdu3bHARPXP75nm8L6m3nh9iQRWanx1x2Fulgq3rVbX/Re0xT7zVaKaH3iaUwZmnbP+LF0/2exXw+FNlSTfA7tR0eXhYtg6CBapQs9+Wc40wYK93xsROMoGEGrwFzuBiPV7H7N9VBP-----END PRIVATE KEY-----
-#   publicKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoKs+iVwVQmQT+zXJH28M7DV69TjvRI+/+7/Thflhl2X0vAxgzNKEPlhmHAXpIt38kuWYEJCN1Qke6F8jchYp8mQEZuEMYoMZxxpeClW56/g4xZtOuyyTWtoKRX3fyfe3onKyywcLnBbSisrTiYp0tPtYe4Yg8nd3+FjPu4h1l2eEeeny4J7qagPb1WqVRVD+wjJLK49uMx36GMxTQ0f4RpNhJ7m5rUMlDjuL8Qohh3fXSCOOOZZh59hR/MC2AXgyKu8Uei6uWZjEp64VR/mwxnvh+WzQpm6GsCPB0ElwdtmNzrI/bWmugM3yL7//muAk6u3M5eZRrFCBeZ5aSEp6qQIDAQAB-----END PUBLIC KEY-----
-#   privateKey: -----BEGIN PRIVATE KEY-----MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCgqz6JXBVCZBP7NckfbwzsNXr1OO9Ej7/7v9OF+WGXZfS8DGDM0oQ+WGYcBeki3fyS5ZgQkI3VCR7oXyNyFinyZARm4QxigxnHGl4KVbnr+DjFm067LJNa2gpFfd/J97eicrLLBwucFtKKytOJinS0+1h7hiDyd3f4WM+7iHWXZ4R56fLgnupqA9vVapVFUP7CMksrj24zHfoYzFNDR/hGk2EnubmtQyUOO4vxCiGHd9dII445lmHn2FH8wLYBeDIq7xR6Lq5ZmMSnrhVH+bDGe+H5bNCmboawI8HQSXB22Y3Osj9taa6AzfIvv/+a4CTq7czl5lGsUIF5nlpISnqpAgMBAAECggEAEudzKThDbBdYXoNaka9ARv6X5Ah55og/X4CXg7ju6aBeZk3SiebvFmLSSNPNNYQG9sW62aAYgAtdrpubEQ5YiyOHfQ9XpLOmMc4BaJfjk0cWbvGyFsXM5LCo6ro/vYS+/4cdUFQY4pmw1hG9R/6Zcr3sEESc1cqGvBq+/mK060Zb2XAnCoOB9hZv/9DDxqu2RzX6KxLFLigWjXau2cQkHijW/+rgkKbNcT14Cccf2v9sRKjfDBm8hND3eRYpQqVx4JEfJSE8gvKNMzbN5jMKujLLLi3Zqc8gzhCgHnstPBF4Jceev2+WuXxmvvkQB+vyqNee+f0gbrc+B0n4CBo+fQKBgQDexshyCv27eRaF2dCBw8S+wceHCaaWaD70FwhfbEx63ESQ/tY/x9yknP2cIBDFBNyjLoi2gxUv2CmwyO3uMt1/ZsSWV3Zy6h9ON1ygwk/Ri8U1hhtj+2o5aQYCxYVihp7gRj2djqnGWbmnnCFAONSbbBZ+EMd+Y9qfyWgLqMs6WwKBgQC4oU2CeOs8O/o/XZ014tbAQNC1bGku4HEcMu0CdzxdgDAINU8oo8lMv+TjD0AnjZ6DvhHWt8X/R/jakbCj28tRZGtOr3jd1ydjltzJ+iD13QH9hiyclgIwntCEvZFNV0osvpyFN5zxUC0EYX7XyPazqmOlwuP7bR+SZAUP1zrGSwKBgCcZ/u69bSGttD1UKNvN78eHnazfDcVSkNIpBMgy6w2ZgdNtV0+kld6yy3TO0AK0wsFFlqtqQJrANzkXW2O2u9fzwsecnGa5HzuMTg7NbFMcVEX7vu0CoPdorqxn3OyZMmOtEH2KH9R3xTVdGxz5nJ+XDi+cZFeT0TjAkimRu/IHAoGBAI1CbKkslt5JDVg56bR2z9PcQ1LrlTZWZnQqyoeebsMi9pzxHJV9auCb2SWYX39jrSoi3Ecp6AU/LbkcysczvUWSzT8wpgslOG/L1zV5eIpkA8fTRoKvixFkESneWDOSW6AMXnjWae9/ZlH5vjCfA5HHBeKnUALoJMW+XNkX1VItAoGABaTfRtjO4/uKqYQ1/Y5XVhloiz7Hy80SZrXpxBYYsIEMAjqnbrfYHb9pUToICbEYHorX/rE8rwElbUFw4Gw0/jseS6+WAx5xs7/pF9eirk7LscbTPAmqfTqdwRswNvflioAn8DnDZArSxWOOo1VR/Bz245YcggRlRNFYoLGpFFk=-----END PRIVATE KEY-----', '8053b2d35f3bb8ec38efc185134fd7a7', '2023-06-19 02:28:00', '2026-05-09 11:14:54', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (15, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
-spring:
-  # datasource:
-  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
-  datasource:
-    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
-    username: root
-    password: root
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 30000 
-      maximum-pool-size: 10       
-      minimum-idle: 5             
-      idle-timeout: 600000        
-      pool-name: hikari-pool
-
+jwt-rs256:
+  previousPublicKey: 
+  previousPrivateKey: 
+  publicKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1cdDeVUgQzB22IcCAHVKij1Csn+tOWIGu2deRxSWQU1CIkrrKyB2zWJ8RX4lp8ssxspnybsuycHmvavNBE7EBVW3bEYIN2ebOFFdOxZPnCC7mBikQBtag3TfmXSO3Mcg/rN4ulqWloDX1Wv3vdAh/eCxYlDNATAAFxEoEdzEe3MapdOygRZWbj9DEfEF1bU3ObxrBV9ExFnPLAUx0CE0MDLhAF3s+qtkcFlpG1h+Q/XDxF8wp53bTqsgFslqFCsJXL8GqFTOnCTPlUybwfa8Mtos9s/djJpm9KZWndrXlDshysnd7bQqG5HGh6Y5AHIfwcUxKFdSMk7jVI472aY4CwIDAQAB-----END PUBLIC KEY-----
+  privateKey: -----BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVx0N5VSBDMHbYhwIAdUqKPUKyf605Yga7Z15HFJZBTUIiSusrIHbNYnxFfiWnyyzGymfJuy7Jwea9q80ETsQFVbdsRgg3Z5s4UV07Fk+cILuYGKRAG1qDdN+ZdI7cxyD+s3i6WpaWgNfVa/e90CH94LFiUM0BMAAXESgR3MR7cxql07KBFlZuP0MR8QXVtTc5vGsFX0TEWc8sBTHQITQwMuEAXez6q2RwWWkbWH5D9cPEXzCnndtOqyAWyWoUKwlcvwaoVM6cJM+VTJvB9rwy2iz2z92Mmmb0plad2teUOyHKyd3ttCobkcaHpjkAch/BxTEoV1IyTuNUjjvZpjgLAgMBAAECggEBAMgCerqWTm0OduL2zYSoOGlGD5T5p5Q8hpfnimludXX7VpjHB2d+JCjcr/BEqe5nRSloTdqL6qaRZ9SlXFdfaj6jh80haKaNpMf4OAYERc+JQHp485OXBARh4KGuT8t38wLZ32ZbQvDk8wqWzV8lz+e7xbp6ZpNp2Wu7fYXYy2vC+7Zje6qYCYi+JMF6a2ujKEflLI9dDl2fkDyS7P4O2bcdbXCVV6SkaeNCNk5ZAbbRgA5wdCQE/z45cJaciTKwah+pHcN4ytcy8I5zbg410CrA9z5PWAfFxdjQ1EyuvqheDGFbnFDsZJsBP3/7P6/JU3qgep2uM6YYbY8dVpVuf6ECgYEA6xAo1O6U6gW5T7qpZ0CX3MOJVw1aFSTYoa8Rrnyq/ljLGkmNtnp9K+DDGdETAlBemfEc3sntqubIxC0/twQfErFdn0gLnS0gLBbBeYPZUmmAtIyR3dCmwlaJmok+YCTNDgz+RsbFRrS6V9WVREguEpY5NsTGltrmOLZ7WlWmsWcCgYEA6NHGg0PDuTF/MoUgL6ZnzdCtEoN+uV+NAq85C/smngbfFNR+ttFteKzLsbyJydfBFgTS2cnPXyuK/NY6Qa/lXZfxxcfmqv7mreBKc3usSqveXRRbqm6wMz6kSXWk8/2HzywRX9JPNauW13Otyl8l/myC69nAHzVbQey8sy1eab0CgYBb08o/tJxT97x22xLGlUM+KN0ENuEUFXrTXtLneShLiGB/enBz8tHnTDyrXzOv2bm7JagDmJrSAqo3iP20/1UsNkG+saRn2HMTBii60bkaKsDux2NMZfBfRvMmfaryYC4C6SyEda4nev64xWU0cYYeGLVtId36nLUHPrJdjcw6zQKBgQC74zc6DcDxPpGxGqBb9AYHoeVacIYfYY4x4Wi/U4LZux/i9o4AScj3vzNvj4D/REAN3fyvR98zpbc3zkcbZbFLs+iovWdZDfbp0X0j72WeqU79fQVw6H0IDgCVS/y/7xXfymeHFflYjc5gt3lEPT8zMS0C2yrhxLSN4lhynSV5XQKBgA2jWpc40dHIKJaIYgJp1wS4QCP21J06EdYdu3bHARPXP75nm8L6m3nh9iQRWanx1x2Fulgq3rVbX/Re0xT7zVaKaH3iaUwZmnbP+LF0/2exXw+FNlSTfA7tR0eXhYtg6CBapQs9+Wc40wYK93xsROMoGEGrwFzuBiPV7H7N9VBP-----END PRIVATE KEY-----
+', '3578fad72ecdc89e0da921303fafbbab', '2023-06-19 02:28:00', '2026-07-31 16:04:03.408637', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (3, 'wzkris-auth.yml', 'APPLICATION_GROUP', '
 # springdoc配置
 springdoc:
-  title: 用户中心接口文档
-  license: Powered By wzkris
-  version: v1.0.0
-  description: ---
+  enabled: false
 
-# 租户配置
-tenant:
-  includes:
-    - member_info
-    - post_info
-    - tenant_info
-    - tenant_wallet_info
-    - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', '16541a57c9198d882920bb1d2f140c7b', '2024-04-16 06:36:22', '2026-07-14 18:13:58', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (16, 'wzkris-monitor-admin.yml', 'APPLICATION_GROUP', '# spring
-spring:
-  security:
-    user:
-      name: admin
-      password: admin123
-  boot:
-    admin:
-      ui:
-        title: 服务状态监控
-', 'dd19c14e3cebc473140e1fc8733a339d', '2023-06-19 02:28:00', '2025-09-29 11:55:07', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (18, 'sentinel-gateway', 'APPLICATION_GROUP', '[
+# 打印忽略
+controller-log:
+  ignoreUrls: /qr-code/**
+
+jwt-rs256:
+  previousPublicKey: 
+  previousPrivateKey: 
+  publicKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1cdDeVUgQzB22IcCAHVKij1Csn+tOWIGu2deRxSWQU1CIkrrKyB2zWJ8RX4lp8ssxspnybsuycHmvavNBE7EBVW3bEYIN2ebOFFdOxZPnCC7mBikQBtag3TfmXSO3Mcg/rN4ulqWloDX1Wv3vdAh/eCxYlDNATAAFxEoEdzEe3MapdOygRZWbj9DEfEF1bU3ObxrBV9ExFnPLAUx0CE0MDLhAF3s+qtkcFlpG1h+Q/XDxF8wp53bTqsgFslqFCsJXL8GqFTOnCTPlUybwfa8Mtos9s/djJpm9KZWndrXlDshysnd7bQqG5HGh6Y5AHIfwcUxKFdSMk7jVI472aY4CwIDAQAB-----END PUBLIC KEY-----
+  privateKey: -----BEGIN PRIVATE KEY-----MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDVx0N5VSBDMHbYhwIAdUqKPUKyf605Yga7Z15HFJZBTUIiSusrIHbNYnxFfiWnyyzGymfJuy7Jwea9q80ETsQFVbdsRgg3Z5s4UV07Fk+cILuYGKRAG1qDdN+ZdI7cxyD+s3i6WpaWgNfVa/e90CH94LFiUM0BMAAXESgR3MR7cxql07KBFlZuP0MR8QXVtTc5vGsFX0TEWc8sBTHQITQwMuEAXez6q2RwWWkbWH5D9cPEXzCnndtOqyAWyWoUKwlcvwaoVM6cJM+VTJvB9rwy2iz2z92Mmmb0plad2teUOyHKyd3ttCobkcaHpjkAch/BxTEoV1IyTuNUjjvZpjgLAgMBAAECggEBAMgCerqWTm0OduL2zYSoOGlGD5T5p5Q8hpfnimludXX7VpjHB2d+JCjcr/BEqe5nRSloTdqL6qaRZ9SlXFdfaj6jh80haKaNpMf4OAYERc+JQHp485OXBARh4KGuT8t38wLZ32ZbQvDk8wqWzV8lz+e7xbp6ZpNp2Wu7fYXYy2vC+7Zje6qYCYi+JMF6a2ujKEflLI9dDl2fkDyS7P4O2bcdbXCVV6SkaeNCNk5ZAbbRgA5wdCQE/z45cJaciTKwah+pHcN4ytcy8I5zbg410CrA9z5PWAfFxdjQ1EyuvqheDGFbnFDsZJsBP3/7P6/JU3qgep2uM6YYbY8dVpVuf6ECgYEA6xAo1O6U6gW5T7qpZ0CX3MOJVw1aFSTYoa8Rrnyq/ljLGkmNtnp9K+DDGdETAlBemfEc3sntqubIxC0/twQfErFdn0gLnS0gLBbBeYPZUmmAtIyR3dCmwlaJmok+YCTNDgz+RsbFRrS6V9WVREguEpY5NsTGltrmOLZ7WlWmsWcCgYEA6NHGg0PDuTF/MoUgL6ZnzdCtEoN+uV+NAq85C/smngbfFNR+ttFteKzLsbyJydfBFgTS2cnPXyuK/NY6Qa/lXZfxxcfmqv7mreBKc3usSqveXRRbqm6wMz6kSXWk8/2HzywRX9JPNauW13Otyl8l/myC69nAHzVbQey8sy1eab0CgYBb08o/tJxT97x22xLGlUM+KN0ENuEUFXrTXtLneShLiGB/enBz8tHnTDyrXzOv2bm7JagDmJrSAqo3iP20/1UsNkG+saRn2HMTBii60bkaKsDux2NMZfBfRvMmfaryYC4C6SyEda4nev64xWU0cYYeGLVtId36nLUHPrJdjcw6zQKBgQC74zc6DcDxPpGxGqBb9AYHoeVacIYfYY4x4Wi/U4LZux/i9o4AScj3vzNvj4D/REAN3fyvR98zpbc3zkcbZbFLs+iovWdZDfbp0X0j72WeqU79fQVw6H0IDgCVS/y/7xXfymeHFflYjc5gt3lEPT8zMS0C2yrhxLSN4lhynSV5XQKBgA2jWpc40dHIKJaIYgJp1wS4QCP21J06EdYdu3bHARPXP75nm8L6m3nh9iQRWanx1x2Fulgq3rVbX/Re0xT7zVaKaH3iaUwZmnbP+LF0/2exXw+FNlSTfA7tR0eXhYtg6CBapQs9+Wc40wYK93xsROMoGEGrwFzuBiPV7H7N9VBP-----END PRIVATE KEY-----
+', 'e39123674820d34d196f74e8cf65fee2', '2023-06-19 02:28:00', '2026-07-31 16:12:49.374121', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (7, 'sentinel-gateway', 'APPLICATION_GROUP', '[
     {
         "resource": "wzkris-auth",
         "count": 2000,
-        "grade": 1,
-        "limitApp": "default",
-        "strategy": 0,
-        "controlBehavior": 0,
-        "clusterMode": false
-    },
-	{
-        "resource": "wzkris-system",
-        "count": 1000,
         "grade": 1,
         "limitApp": "default",
         "strategy": 0,
@@ -1961,7 +1809,18 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
         "controlBehavior": 0,
         "clusterMode": false
     }
-]', '0c01771ac42e7ee302dc5ec79947b677', '2023-06-19 02:28:00', '2026-02-25 15:08:46', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '网关限流策略', '', '', 'json', '', '');
+]', 'f83470a74550f4705cc975aaa2bcd7c4', '2023-06-19 02:28:00', '2026-07-31 16:16:52.562724', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '网关限流策略', NULL, NULL, 'json', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (16, 'wzkris-monitor-admin.yml', 'APPLICATION_GROUP', '# spring
+spring:
+  security:
+    user:
+      name: admin
+      password: admin123
+  boot:
+    admin:
+      ui:
+        title: 服务状态监控
+', 'dd19c14e3cebc473140e1fc8733a339d', '2023-06-19 02:28:00', '2025-09-29 11:55:07', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (21, 'redis.yml', 'COMMON_GROUP', 'spring:
   redis:
     redisson:
@@ -2030,6 +1889,138 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
 ', '33047a58e1d443074cbc95257bdb4216', '2025-08-04 15:12:22', '2026-01-15 16:44:10', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', 'redis公共配置', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (22, 'wzkris-captcha.yml', 'APPLICATION_GROUP', 'risk-captcha:
   passTtlSeconds: 180', 'a0887872d4f7f6d5aef5923322591441', '2026-05-21 11:25:06', '2026-05-21 11:27:38', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            # 认证中心
+            - id: wzkris-auth
+              uri: lb://wzkris-auth
+              predicates:
+                - Path=/wzkris-auth-api/**
+              # 用户中心服务
+            - id: wzkris-user-center
+              uri: lb://wzkris-user-center
+              predicates:
+                - Path=/wzkris-user-center-api/**
+            # 验证码模块
+            - id: wzkris-captcha
+              uri: lb://wzkris-captcha
+              predicates:
+                - Path=/wzkris-captcha-api/**
+
+# 路由策略
+route-decision:
+  policy: OPEN
+  forceConfig: 
+    hintValue: 0.1
+  openConfig: 
+    defaultHintValue: ""
+
+knife4j:
+  # 聚合swagger文档
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      version: openapi3
+      enabled: true
+    tags-sorter: order
+    operations-sorter: order
+
+# 网关放行
+security:
+  ignores:
+    # 验证码放行
+    - /wzkris-captcha-api/captcha/**
+    - /wzkris-captcha-api/risk-pass/exchange
+    # 登录接口
+    - /wzkris-auth-api/login
+    # oauth2接口
+    - /wzkris-auth-api/oauth2/token
+    # 二维码登录
+    - /wzkris-auth-api/qr-code
+    - /wzkris-auth-api/qr-code/poll-status
+    # 回调接口
+    - /wzkris-auth-api/authorization_code_callback
+    - /wzkris-user-center-api/nacos/**
+    # swagger接口放行
+    - /doc.html
+    - /favicon.ico
+    - /webjars/**
+    - /v3/api-docs/**
+    - /*/v3/api-docs/**
+    # 监控端点
+    - /actuator/**
+  risk-captcha:
+    enabled: true
+    enforcedPaths:
+      - /wzkris-auth-api/login', '98cd7d6b72737f6c9e401f424e41d9a4', '2023-06-19 02:28:00', '2026-07-31 13:41:03.686295', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (18, 'sentinel-gateway', 'APPLICATION_GROUP', '[
+    {
+        "resource": "wzkris-auth",
+        "count": 2000,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0,
+        "clusterMode": false
+    },
+    {
+        "resource": "wzkris-user-center",
+        "count": 1000,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0,
+        "clusterMode": false
+    },
+    {
+        "resource": "wzkris-monitor-admin",
+        "count": 300,
+        "grade": 1,
+        "limitApp": "default",
+        "strategy": 0,
+        "controlBehavior": 0,
+        "clusterMode": false
+    }
+]', 'f83470a74550f4705cc975aaa2bcd7c4', '2023-06-19 02:28:00', '2026-07-31 16:17:02.693587', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '网关限流策略', NULL, NULL, 'json', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (15, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
+spring:
+  # datasource:
+  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000 
+      maximum-pool-size: 10       
+      minimum-idle: 5             
+      idle-timeout: 600000        
+      pool-name: hikari-pool
+
+# springdoc配置
+springdoc:
+  enabled: true
+  title: 用户中心接口文档
+  license: Powered By wzkris
+  version: v1.0.0
+  description: ---
+
+# 租户配置
+tenant:
+  includes:
+    - member_info
+    - post_info
+    - tenant_info
+    - tenant_wallet_info
+    - tenant_wallet_record
+    - tenant_wallet_withdrawal_record', '568a61f408164cdb93f81f501db76c33', '2024-04-16 06:36:22', '2026-07-31 13:56:41.493352', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 
 
 --
@@ -2151,7 +2142,7 @@ SELECT pg_catalog.setval('nacos.group_capacity_id_seq', 1, false);
 -- Name: his_config_info_nid_seq; Type: SEQUENCE SET; Schema: nacos; Owner: root
 --
 
-SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 1, false);
+SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 10, true);
 
 
 --
