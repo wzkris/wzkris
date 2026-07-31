@@ -20,11 +20,6 @@ import java.util.List;
 public class PermitUrlProperties {
 
     /**
-     * 白名单路径
-     */
-    private List<String> ignores = new ArrayList<>();
-
-    /**
      * 黑名单路径
      */
     private List<String> denys = new ArrayList<>();

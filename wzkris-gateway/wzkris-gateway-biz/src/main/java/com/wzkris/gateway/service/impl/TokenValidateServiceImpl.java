@@ -55,11 +55,11 @@ public class TokenValidateServiceImpl implements TokenValidateService {
      */
     public Authentication loadAuthenticationByRequest(HttpServletRequest request) {
         String token = extractToken(request);
+
         Jwt jwt;
         try {
             jwt = jwtDecoder.decode(token);
         } catch (JwtException e) {
-            log.info("url: {}, JWT validation failed: {}", request.getRequestURI(), e.getMessage());
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 

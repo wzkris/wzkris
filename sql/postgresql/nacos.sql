@@ -1472,64 +1472,6 @@ mybatis-plus:
       logic-delete-field: deleted
       logic-delete-value: ''true''
       logic-not-delete-value: ''false''', '01186ebcb5e117d89d2ac71d4c902aa6', '2023-06-19 02:28:00', '2026-07-14 19:30:31', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '公共配置', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (2, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            # 认证中心
-            - id: wzkris-auth
-              uri: lb://wzkris-auth
-              predicates:
-                - Path=/wzkris-auth-api/**
-              # 用户中心服务
-            - id: wzkris-user-center
-              uri: lb://wzkris-user-center
-              predicates:
-                - Path=/wzkris-user-center-api/**
-            # 验证码模块
-            - id: wzkris-captcha
-              uri: lb://wzkris-captcha
-              predicates:
-                - Path=/wzkris-captcha-api/**
-
-# 路由策略
-route-decision:
-  policy: OPEN
-  forceConfig: 
-    hintValue: 0.1
-  openConfig: 
-    defaultHintValue: ""
-
-knife4j:
-  # 聚合swagger文档
-  gateway:
-    enabled: false
-
-# 网关放行
-security:
-  ignores:
-    # 验证码放行
-    - /wzkris-captcha-api/captcha/**
-    # 登录接口
-    - /wzkris-auth-api/login
-    # oauth2接口
-    - /wzkris-auth-api/oauth2/token
-    # 二维码登录
-    - /wzkris-auth-api/qr-code
-    - /wzkris-auth-api/qr-code/poll-status
-    # 回调接口
-    - /wzkris-auth-api/authorization_code_callback
-    - /wzkris-user-center-api/nacos/**
-    # swagger接口放行
-    - /doc.html
-    - /favicon.ico
-    - /webjars/**
-    - /v3/api-docs/**
-    - /*/v3/api-docs/**
-    # 监控端点
-    - /actuator/**', '47ea56c303d4ff6ac25ace696a3b60b0', '2023-06-19 02:28:00', '2026-07-14 19:36:52', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (4, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
 spring:
   # datasource:
@@ -1747,6 +1689,46 @@ mybatis-plus:
       logic-delete-value: ''true''
       logic-not-delete-value: ''false''
 ', '874d10bfc0e95bdebce974e5ef4671d4', '2023-06-19 02:28:00', '2026-07-17 14:47:25', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '公共配置', '', '', 'yaml', '', '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (2, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            # 认证中心
+            - id: wzkris-auth
+              uri: lb://wzkris-auth
+              predicates:
+                - Path=/wzkris-auth-api/**
+              # 用户中心服务
+            - id: wzkris-user-center
+              uri: lb://wzkris-user-center
+              predicates:
+                - Path=/wzkris-user-center-api/**
+            # 验证码模块
+            - id: wzkris-captcha
+              uri: lb://wzkris-captcha
+              predicates:
+                - Path=/wzkris-captcha-api/**
+
+# 路由策略
+route-decision:
+  policy: OPEN
+  forceConfig: 
+    hintValue: 0.1
+  openConfig: 
+    defaultHintValue: ""
+
+knife4j:
+  # 聚合swagger文档
+  gateway:
+    enabled: false
+
+security:
+  risk-captcha:
+    enabled: true
+    enforcedPaths:
+      - /wzkris-auth-api/login', '5715d84ce8f69bb8a11ccd05ebdcb66c', '2023-06-19 02:28:00', '2026-07-31 18:20:14.410662', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (14, 'wzkris-auth.yml', 'APPLICATION_GROUP', '
 # springdoc配置
 springdoc:
@@ -1889,75 +1871,6 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
 ', '33047a58e1d443074cbc95257bdb4216', '2025-08-04 15:12:22', '2026-01-15 16:44:10', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', 'redis公共配置', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (22, 'wzkris-captcha.yml', 'APPLICATION_GROUP', 'risk-captcha:
   passTtlSeconds: 180', 'a0887872d4f7f6d5aef5923322591441', '2026-05-21 11:25:06', '2026-05-21 11:27:38', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            # 认证中心
-            - id: wzkris-auth
-              uri: lb://wzkris-auth
-              predicates:
-                - Path=/wzkris-auth-api/**
-              # 用户中心服务
-            - id: wzkris-user-center
-              uri: lb://wzkris-user-center
-              predicates:
-                - Path=/wzkris-user-center-api/**
-            # 验证码模块
-            - id: wzkris-captcha
-              uri: lb://wzkris-captcha
-              predicates:
-                - Path=/wzkris-captcha-api/**
-
-# 路由策略
-route-decision:
-  policy: OPEN
-  forceConfig: 
-    hintValue: 0.1
-  openConfig: 
-    defaultHintValue: ""
-
-knife4j:
-  # 聚合swagger文档
-  gateway:
-    enabled: true
-    strategy: discover
-    discover:
-      version: openapi3
-      enabled: true
-    tags-sorter: order
-    operations-sorter: order
-
-# 网关放行
-security:
-  ignores:
-    # 验证码放行
-    - /wzkris-captcha-api/captcha/**
-    - /wzkris-captcha-api/risk-pass/exchange
-    # 登录接口
-    - /wzkris-auth-api/login
-    # oauth2接口
-    - /wzkris-auth-api/oauth2/token
-    # 二维码登录
-    - /wzkris-auth-api/qr-code
-    - /wzkris-auth-api/qr-code/poll-status
-    # 回调接口
-    - /wzkris-auth-api/authorization_code_callback
-    - /wzkris-user-center-api/nacos/**
-    # swagger接口放行
-    - /doc.html
-    - /favicon.ico
-    - /webjars/**
-    - /v3/api-docs/**
-    - /*/v3/api-docs/**
-    # 监控端点
-    - /actuator/**
-  risk-captcha:
-    enabled: true
-    enforcedPaths:
-      - /wzkris-auth-api/login', '98cd7d6b72737f6c9e401f424e41d9a4', '2023-06-19 02:28:00', '2026-07-31 13:41:03.686295', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (18, 'sentinel-gateway', 'APPLICATION_GROUP', '[
     {
         "resource": "wzkris-auth",
@@ -2021,6 +1934,52 @@ tenant:
     - tenant_wallet_info
     - tenant_wallet_record
     - tenant_wallet_withdrawal_record', '568a61f408164cdb93f81f501db76c33', '2024-04-16 06:36:22', '2026-07-31 13:56:41.493352', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            # 认证中心
+            - id: wzkris-auth
+              uri: lb://wzkris-auth
+              predicates:
+                - Path=/wzkris-auth-api/**
+              # 用户中心服务
+            - id: wzkris-user-center
+              uri: lb://wzkris-user-center
+              predicates:
+                - Path=/wzkris-user-center-api/**
+            # 验证码模块
+            - id: wzkris-captcha
+              uri: lb://wzkris-captcha
+              predicates:
+                - Path=/wzkris-captcha-api/**
+
+# 路由策略
+route-decision:
+  policy: OPEN
+  forceConfig: 
+    hintValue: 0.1
+  openConfig: 
+    defaultHintValue: ""
+
+knife4j:
+  # 聚合swagger文档
+  gateway:
+    enabled: true
+    strategy: discover
+    discover:
+      version: openapi3
+      enabled: true
+    tags-sorter: order
+    operations-sorter: order
+
+security:
+  risk-captcha:
+    enabled: true
+    enforcedPaths:
+      - /wzkris-auth-api/login', '4a9b510cb08bb09971110bc3d1d9e4da', '2023-06-19 02:28:00', '2026-07-31 18:19:59.870425', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 
 
 --
@@ -2142,7 +2101,7 @@ SELECT pg_catalog.setval('nacos.group_capacity_id_seq', 1, false);
 -- Name: his_config_info_nid_seq; Type: SEQUENCE SET; Schema: nacos; Owner: root
 --
 
-SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 10, true);
+SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 15, true);
 
 
 --
