@@ -45,7 +45,7 @@ public class ControllerLogAspect {
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
-    @Pointcut("bean(*Controller)")
+    @Pointcut("within(com.wzkris..*) && bean(*Controller)")
     public void pointCut() {
     }
 

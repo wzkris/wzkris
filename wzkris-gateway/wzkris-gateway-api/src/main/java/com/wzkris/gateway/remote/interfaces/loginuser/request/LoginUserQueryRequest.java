@@ -1,4 +1,4 @@
-package com.wzkris.gateway.remote.api.loginuser.request;
+package com.wzkris.gateway.remote.interfaces.loginuser.request;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.AllArgsConstructor;

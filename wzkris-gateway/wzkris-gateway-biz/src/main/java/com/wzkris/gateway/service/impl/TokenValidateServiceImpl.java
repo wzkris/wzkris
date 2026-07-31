@@ -2,19 +2,19 @@ package com.wzkris.gateway.service.impl;
 
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
-import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
-import com.wzkris.gateway.remote.api.loginuser.ILoginUserRemote;
-import com.wzkris.gateway.remote.api.loginuser.request.LoginUserQueryRequest;
-import com.wzkris.gateway.remote.api.loginuser.request.OAuth2TokenQueryRequest;
-import com.wzkris.gateway.remote.api.loginuser.response.LoginUserResponse;
+import com.wzkris.gateway.remote.interfaces.loginuser.ILoginUserRemote;
+import com.wzkris.gateway.remote.interfaces.loginuser.request.LoginUserQueryRequest;
+import com.wzkris.gateway.remote.interfaces.loginuser.request.OAuth2TokenQueryRequest;
+import com.wzkris.gateway.remote.interfaces.loginuser.response.LoginUserResponse;
 import com.wzkris.gateway.service.TokenValidateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +59,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         try {
             jwt = jwtDecoder.decode(token);
         } catch (JwtException e) {
-            log.info("JWT validation failed: {}", e.getMessage());
+            log.info("url: {}, JWT validation failed: {}", request.getRequestURI(), e.getMessage());
             return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
         }
 
