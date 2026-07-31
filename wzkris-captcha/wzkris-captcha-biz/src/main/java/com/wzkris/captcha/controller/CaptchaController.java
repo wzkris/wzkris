@@ -1,8 +1,8 @@
 package com.wzkris.captcha.controller;
 
-import com.wzkris.captcha.api.CaptchaApi;
-import com.wzkris.captcha.request.CaptchaDispatchRequest;
-import com.wzkris.captcha.response.CaptchaDispatchResponse;
+import com.wzkris.captcha.api.captcha.CaptchaApi;
+import com.wzkris.captcha.api.captcha.request.CaptchaDispatchRequest;
+import com.wzkris.captcha.api.captcha.response.CaptchaDispatchResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

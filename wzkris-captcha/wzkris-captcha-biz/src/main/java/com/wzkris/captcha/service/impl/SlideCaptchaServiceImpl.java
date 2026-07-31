@@ -1,10 +1,11 @@
 package com.wzkris.captcha.service.impl;
 
+import com.wzkris.captcha.api.captcha.response.SlideCaptchaDataResponse;
 import com.wzkris.captcha.domain.SlideCaptchaInfo;
 import com.wzkris.captcha.properties.SlideCaptchaProperties;
-import com.wzkris.captcha.response.SlideCaptchaDataResponse;
 import com.wzkris.captcha.service.SlideCaptchaService;
 import com.wzkris.captcha.store.SlideCaptchaStore;
+import com.wzkris.captcha.utils.CaptchaVerificationTokens;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomUtils;
 

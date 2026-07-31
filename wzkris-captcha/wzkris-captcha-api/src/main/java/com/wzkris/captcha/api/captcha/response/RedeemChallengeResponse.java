@@ -1,4 +1,4 @@
-package com.wzkris.captcha.response;
+package com.wzkris.captcha.api.captcha.response;
 
 import java.time.OffsetDateTime;
 

@@ -1,4 +1,4 @@
-package com.wzkris.captcha.request;
+package com.wzkris.captcha.api.riskpass.request;
 
 import com.wzkris.captcha.enums.CaptchaTypeEnum;
 import jakarta.validation.constraints.NotBlank;

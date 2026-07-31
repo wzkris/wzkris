@@ -4,7 +4,7 @@ import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
 
 import java.time.OffsetDateTime;
 
-public interface ChallengeeCaptchaStore {
+public interface ChallengeCaptchaStore {
 
     void putChallenge(String token, ChallengeCaptchaInfo challengeCaptchaInfo);
 

@@ -1,12 +1,12 @@
-package com.wzkris.captcha.impl;
+package com.wzkris.captcha.impl.captcha;
 
-import com.wzkris.captcha.api.CaptchaApi;
+import com.wzkris.captcha.api.captcha.CaptchaApi;
+import com.wzkris.captcha.api.captcha.request.CaptchaDispatchRequest;
+import com.wzkris.captcha.api.captcha.request.CaptchaImageRequest;
+import com.wzkris.captcha.api.captcha.request.CaptchaSlideRequest;
+import com.wzkris.captcha.api.captcha.request.RedeemChallengeRequest;
+import com.wzkris.captcha.api.captcha.response.CaptchaDispatchResponse;
 import com.wzkris.captcha.enums.CaptchaTypeEnum;
-import com.wzkris.captcha.request.CaptchaDispatchRequest;
-import com.wzkris.captcha.request.CaptchaImageRequest;
-import com.wzkris.captcha.request.CaptchaSlideRequest;
-import com.wzkris.captcha.request.RedeemChallengeRequest;
-import com.wzkris.captcha.response.CaptchaDispatchResponse;
 import com.wzkris.captcha.service.ChallengeService;
 import com.wzkris.captcha.service.ImageCaptchaService;
 import com.wzkris.captcha.service.SlideCaptchaService;

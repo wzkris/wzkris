@@ -40,23 +40,12 @@
 
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-remote</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-swagger</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-captcha-api</artifactId>
-            <version>${revision}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-auth-api</artifactId>
             <version>${revision}</version>
         </dependency>
 

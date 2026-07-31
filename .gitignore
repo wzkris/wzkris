@@ -30,6 +30,8 @@ target/
 ### vscode ###
 .vscode
 
+.trae
+
 ### JRebel ###
 rebel.xml
 ### NetBeans ###

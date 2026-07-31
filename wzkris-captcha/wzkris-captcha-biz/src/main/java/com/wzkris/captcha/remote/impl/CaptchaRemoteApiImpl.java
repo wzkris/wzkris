@@ -1,47 +1,33 @@
-package com.wzkris.captcha.remote.controller.common;
+package com.wzkris.captcha.remote.impl;
 
-import com.wzkris.captcha.request.CaptchaCheckRequest;
+import com.wzkris.captcha.remote.api.CaptchaRemoteApi;
+import com.wzkris.captcha.remote.api.request.CaptchaCheckRequest;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
-import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.Arrays;
 
-@Hidden
-@Validated
-@RestController
-@RequestMapping("/captcha-remote")
+@Component
 @RequiredArgsConstructor
-public class CaptchaRemoteController {
+public class CaptchaRemoteApiImpl implements CaptchaRemoteApi {
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    @PostMapping("/check")
-    public Result<Boolean> check(@RequestBody CaptchaCheckRequest request) {
-        String key = request.getKey();
-        String expected = request.getValue();
-
-        if (StringUtil.isBlank(key) || StringUtil.isBlank(expected)) {
-            return Result.ok(false);
-        }
-
+    @Override
+    public Result<Boolean> check(CaptchaCheckRequest request) {
         // 通用失败次数限制：避免对同一 key 暴力猜解
         // 说明：不改变现有接口形态；通过 key 派生 fail/lock key 实现增强。
-        final String lockKey = "captcha:lock:" + key;
-        final String failKey = "captcha:fail:" + key;
+        final String lockKey = "captcha:lock:" + request.getKey();
+        final String failKey = "captcha:fail:" + request.getKey();
         if (stringRedisTemplate.hasKey(lockKey)) {
             return Result.ok(false);
         }
 
-        String value = stringRedisTemplate.opsForValue().get(key);
+        String value = stringRedisTemplate.opsForValue().get(request.getKey());
         boolean equals = StringUtil.equals(request.getValue(), value);
         if (equals) {
             stringRedisTemplate.delete(Arrays.asList(lockKey, failKey));
@@ -61,6 +47,3 @@ public class CaptchaRemoteController {
     }
 
 }
-
-
-

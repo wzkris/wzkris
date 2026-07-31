@@ -1,7 +1,7 @@
-package com.wzkris.captcha.remote.auth;
+package com.wzkris.captcha.remote.interfaces.jwt;
 
-import com.wzkris.auth.remote.api.jwt.request.ServiceJwtIssueRequest;
-import com.wzkris.auth.remote.api.jwt.response.ServiceJwtIssueResponse;
+import com.wzkris.captcha.remote.interfaces.jwt.request.ServiceJwtIssueRequest;
+import com.wzkris.captcha.remote.interfaces.jwt.response.ServiceJwtIssueResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;

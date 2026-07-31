@@ -1,4 +1,4 @@
-package com.wzkris.captcha.service.impl;
+package com.wzkris.captcha.utils;
 
 import com.wzkris.common.core.utils.StringUtil;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -14,20 +14,20 @@ import java.util.function.Function;
 /**
  * 图形 / 滑动 / 挑战验证码共用的校验票据签发与核销。
  */
-final class CaptchaVerificationTokens {
+public final class CaptchaVerificationTokens {
+
+    public static final String CAPTCHA_ERROR = "invalidParameter.captcha.error";
 
     /**
      * 与挑战/图形/滑动验证码发放的校验 id 同源字符集
      */
     static final String HEX_STR = "0123456789abcdef";
 
-    static final String CAPTCHA_ERROR = "invalidParameter.captcha.error";
-
     private CaptchaVerificationTokens() {
     }
 
-    static IssuedVerificationToken issue(int idSize, long tokenExpiresMs, OffsetDateTime now,
-                                         BiConsumer<String, OffsetDateTime> putToken) {
+    public static IssuedVerificationToken issue(int idSize, long tokenExpiresMs, OffsetDateTime now,
+                                                BiConsumer<String, OffsetDateTime> putToken) {
         String verToken = UUID.randomUUID().toString();
         OffsetDateTime expires = now.plus(tokenExpiresMs, ChronoUnit.MILLIS);
         String hash = DigestUtils.sha256Hex(verToken);
@@ -36,7 +36,7 @@ final class CaptchaVerificationTokens {
         return new IssuedVerificationToken(makeupVerToken(id, verToken), expires);
     }
 
-    static boolean validate(String tokenStr, Function<String, OffsetDateTime> removeToken) {
+    public static boolean validate(String tokenStr, Function<String, OffsetDateTime> removeToken) {
         if (StringUtil.isBlank(tokenStr)) {
             return false;
         }
@@ -59,7 +59,7 @@ final class CaptchaVerificationTokens {
         return "%s:%s".formatted(id, verToken);
     }
 
-    record IssuedVerificationToken(String token, OffsetDateTime expires) {
+    public record IssuedVerificationToken(String token, OffsetDateTime expires) {
 
     }
 

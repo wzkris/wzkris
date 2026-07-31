@@ -1,12 +1,13 @@
-package com.wzkris.captcha.service.impl;
+package com.wzkris.captcha.impl.riskpass;
 
-import com.wzkris.auth.remote.api.jwt.request.ServiceJwtIssueRequest;
-import com.wzkris.auth.remote.api.jwt.response.ServiceJwtIssueResponse;
+import com.wzkris.captcha.api.riskpass.RiskPassApi;
+import com.wzkris.captcha.api.riskpass.request.RiskPassExchangeRequest;
+import com.wzkris.captcha.api.riskpass.response.RiskPassExchangeResponse;
 import com.wzkris.captcha.enums.CaptchaTypeEnum;
 import com.wzkris.captcha.properties.RiskPassProperties;
-import com.wzkris.captcha.remote.auth.IServiceJwtIssueRemote;
-import com.wzkris.captcha.request.RiskPassExchangeRequest;
-import com.wzkris.captcha.response.RiskPassExchangeResponse;
+import com.wzkris.captcha.remote.interfaces.jwt.IServiceJwtIssueRemote;
+import com.wzkris.captcha.remote.interfaces.jwt.request.ServiceJwtIssueRequest;
+import com.wzkris.captcha.remote.interfaces.jwt.response.ServiceJwtIssueResponse;
 import com.wzkris.captcha.service.ChallengeService;
 import com.wzkris.captcha.service.ImageCaptchaService;
 import com.wzkris.captcha.service.SlideCaptchaService;
@@ -23,7 +24,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class RiskPassServiceImpl {
+public class RiskPassApiImpl implements RiskPassApi {
 
     private static final String GATEWAY_RISK_LOCK_PREFIX = "gateway:risk-lock:";
 

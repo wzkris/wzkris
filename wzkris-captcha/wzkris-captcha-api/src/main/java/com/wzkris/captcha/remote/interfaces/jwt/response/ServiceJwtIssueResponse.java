@@ -1,4 +1,4 @@
-package com.wzkris.captcha.response;
+package com.wzkris.captcha.remote.interfaces.jwt.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,10 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ImageCaptchaDataResponse {
+public class ServiceJwtIssueResponse {
 
     private String token;
 
-    private String image;
-
-    private OffsetDateTime expires;
+    private OffsetDateTime expiresAt;
 
 }

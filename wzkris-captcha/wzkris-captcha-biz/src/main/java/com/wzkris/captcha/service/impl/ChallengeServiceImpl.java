@@ -1,11 +1,12 @@
 package com.wzkris.captcha.service.impl;
 
+import com.wzkris.captcha.api.captcha.response.RedeemChallengeResponse;
 import com.wzkris.captcha.domain.Challenge;
 import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
 import com.wzkris.captcha.properties.ChallengeCaptchaProperties;
-import com.wzkris.captcha.response.RedeemChallengeResponse;
 import com.wzkris.captcha.service.ChallengeService;
-import com.wzkris.captcha.store.ChallengeeCaptchaStore;
+import com.wzkris.captcha.store.ChallengeCaptchaStore;
+import com.wzkris.captcha.utils.CaptchaVerificationTokens;
 import com.wzkris.common.core.utils.StringUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -24,7 +25,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     private final ChallengeCaptchaProperties captchaProperties;
 
-    private final ChallengeeCaptchaStore challengeeCaptchaStore;
+    private final ChallengeCaptchaStore challengeCaptchaStore;
 
     public static String prng(String seed, int length) {
         if (StringUtils.isBlank(seed) || length <= 0) {
@@ -76,7 +77,7 @@ public class ChallengeServiceImpl implements ChallengeService {
         String token = UUID.randomUUID().toString();
         OffsetDateTime expires = OffsetDateTime.now().plus(challengeExpiresMs, ChronoUnit.MILLIS);
         ChallengeCaptchaInfo challengeCaptchaInfo = new ChallengeCaptchaInfo(new Challenge(challengeCount, challengeSize, challengeDifficulty), expires, token);
-        challengeeCaptchaStore.putChallenge(token, challengeCaptchaInfo);
+        challengeCaptchaStore.putChallenge(token, challengeCaptchaInfo);
         return challengeCaptchaInfo;
     }
 
@@ -88,7 +89,7 @@ public class ChallengeServiceImpl implements ChallengeService {
             }
 
             OffsetDateTime now = OffsetDateTime.now();
-            ChallengeCaptchaInfo challengeCaptchaInfo = challengeeCaptchaStore.removeChallenge(token);
+            ChallengeCaptchaInfo challengeCaptchaInfo = challengeCaptchaStore.removeChallenge(token);
             if (Objects.isNull(challengeCaptchaInfo) || !challengeCaptchaInfo.getExpires().isAfter(now)) {
                 throw new IllegalArgumentException(CaptchaVerificationTokens.CAPTCHA_ERROR);
             }
@@ -110,7 +111,7 @@ public class ChallengeServiceImpl implements ChallengeService {
                     captchaProperties.getIdSize(),
                     captchaProperties.getTokenExpiresMs(),
                     now,
-                    challengeeCaptchaStore::putToken);
+                    challengeCaptchaStore::putToken);
             return RedeemChallengeResponse.ok(issued.token(), issued.expires());
         } catch (IllegalArgumentException | IllegalStateException e) {
             return RedeemChallengeResponse.error(e.getMessage());
@@ -119,7 +120,7 @@ public class ChallengeServiceImpl implements ChallengeService {
 
     @Override
     public Boolean validateToken(String tokenStr) {
-        return CaptchaVerificationTokens.validate(tokenStr, challengeeCaptchaStore::removeToken);
+        return CaptchaVerificationTokens.validate(tokenStr, challengeCaptchaStore::removeToken);
     }
 
 }

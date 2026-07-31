@@ -1,4 +1,4 @@
-package com.wzkris.captcha.response;
+package com.wzkris.captcha.api.riskpass.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

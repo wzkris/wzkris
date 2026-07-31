@@ -1,4 +1,4 @@
-package com.wzkris.captcha.request;
+package com.wzkris.captcha.api.captcha.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
