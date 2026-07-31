@@ -13,12 +13,13 @@ import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.ActorInfo;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
-import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         MemberInfoResponse memberResp = memberResult.getData();
 
         UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
-        LoginUser switchedUser = (LoginUser) token.getPrincipal();
+        DefaultLoginUser switchedUser = (DefaultLoginUser) token.getPrincipal();
         switchedUser.setActor(ActorInfo.of(loginUser.getUid(), AuthTypeEnum.ADMIN, actorSid));
         return token;
     }
@@ -77,7 +78,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         }
         MemberPermissionResponse permissions = permissionsResult.getData();
 
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(memberInfoResponse.getMemberId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setName(memberInfoResponse.getUsername());

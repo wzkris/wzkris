@@ -3,8 +3,8 @@ package com.wzkris.auth.security.core;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.security.core.refresh.RefreshAuthenticationToken;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,7 +27,7 @@ public abstract class CommonAuthenticationProvider implements AuthenticationProv
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         UsernamePasswordAuthenticationToken authenticated = doAuthenticate(authentication);
-        BaseLoginUser loginUser = (BaseLoginUser) authenticated.getPrincipal();
+        LoginUser loginUser = (LoginUser) authenticated.getPrincipal();
         RoleContext roleContext = authenticated instanceof RoleContextAuthenticationToken rcToken ? rcToken.getRoleContext() : null;
         TokenPair tokenPair = authentication instanceof RefreshAuthenticationToken refresh
                 ? tokenService.loginRefresh(loginUser, roleContext, refresh.getRefreshToken())

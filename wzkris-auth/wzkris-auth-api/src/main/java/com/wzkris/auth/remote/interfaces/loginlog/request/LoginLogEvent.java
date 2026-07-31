@@ -22,16 +22,6 @@ public class LoginLogEvent {
     private Long operatorId;
 
     /**
-     * 实际操作者ID（impersonation 场景，记录原始 admin）
-     */
-    private Long actorUid;
-
-    /**
-     * 实际操作者认证类型（impersonation 场景）
-     */
-    private AuthTypeEnum actorAuthType;
-
-    /**
      * 租户ID
      */
     private Long tenantId;

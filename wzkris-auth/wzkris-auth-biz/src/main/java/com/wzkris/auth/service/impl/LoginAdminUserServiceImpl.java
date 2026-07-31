@@ -13,12 +13,12 @@ import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -104,7 +104,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(adminInfoResponse.getAdminId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setName(adminInfoResponse.getUsername());
@@ -130,7 +130,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
      */
     private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(userResp.getAdminId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setName(userResp.getUsername());

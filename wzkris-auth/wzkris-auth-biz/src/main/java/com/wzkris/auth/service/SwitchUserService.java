@@ -1,7 +1,7 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import jakarta.annotation.Nullable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 

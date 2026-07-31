@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.impl.member;
 
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -36,7 +36,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
 
     @Override
     public Result<MemberInfoResponse> queryInfo() {
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        LoginUser loginUser = SecurityUtil.getLoginUser();
         MemberInfoDO member = memberInfoService.getById(loginUser.getUid());
         MemberInfoResponse memberInfoVO = new MemberInfoResponse();
         memberInfoVO.setAdmin(SecurityUtil.getRoleContext().isSuperUser());

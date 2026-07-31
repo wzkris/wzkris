@@ -2,8 +2,8 @@ package com.wzkris.auth.remote.interfaces.member;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
-import com.wzkris.auth.remote.interfaces.member.request.MemberQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.member.request.MemberQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
 import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
 import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
@@ -47,13 +47,13 @@ public interface IMemberInfoRemote {
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<MemberPermissionResponse> queryPermission(@RequestBody MemberPermsQueryRequest memberPermsReq);
+    Result<MemberPermissionResponse> queryPermission(@RequestBody MemberPermsQueryRequest request);
 
     /**
      * 更新用户登录信息
      */
     @PostExchange("/update-logininfo")
-    Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest LoginInfoUpdateRequest);
+    Result<Void> updateLoginInfo(@RequestBody LoginInfoUpdateRequest request);
 
 }
 

@@ -1,6 +1,5 @@
 package com.wzkris.common.core.support;
 
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import org.springframework.lang.Nullable;
 
@@ -17,7 +16,7 @@ public interface UserContextHelper {
      * 当前登录用户，无登录上下文时返回 null
      */
     @Nullable
-    BaseLoginUser getLoginUser();
+    LoginUser getLoginUser();
 
     /**
      * 当前操作者角色上下文，无登录上下文时返回 null

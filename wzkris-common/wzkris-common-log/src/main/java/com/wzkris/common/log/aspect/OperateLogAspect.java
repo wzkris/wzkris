@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.utils.*;
@@ -91,7 +91,7 @@ public class OperateLogAspect {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        LoginUser loginUser = userContextHelper.getLoginUser();
         operateLogEvent.setOperatorId(loginUser.getUid());
         operateLogEvent.setAuthType(loginUser.getAuthType());
         operateLogEvent.setOperName(loginUser.getName());

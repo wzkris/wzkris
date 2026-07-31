@@ -7,9 +7,9 @@ import com.wzkris.auth.constants.QrCodeConstant;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.enums.QrCodeStatusEnum;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -67,7 +70,7 @@ public class QrLoginApiImpl implements QrLoginApi {
             return Result.requestFail("二维码已被扫描");
         }
 
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        LoginUser loginUser = SecurityUtil.getLoginUser();
         RoleContext roleContext = SecurityUtil.getRoleContext();
         TokenPair tokenPair = tokenService.loginCreate(loginUser, roleContext);
 

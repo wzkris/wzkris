@@ -1,7 +1,7 @@
 package com.wzkris.common.security.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
@@ -42,13 +42,13 @@ public final class SecurityUtil {
      * @return 当前用户（实际运行时类型可能为具体 BaseUser 子类），未登录时为 null
      */
     @Nullable
-    public static BaseLoginUser getLoginUser() {
+    public static LoginUser getLoginUser() {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
             return null;
         }
         Object principal = authentication.getPrincipal();
-        return principal instanceof BaseLoginUser baseLoginUser ? baseLoginUser : null;
+        return principal instanceof LoginUser loginUser ? loginUser : null;
     }
 
     /**
@@ -108,7 +108,7 @@ public final class SecurityUtil {
         if (!(authentication instanceof RoleContextAuthenticationToken rca && authentication.isAuthenticated())) {
             return false;
         }
-        return ((BaseLoginUser) rca.getPrincipal()).getAuthType() == authTypeEnum;
+        return ((LoginUser) rca.getPrincipal()).getAuthType() == authTypeEnum;
     }
 
     /**
@@ -131,7 +131,7 @@ public final class SecurityUtil {
      */
     @Nullable
     public static Long getUid() {
-        BaseLoginUser loginUser = getLoginUser();
+        LoginUser loginUser = getLoginUser();
         return loginUser == null ? null : loginUser.getUid();
     }
 
@@ -142,7 +142,7 @@ public final class SecurityUtil {
      */
     @Nullable
     public static AuthTypeEnum getAuthType() {
-        BaseLoginUser loginUser = getLoginUser();
+        LoginUser loginUser = getLoginUser();
         return loginUser == null ? null : loginUser.getAuthType();
     }
 
@@ -152,7 +152,7 @@ public final class SecurityUtil {
      * @return 标签
      */
     public static String getHint() {
-        BaseLoginUser loginUser = getLoginUser();
+        LoginUser loginUser = getLoginUser();
         return loginUser == null ? StringUtil.EMPTY : StringUtil.defaultIfEmpty(loginUser.getHint(), StringUtil.EMPTY);
     }
 

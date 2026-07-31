@@ -23,9 +23,6 @@ public class LoginLogRemoteController {
 
     private final LoginLogRemoteApi loginLogRemoteApi;
 
-    /**
-     * 批量保存登录日志
-     */
     @PostMapping("/save")
     public Result<Void> save(@RequestBody @NotEmpty List<LoginLogEventRequest> requestList) {
         return loginLogRemoteApi.save(requestList);

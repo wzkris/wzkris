@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.gateway.domain.ApiCallEventDO;
 import com.wzkris.gateway.repository.ApiCallRepository;
@@ -57,7 +57,7 @@ public class ApiCallStatFilterFunction implements HandlerFilterFunction<ServerRe
             AuthTypeEnum authType = null;
             Long userId = null;
             if (SecurityUtil.isLogin()) {
-                BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+                LoginUser loginUser = SecurityUtil.getLoginUser();
                 authType = loginUser.getAuthType();
                 userId = loginUser.getUid();
             }

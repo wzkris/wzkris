@@ -2,9 +2,9 @@ package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineSession;
 import com.wzkris.auth.domain.TokenPair;
-import com.wzkris.common.core.model.BaseLoginUser;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import jakarta.annotation.Nullable;
 
 import java.io.Serializable;
@@ -12,14 +12,14 @@ import java.util.Map;
 
 public interface TokenService {
 
-    TokenPair loginCreate(BaseLoginUser loginUser, RoleContext roleContext);
+    TokenPair loginCreate(LoginUser loginUser, RoleContext roleContext);
 
-    TokenPair loginReuse(BaseLoginUser loginUser, RoleContext roleContext, String sid);
+    TokenPair loginReuse(LoginUser loginUser, RoleContext roleContext, String sid);
 
-    TokenPair loginRefresh(BaseLoginUser loginUser, RoleContext roleContext, String refreshToken);
+    TokenPair loginRefresh(LoginUser loginUser, RoleContext roleContext, String refreshToken);
 
     @Nullable
-    LoginUser loadLoginUserByUid(String type, Serializable uid);
+    DefaultLoginUser loadLoginUserByUid(String type, Serializable uid);
 
     @Nullable
     RoleContext loadRoleContextByUid(String type, Serializable uid);
@@ -30,7 +30,7 @@ public interface TokenService {
 
     boolean isRevoked(String type, Long uid, String sid);
 
-    default void revoke(BaseLoginUser loginUser, String sid) {
+    default void revoke(LoginUser loginUser, String sid) {
         revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), sid);
     }
 

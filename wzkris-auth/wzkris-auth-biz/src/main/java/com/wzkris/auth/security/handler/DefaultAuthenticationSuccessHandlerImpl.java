@@ -4,8 +4,8 @@ import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.domain.TokenPair;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
@@ -70,7 +70,7 @@ public class DefaultAuthenticationSuccessHandlerImpl implements AuthenticationSu
         UserAgent.ImmutableUserAgent userAgent = UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT));
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        (BaseLoginUser) authenticationToken.getPrincipal(),
+                        (LoginUser) authenticationToken.getPrincipal(),
                         loginType.getValue(),
                         true,
                         "",

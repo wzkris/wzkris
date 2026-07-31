@@ -6,8 +6,8 @@ import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -44,7 +44,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         Long uid = checkParameter(refreshToken, authType);
 
         // 从存储中加载用户信息
-        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
+        LoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
         if (loginUser == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");

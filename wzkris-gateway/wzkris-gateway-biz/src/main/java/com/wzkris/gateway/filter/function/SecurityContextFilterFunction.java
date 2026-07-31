@@ -1,13 +1,11 @@
 package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ServletUtil;
 import com.wzkris.common.core.utils.TraceIdUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.utils.SecurityUtil;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.function.HandlerFilterFunction;
@@ -31,16 +29,11 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                 .headers(h -> {
                     h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                     h.set(CustomHeaderConstants.X_GATEWAY_CLIENT_IP, gatewayClientIp);
-                    if (authentication instanceof AnonymousAuthenticationToken) {
+                    if (!(authentication instanceof RoleContextAuthenticationToken rcToken)) {
                         return;
                     }
-                    Object principal = authentication.getPrincipal();
-                    if (principal instanceof BaseLoginUser baseLoginUser) {
-                        h.set(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(baseLoginUser));
-                    }
-                    if (authentication instanceof RoleContextAuthenticationToken rcToken) {
-                        h.set(CustomHeaderConstants.X_ROLE_CONTEXT, JsonUtil.toJsonString(rcToken.getRoleContext()));
-                    }
+                    h.set(CustomHeaderConstants.X_USER_CONTEXT, JsonUtil.toJsonString(rcToken.getPrincipal()));
+                    h.set(CustomHeaderConstants.X_ROLE_CONTEXT, JsonUtil.toJsonString(rcToken.getRoleContext()));
                 })
                 .build();
         return next.handle(newRequest);

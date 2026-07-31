@@ -23,9 +23,6 @@ public class OperateLogRemoteController {
 
     private final OperateLogRemoteApi operateLogRemoteApi;
 
-    /**
-     * 新增操作日志
-     */
     @PostMapping("/save")
     public Result<Void> save(@RequestBody @NotEmpty List<OperateLogEventRequest> requestList) {
         return operateLogRemoteApi.save(requestList);

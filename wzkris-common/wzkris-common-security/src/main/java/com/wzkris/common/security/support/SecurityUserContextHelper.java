@@ -1,6 +1,6 @@
 package com.wzkris.common.security.support;
 
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -15,7 +15,7 @@ public class SecurityUserContextHelper implements UserContextHelper {
 
     @Override
     @Nullable
-    public BaseLoginUser getLoginUser() {
+    public LoginUser getLoginUser() {
         return SecurityUtil.getLoginUser();
     }
 

@@ -6,7 +6,7 @@ import com.wzkris.auth.remote.api.loginuser.request.OAuth2TokenQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.response.LoginUserResponse;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.model.UserRole;
@@ -42,7 +42,7 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
         }
 
         // 通过 uid 获取用户信息和权限
-        LoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
+        DefaultLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
         if (loginUser == null) {
             return Result.unauth("Token has been expired");
         }
@@ -76,7 +76,7 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
             return Result.unauth("Principal not found in authorization");
         }
 
-        if (principal instanceof LoginUser loginUser) {
+        if (principal instanceof DefaultLoginUser loginUser) {
             RoleContext roleContext = new RoleContext(
                     List.of(new UserRole(0L, "oauth2_client", null, null, permissions)));
             return Result.ok(new LoginUserResponse(loginUser, roleContext));

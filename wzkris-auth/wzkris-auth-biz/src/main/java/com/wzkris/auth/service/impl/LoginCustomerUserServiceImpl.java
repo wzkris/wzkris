@@ -10,9 +10,9 @@ import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.core.model.LoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,7 +85,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         // 校验用户状态
         this.checkAccount(customerResponse);
 
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(customerResponse.getCustomerId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
         loginUser.setName(String.valueOf(customerResponse.getCustomerId()));
@@ -108,7 +108,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     private void recordFailedLog(CustomerResponse CustomerResponse, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(CustomerResponse.getCustomerId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
         loginUser.setName(String.valueOf(CustomerResponse.getCustomerId()));

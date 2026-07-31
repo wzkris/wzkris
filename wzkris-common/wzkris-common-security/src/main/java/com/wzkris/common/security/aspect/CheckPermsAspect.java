@@ -2,7 +2,7 @@ package com.wzkris.common.security.aspect;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.exception.token.TokenExpiredException;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.common.security.utils.PermissionUtil;
@@ -64,7 +64,7 @@ public class CheckPermsAspect {
      * 验证权限
      */
     private void validatePermission(CheckPerms checkPerms) {
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        LoginUser loginUser = SecurityUtil.getLoginUser();
         if (loginUser == null) {
             throw new TokenExpiredException(401, "forbidden.accessDenied.tokenExpired");
         }
@@ -87,7 +87,7 @@ public class CheckPermsAspect {
     /**
      * 验证主体类型
      */
-    private void validatePrincipalType(BaseLoginUser loginUser, CheckPerms checkPerms) {
+    private void validatePrincipalType(LoginUser loginUser, CheckPerms checkPerms) {
         AuthTypeEnum actualType = loginUser.getAuthType();
         AuthTypeEnum[] expectedTypes = checkPerms.checkTypes();
 
@@ -134,7 +134,7 @@ public class CheckPermsAspect {
     /**
      * 创建权限拒绝异常
      */
-    private AccessDeniedException createAccessDeniedException(BaseLoginUser loginUser, String[] perms, CheckMode mode) {
+    private AccessDeniedException createAccessDeniedException(LoginUser loginUser, String[] perms, CheckMode mode) {
         String name = loginUser.getName();
         String type = loginUser.getAuthType() != null ? loginUser.getAuthType().getValue() : null;
 

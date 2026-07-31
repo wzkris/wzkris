@@ -8,8 +8,7 @@ import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
 import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.ActorInfo;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
 import com.wzkris.common.core.utils.ResultUtil;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +42,7 @@ public class LoginEventListener {
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final BaseLoginUser loginUser = event.getLoginUser();
+        final LoginUser loginUser = event.getLoginUser();
         log.info("'{}' 发生登录事件", loginUser);
 
         AuthTypeEnum authType = loginUser.getAuthType();
@@ -52,7 +51,7 @@ public class LoginEventListener {
         }
     }
 
-    private void handleLogin(LoginEvent event, BaseLoginUser loginUser) {
+    private void handleLogin(LoginEvent event, LoginUser loginUser) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         String ipAddr = event.getIpAddr();
@@ -66,13 +65,8 @@ public class LoginEventListener {
         LoginLogEvent loginLogEvent = new LoginLogEvent();
         loginLogEvent.setAuthType(loginUser.getAuthType());
         loginLogEvent.setOperatorId(loginUser.getUid());
-        ActorInfo actor = loginUser.getActor();
-        if (actor != null) {
-            loginLogEvent.setActorUid(actor.getUid());
-            loginLogEvent.setActorAuthType(actor.getAuthType());
-        }
-        loginLogEvent.setUsername(resolveUsername(loginUser));
-        loginLogEvent.setTenantId(resolveTenantId(loginUser));
+        loginLogEvent.setUsername(loginUser.getName());
+        loginLogEvent.setTenantId(loginUser.getTenantId());
         loginLogEvent.setLoginTime(now);
         loginLogEvent.setLoginIp(ipAddr);
         loginLogEvent.setLoginType(loginType);
@@ -84,7 +78,7 @@ public class LoginEventListener {
         loginLogRemote.save(Collections.singletonList(loginLogEvent));
     }
 
-    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, OffsetDateTime loginDate) {
+    private void updateLoginInfoIfSuccess(LoginUser loginUser, String ipAddr, Boolean success, OffsetDateTime loginDate) {
         if (!Boolean.TRUE.equals(success)) {
             return;
         }
@@ -99,14 +93,6 @@ public class LoginEventListener {
         } else if (authType == AuthTypeEnum.CUSTOMER) {
             ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
         }
-    }
-
-    private String resolveUsername(BaseLoginUser loginUser) {
-        return loginUser.getName();
-    }
-
-    private Long resolveTenantId(BaseLoginUser loginUser) {
-        return loginUser.getTenantId();
     }
 
 }

@@ -8,7 +8,7 @@ import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
-import com.wzkris.common.core.model.LoginUser;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.security.utils.BearerTokenUtil;
 import com.wzkris.gateway.properties.PermitUrlProperties;
 import com.wzkris.gateway.remote.api.loginuser.ILoginUserRemote;
@@ -92,7 +92,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
     }
 
     private Authentication authenticateClient(Jwt jwt, String token) {
-        LoginUser loginUser = new LoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setAuthType(AuthTypeEnum.CLIENT);
         loginUser.setName(jwt.getSubject());
         List<String> scope = jwt.getClaimAsStringList(OAuth2ParameterNames.SCOPE);

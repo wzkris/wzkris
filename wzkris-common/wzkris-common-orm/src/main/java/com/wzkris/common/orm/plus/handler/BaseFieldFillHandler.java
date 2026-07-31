@@ -3,7 +3,7 @@ package com.wzkris.common.orm.plus.handler;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.support.UserContextHelper;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      * 当前操作者用户ID，无登录上下文时兜底为系统用户
      */
     private Long currentUserId() {
-        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        LoginUser loginUser = userContextHelper.getLoginUser();
         return loginUser != null ? loginUser.getUid() : SecurityConstants.SYSTEM_USER_ID;
     }
 
@@ -70,7 +70,7 @@ public class BaseFieldFillHandler implements MetaObjectHandler {
      * 当前操作者标签
      */
     private String currentHint() {
-        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        LoginUser loginUser = userContextHelper.getLoginUser();
         return loginUser != null ? loginUser.getHint() : null;
     }
 

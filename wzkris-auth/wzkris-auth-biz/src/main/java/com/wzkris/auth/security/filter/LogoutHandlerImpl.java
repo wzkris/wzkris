@@ -4,7 +4,7 @@ import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.event.LogoutEvent;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.SpringUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +47,7 @@ public class LogoutHandlerImpl implements LogoutHandler {
         }
 
         UsernamePasswordAuthenticationToken authenticationToken = (UsernamePasswordAuthenticationToken) authentication;
-        BaseLoginUser loginUser = (BaseLoginUser) authenticationToken.getPrincipal();
+        LoginUser loginUser = (LoginUser) authenticationToken.getPrincipal();
         Long uid = loginUser.getUid();
         String accessToken = authenticationToken.getCredentials().toString();
 

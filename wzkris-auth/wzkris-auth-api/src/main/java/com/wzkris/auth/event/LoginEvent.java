@@ -1,6 +1,6 @@
 package com.wzkris.auth.event;
 
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class LoginEvent {
 
-    private BaseLoginUser loginUser;
+    private LoginUser loginUser;
 
     private String loginType;
 

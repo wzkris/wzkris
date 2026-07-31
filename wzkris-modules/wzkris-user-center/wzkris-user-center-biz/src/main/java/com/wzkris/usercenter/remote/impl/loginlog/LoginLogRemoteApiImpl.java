@@ -4,10 +4,10 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.domain.AdminLoginLogDO;
 import com.wzkris.usercenter.domain.TenantLoginLogDO;
-import com.wzkris.usercenter.mapper.AdminLoginLogMapper;
-import com.wzkris.usercenter.mapper.TenantLoginLogMapper;
 import com.wzkris.usercenter.remote.api.loginlog.LoginLogRemoteApi;
 import com.wzkris.usercenter.remote.api.loginlog.request.LoginLogEventRequest;
+import com.wzkris.usercenter.service.AdminLoginLogService;
+import com.wzkris.usercenter.service.TenantLoginLogService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
 
-    private final AdminLoginLogMapper adminLoginLogMapper;
+    private final AdminLoginLogService adminLoginLogService;
 
-    private final TenantLoginLogMapper tenantLoginLogMapper;
+    private final TenantLoginLogService tenantLoginLogService;
 
     @Override
     public Result<Void> save(List<LoginLogEventRequest> loginLogEventRequests) {
@@ -34,7 +34,6 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
         Map<AuthTypeEnum, List<LoginLogEventRequest>> listMap =
                 loginLogEventRequests.stream().collect(Collectors.groupingBy(LoginLogEventRequest::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
-        saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.CUSTOMER, Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
         return Result.ok();
     }
@@ -58,7 +57,7 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
             adminLoginLogDO.setLoginTime(loginLogEventRequest.getLoginTime());
             loginLogs.add(adminLoginLogDO);
         }
-        adminLoginLogMapper.insert(loginLogs, 1000);
+        adminLoginLogService.saveBatch(loginLogs, 1000);
     }
 
     private void saveTenantLogs(List<LoginLogEventRequest> loginLogEventRequests) {
@@ -81,7 +80,7 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
             tenantLoginLogDO.setLoginTime(loginLogEventRequest.getLoginTime());
             loginLogs.add(tenantLoginLogDO);
         }
-        tenantLoginLogMapper.insert(loginLogs, 1000);
+        tenantLoginLogService.saveBatch(loginLogs, 1000);
     }
 
 }

@@ -1,17 +1,16 @@
-package com.wzkris.common.core.model;
+package com.wzkris.common.core.support;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.ActorInfo;
 import org.springframework.lang.Nullable;
 
 import java.security.Principal;
 import java.time.Instant;
 
 /**
- * 统一登录用户抽象视图，用于承载各类用户（管理员、租户、C 端等）的公共能力。
- *
- * <p>唯一实现为 {@link LoginUser}，通过 {@link #getAuthType()} 区分用户类型。
+ * 统一登录用户抽象视图，用于承载各类用户的公共能力。
  */
-public interface BaseLoginUser extends Principal {
+public interface LoginUser extends Principal {
 
     Long getUid();
 

@@ -1,7 +1,7 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.orm.plus.config.TenantProperties;
 import lombok.AllArgsConstructor;
@@ -23,13 +23,13 @@ public class TenantLineHandlerImpl implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        LoginUser loginUser = userContextHelper.getLoginUser();
         return new LongValue(loginUser.getTenantId());
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        BaseLoginUser loginUser = userContextHelper.getLoginUser();
+        LoginUser loginUser = userContextHelper.getLoginUser();
         return loginUser == null || loginUser.getTenantId() == null
                 || !tenantProperties.getIncludes().contains(tableName);
     }

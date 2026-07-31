@@ -8,11 +8,11 @@ import com.wzkris.auth.domain.TokenClaims;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.support.LoginUser;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.core.utils.BeanCopierUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +57,7 @@ public class OnlineSessionApiImpl implements OnlineSessionApi {
     @Override
     public Result<Void> kickout(SidRequest request) {
         String sid = request.getSid();
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        LoginUser loginUser = SecurityUtil.getLoginUser();
         tokenService.revoke(loginUser.getAuthType().getValue(), loginUser.getUid(), sid);
         return ok();
     }

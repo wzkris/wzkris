@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.impl.admin;
 
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.ResultUtil;
@@ -42,7 +42,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     @Override
     public Result<AdminInfoResponse> queryInfo() {
-        BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+        LoginUser loginUser = SecurityUtil.getLoginUser();
         AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
         AdminInfoResponse adminInfoVO = new AdminInfoResponse();
         adminInfoVO.setAdmin(SecurityUtil.getRoleContext().isSuperUser());
