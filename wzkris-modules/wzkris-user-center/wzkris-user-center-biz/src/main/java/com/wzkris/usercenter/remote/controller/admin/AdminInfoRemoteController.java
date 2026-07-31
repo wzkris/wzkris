@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Hidden
 @RestController
 @RequestMapping("/admin-info-remote")
@@ -23,9 +25,9 @@ public class AdminInfoRemoteController {
 
     private final AdminInfoRemoteApi adminInfoRemoteApi;
 
-    @PostMapping("/query-one")
-    public Result<AdminInfoResponse> queryOne(@RequestBody @Valid AdminQueryRequest request) {
-        return adminInfoRemoteApi.queryOne(request);
+    @PostMapping("/query-list")
+    public Result<List<AdminInfoResponse>> queryList(@RequestBody @Valid AdminQueryRequest request) {
+        return adminInfoRemoteApi.queryList(request);
     }
 
     @PostMapping("/query-permission")

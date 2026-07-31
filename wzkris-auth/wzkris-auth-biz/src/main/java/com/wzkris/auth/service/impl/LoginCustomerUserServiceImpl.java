@@ -3,8 +3,8 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
 import com.wzkris.auth.service.LoginUserService;
@@ -18,6 +18,7 @@ import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -26,6 +27,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -37,12 +39,19 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<CustomerResponse> customerResult = customerInfoRemote.queryByPhoneNumber(new StringValueRequest(phoneNumber));
+        CustomerQueryRequest request = new CustomerQueryRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<List<CustomerResponse>> listResult = customerInfoRemote.queryList(request);
 
-        if (!ResultUtil.check(customerResult)) {
+        if (!ResultUtil.check(listResult)) {
             return null;
         }
-        CustomerResponse CustomerResponse = customerResult.getData();
+
+        if (CollectionUtils.isEmpty(listResult.getData()) || listResult.getData().size() > 1) {
+            return null;
+        }
+
+        CustomerResponse CustomerResponse = listResult.getData().getFirst();
 
         try {
             return this.buildAuthenticationToken(CustomerResponse);

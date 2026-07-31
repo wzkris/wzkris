@@ -7,9 +7,11 @@ import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminInfoResponse;
 import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
 
+import java.util.List;
+
 public interface AdminInfoRemoteApi {
 
-    Result<AdminInfoResponse> queryOne(AdminQueryRequest request);
+    Result<List<AdminInfoResponse>> queryList(AdminQueryRequest request);
 
     Result<AdminPermissionResponse> queryPermission(AdminPermsQueryRequest request);
 

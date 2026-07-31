@@ -1,7 +1,7 @@
 package com.wzkris.auth.remote.interfaces.member;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
+import com.wzkris.auth.remote.interfaces.member.request.StringValueRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
@@ -14,6 +14,8 @@ import com.wzkris.common.remote.constants.ServiceIdConstant;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -28,13 +30,13 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/member-info-remote")
 public interface IMemberInfoRemote {
 
-    @PostExchange("/query-one")
-    Result<MemberInfoResponse> queryOne(@RequestBody MemberQueryRequest request);
+    @PostExchange("/query-list")
+    Result<List<MemberInfoResponse>> queryList(@RequestBody MemberQueryRequest request);
 
     /**
      * 根据租户ID 查询租户最高管理员成员（用于登录态切换）
      */
-    @PostExchange("/query-administrator-by-tenant")
+    @PostExchange("/query-tenant-administrator")
     Result<MemberInfoResponse> queryAdministratorByTenantId(@RequestBody TenantIdRequest request);
 
     /**

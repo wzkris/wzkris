@@ -3,9 +3,9 @@ package com.wzkris.usercenter.remote.controller.customer;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
+import com.wzkris.usercenter.remote.api.customer.request.CustomerQueryRequest;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Hidden
 @RestController
@@ -22,9 +24,9 @@ public class CustomerInfoRemoteController {
 
     private final CustomerInfoRemoteApi customerInfoRemoteApi;
 
-    @PostMapping("/query-by-phonenumber")
-    public Result<CustomerResponse> queryByPhoneNumber(@RequestBody @Valid StringValueRequest request) {
-        return customerInfoRemoteApi.queryByPhoneNumber(request);
+    @PostMapping("/query-list")
+    public Result<List<CustomerResponse>> queryList(@RequestBody @Valid CustomerQueryRequest request) {
+        return customerInfoRemoteApi.queryList(request);
     }
 
     @PostMapping("/wexcx-login")

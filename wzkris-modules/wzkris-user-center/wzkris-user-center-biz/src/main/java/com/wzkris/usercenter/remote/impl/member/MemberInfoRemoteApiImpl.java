@@ -30,6 +30,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -50,18 +53,22 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<MemberInfoResponse> queryOne(MemberQueryRequest request) {
+    public Result<List<MemberInfoResponse>> queryList(MemberQueryRequest request) {
         LambdaQueryWrapper<MemberInfoDO> eq = Wrappers.lambdaQuery(MemberInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), MemberInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), MemberInfoDO::getUsername, request.getUsername());
-        MemberInfoDO member = memberInfoService.getOne(eq);
-        MemberInfoResponse response = this.toMemberInfoResponse(member);
-        this.retrieveAllStatus(response);
-        return Result.ok(response);
+        List<MemberInfoDO> list = memberInfoService.list(eq);
+        List<MemberInfoResponse> responseList = new ArrayList<>();
+        for (MemberInfoDO member : list) {
+            MemberInfoResponse response = this.toMemberInfoResponse(member);
+            this.retrieveAllStatus(response);
+            responseList.add(response);
+        }
+        return Result.ok(responseList);
     }
 
     @Override
-    public Result<MemberInfoResponse> queryAdministratorByTenantId(TenantIdRequest request) {
+    public Result<MemberInfoResponse> queryTenantAdministrator(TenantIdRequest request) {
         TenantInfoDO tenant = tenantInfoService.getById(request.getTenantId());
         if (tenant == null || tenant.getAdministrator() == null) {
             return Result.ok(null);

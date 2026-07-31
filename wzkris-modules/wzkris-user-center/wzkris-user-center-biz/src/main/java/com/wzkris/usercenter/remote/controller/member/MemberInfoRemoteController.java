@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Hidden
 @RestController
 @RequestMapping("/member-info-remote")
@@ -25,14 +27,14 @@ public class MemberInfoRemoteController {
 
     private final MemberInfoRemoteApi memberInfoRemoteApi;
 
-    @PostMapping("/query-one")
-    public Result<MemberInfoResponse> queryOne(@RequestBody @Valid MemberQueryRequest request) {
-        return memberInfoRemoteApi.queryOne(request);
+    @PostMapping("/query-list")
+    public Result<List<MemberInfoResponse>> queryList(@RequestBody @Valid MemberQueryRequest request) {
+        return memberInfoRemoteApi.queryList(request);
     }
 
-    @PostMapping("/query-administrator-by-tenant")
-    public Result<MemberInfoResponse> queryAdministratorByTenantId(@RequestBody @Valid TenantIdRequest request) {
-        return memberInfoRemoteApi.queryAdministratorByTenantId(request);
+    @PostMapping("/query-tenant-administrator")
+    public Result<MemberInfoResponse> queryTenantAdministrator(@RequestBody @Valid TenantIdRequest request) {
+        return memberInfoRemoteApi.queryTenantAdministrator(request);
     }
 
     @PostMapping("/query-by-wexcxcode")

@@ -1,6 +1,8 @@
 package com.wzkris.usercenter.remote.impl.customer;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.enums.BizCallCodeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.StringUtil;
@@ -10,9 +12,9 @@ import com.wzkris.usercenter.enums.social.IdentifierTypeEnum;
 import com.wzkris.usercenter.mapper.CustomerSocialInfoMapper;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerInfoRemoteApi;
+import com.wzkris.usercenter.remote.api.customer.request.CustomerQueryRequest;
 import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerResponse;
-import com.wzkris.usercenter.request.StringValueRequest;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,9 @@ import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -35,10 +40,15 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
     private WxMaService wxMaService;
 
     @Override
-    public Result<CustomerResponse> queryByPhoneNumber(StringValueRequest request) {
-        CustomerInfoDO customerInfoDO = customerInfoService.getOneByObj(
-                CustomerInfoDO::getPhoneNumber, request.getValue());
-        return Result.ok(this.toCustomerResponse(customerInfoDO));
+    public Result<List<CustomerResponse>> queryList(CustomerQueryRequest request) {
+        LambdaQueryWrapper<CustomerInfoDO> eq = Wrappers.lambdaQuery(CustomerInfoDO.class)
+                .eq(StringUtil.isNotBlank(request.getPhoneNumber()), CustomerInfoDO::getPhoneNumber, request.getPhoneNumber());
+        List<CustomerInfoDO> list = customerInfoService.list(eq);
+        List<CustomerResponse> responseList = new ArrayList<>();
+        for (CustomerInfoDO customerInfoDO : list) {
+            responseList.add(this.toCustomerResponse(customerInfoDO));
+        }
+        return Result.ok(responseList);
     }
 
     @Override

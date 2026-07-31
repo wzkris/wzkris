@@ -23,6 +23,7 @@ import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +31,8 @@ import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -44,12 +47,17 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         AdminQueryRequest request = new AdminQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
+        Result<List<AdminInfoResponse>> userResult = adminInfoRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
         }
-        AdminInfoResponse userResp = userResult.getData();
+
+        if (CollectionUtils.isEmpty(userResult.getData()) || userResult.getData().size() > 1) {
+            return null;
+        }
+
+        AdminInfoResponse userResp = userResult.getData().getFirst();
 
         try {
             return this.buildAuthenticationToken(userResp);
@@ -64,12 +72,17 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         AdminQueryRequest request = new AdminQueryRequest();
         request.setUsername(username);
-        Result<AdminInfoResponse> userResult = adminInfoRemote.queryOne(request);
+        Result<List<AdminInfoResponse>> userResult = adminInfoRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
         }
-        AdminInfoResponse userResp = userResult.getData();
+
+        if (CollectionUtils.isEmpty(userResult.getData()) || userResult.getData().size() > 1) {
+            return null;
+        }
+
+        AdminInfoResponse userResp = userResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {

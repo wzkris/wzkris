@@ -9,11 +9,13 @@ import com.wzkris.usercenter.remote.api.member.response.MemberInfoResponse;
 import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.request.StringValueRequest;
 
+import java.util.List;
+
 public interface MemberInfoRemoteApi {
 
-    Result<MemberInfoResponse> queryOne(MemberQueryRequest request);
+    Result<List<MemberInfoResponse>> queryList(MemberQueryRequest request);
 
-    Result<MemberInfoResponse> queryAdministratorByTenantId(TenantIdRequest request);
+    Result<MemberInfoResponse> queryTenantAdministrator(TenantIdRequest request);
 
     Result<MemberInfoResponse> queryByWexcxCode(StringValueRequest request);
 

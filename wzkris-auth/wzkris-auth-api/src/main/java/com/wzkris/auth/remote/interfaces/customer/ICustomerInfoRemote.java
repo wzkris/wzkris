@@ -1,7 +1,7 @@
 package com.wzkris.auth.remote.interfaces.customer;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
-import com.wzkris.auth.remote.interfaces.common.request.StringValueRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
 import com.wzkris.common.core.model.Result;
@@ -11,6 +11,8 @@ import com.wzkris.common.remote.constants.ServiceIdConstant;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
+
+import java.util.List;
 
 /**
  * @author : wzkris
@@ -25,11 +27,8 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/customer-info-remote")
 public interface ICustomerInfoRemote {
 
-    /**
-     * 根据手机号查询客户
-     */
-    @PostExchange("/query-by-phonenumber")
-    Result<CustomerResponse> queryByPhoneNumber(@RequestBody StringValueRequest request);
+    @PostExchange("/query-list")
+    Result<List<CustomerResponse>> queryList(@RequestBody CustomerQueryRequest request);
 
     /**
      * 微信小程序获取信息或注册

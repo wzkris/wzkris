@@ -1,4 +1,4 @@
-package com.wzkris.auth.remote.interfaces.common.request;
+package com.wzkris.auth.remote.interfaces.member.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

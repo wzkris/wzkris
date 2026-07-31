@@ -16,6 +16,9 @@ import com.wzkris.usercenter.service.PermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
@@ -25,12 +28,16 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     private final PermissionService permissionService;
 
     @Override
-    public Result<AdminInfoResponse> queryOne(AdminQueryRequest request) {
+    public Result<List<AdminInfoResponse>> queryList(AdminQueryRequest request) {
         LambdaQueryWrapper<AdminInfoDO> eq = Wrappers.lambdaQuery(AdminInfoDO.class)
                 .eq(StringUtil.isNotBlank(request.getPhoneNumber()), AdminInfoDO::getPhoneNumber, request.getPhoneNumber())
                 .eq(StringUtil.isNotBlank(request.getUsername()), AdminInfoDO::getUsername, request.getUsername());
-        AdminInfoDO adminInfoDO = adminInfoService.getOne(eq);
-        return Result.ok(this.toAdminInfoResponse(adminInfoDO));
+        List<AdminInfoDO> list = adminInfoService.list(eq);
+        List<AdminInfoResponse> responseList = new ArrayList<>();
+        for (AdminInfoDO adminInfoDO : list) {
+            responseList.add(this.toAdminInfoResponse(adminInfoDO));
+        }
+        return Result.ok(responseList);
     }
 
     @Override

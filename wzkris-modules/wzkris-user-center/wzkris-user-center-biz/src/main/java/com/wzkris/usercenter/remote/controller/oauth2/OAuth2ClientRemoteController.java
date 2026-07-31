@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Hidden
 @RestController
 @RequestMapping("/oauth2-remote")
@@ -20,9 +22,9 @@ public class OAuth2ClientRemoteController {
 
     private final OAuth2ClientRemoteApi oAuth2ClientRemoteApi;
 
-    @PostMapping("/query-one")
-    public Result<OAuth2ClientResponse> queryOne(@RequestBody @Valid OAuth2ClientQueryRequest request) {
-        return oAuth2ClientRemoteApi.queryOne(request);
+    @PostMapping("/query-list")
+    public Result<List<OAuth2ClientResponse>> queryList(@RequestBody @Valid OAuth2ClientQueryRequest request) {
+        return oAuth2ClientRemoteApi.queryList(request);
     }
 
 }

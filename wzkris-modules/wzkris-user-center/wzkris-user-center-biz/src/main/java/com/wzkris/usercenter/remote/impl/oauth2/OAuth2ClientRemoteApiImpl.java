@@ -12,6 +12,9 @@ import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
@@ -19,12 +22,16 @@ public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override
-    public Result<OAuth2ClientResponse> queryOne(OAuth2ClientQueryRequest request) {
+    public Result<List<OAuth2ClientResponse>> queryList(OAuth2ClientQueryRequest request) {
         LambdaQueryWrapper<OAuth2ClientDO> eq = Wrappers.lambdaQuery(OAuth2ClientDO.class)
                 .eq(StringUtil.isNotBlank(request.getId()), OAuth2ClientDO::getId, request.getId())
                 .eq(StringUtil.isNotBlank(request.getClientId()), OAuth2ClientDO::getClientId, request.getClientId());
-        OAuth2ClientDO oauth2ClientDO = oAuth2ClientMapper.selectOne(eq);
-        return Result.ok(this.toOAuth2ClientResponse(oauth2ClientDO));
+        List<OAuth2ClientDO> list = oAuth2ClientMapper.selectList(eq);
+        List<OAuth2ClientResponse> responseList = new ArrayList<>();
+        for (OAuth2ClientDO oauth2ClientDO : list) {
+            responseList.add(this.toOAuth2ClientResponse(oauth2ClientDO));
+        }
+        return Result.ok(responseList);
     }
 
     private OAuth2ClientResponse toOAuth2ClientResponse(OAuth2ClientDO oauth2ClientDO) {

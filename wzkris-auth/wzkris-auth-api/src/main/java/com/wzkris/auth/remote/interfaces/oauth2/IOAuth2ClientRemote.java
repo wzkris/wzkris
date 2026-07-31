@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -23,8 +25,8 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/oauth2-remote")
 public interface IOAuth2ClientRemote {
 
-    @PostExchange("/query-one")
-    Result<OAuth2ClientResponse> queryOne(@RequestBody OAuth2ClientQueryRequest request);
+    @PostExchange("/query-list")
+    Result<List<OAuth2ClientResponse>> queryList(@RequestBody OAuth2ClientQueryRequest request);
 
 }
 

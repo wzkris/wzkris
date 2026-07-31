@@ -23,6 +23,7 @@ import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,12 +48,17 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         MemberQueryRequest request = new MemberQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
+        Result<List<MemberInfoResponse>> memberResult = memberInfoRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
-        MemberInfoResponse memberResp = memberResult.getData();
+
+        if (CollectionUtils.isEmpty(memberResult.getData()) || memberResult.getData().size() > 1) {
+            return null;
+        }
+
+        MemberInfoResponse memberResp = memberResult.getData().getFirst();
 
         try {
             return this.buildAuthenticationToken(memberResp);
@@ -66,12 +73,17 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         MemberQueryRequest request = new MemberQueryRequest();
         request.setUsername(username);
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.queryOne(request);
+        Result<List<MemberInfoResponse>> memberResult = memberInfoRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
-        MemberInfoResponse memberResp = memberResult.getData();
+
+        if (CollectionUtils.isEmpty(memberResult.getData()) || memberResult.getData().size() > 1) {
+            return null;
+        }
+
+        MemberInfoResponse memberResp = memberResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, memberResp.getPassword())) {

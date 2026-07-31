@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
+import java.util.List;
+
 /**
  * @author : wzkris
  * @version : V1.0.0
@@ -26,8 +28,8 @@ import org.springframework.web.service.annotation.PostExchange;
 @HttpExchange(url = "/admin-info-remote")
 public interface IAdminInfoRemote {
 
-    @PostExchange("/query-one")
-    Result<AdminInfoResponse> queryOne(@RequestBody AdminQueryRequest request);
+    @PostExchange("/query-list")
+    Result<List<AdminInfoResponse>> queryList(@RequestBody AdminQueryRequest request);
 
     /**
      * 查询管理员权限
