@@ -32,7 +32,8 @@ public class SecurityContextFilterFunction implements HandlerFilterFunction<Serv
                 .headers(h -> {
                     h.set(CustomHeaderConstants.X_TRACING_ID, TraceIdUtil.get());
                     h.set(CustomHeaderConstants.X_GATEWAY_CLIENT_IP, gatewayClientIp);
-                    if (!(authentication instanceof RoleContextAuthenticationToken rcToken)) {
+                    if (!(authentication instanceof RoleContextAuthenticationToken rcToken)
+                            || !rcToken.isAuthenticated()) {
                         return;
                     }
                     // HTTP header 仅支持 ASCII，中文需 Base64 编码避免 ISO-8859-1 传输乱码

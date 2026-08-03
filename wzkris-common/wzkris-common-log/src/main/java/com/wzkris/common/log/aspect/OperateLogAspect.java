@@ -5,8 +5,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
@@ -17,6 +17,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -36,13 +37,10 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Aspect
+@Order(-1)
 public class OperateLogAspect {
 
-    private static final int MAX_PARAM_LENGTH = 1000;
-
     private static final int MAX_ERROR_LENGTH = 1000;
-
-    private static final int MAX_URL_LENGTH = 150;
 
     /**
      * 敏感属性字段
@@ -128,11 +126,11 @@ public class OperateLogAspect {
 
         // 处理参数和结果
         try {
-            setRequestValue(joinPoint, operateLog.excludeRequestParam(), operateLogEvent);
+            String operParams = setRequestValue(joinPoint, operateLog.excludeRequestParam());
+            operateLogEvent.setOperParam(operParams);
 
             if (jsonResult != null) {
-                operateLogEvent.setJsonResult(StringUtil.substring(
-                        objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
+                operateLogEvent.setJsonResult(objectMapper.writeValueAsString(jsonResult));
             }
         } catch (JsonProcessingException e) {
             log.error("日志参数转换发生异常：{}", e.getMessage(), e);
@@ -154,14 +152,14 @@ public class OperateLogAspect {
             String ip = ServletUtil.getClientIP(request);
             operateLogEvent.setRequestMethod(request.getMethod());
             operateLogEvent.setOperIp(ip);
-            operateLogEvent.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
+            operateLogEvent.setOperUrl(request.getRequestURI());
 
         } catch (Exception e) {
             log.info("非Web环境，跳过设置请求信息");
         }
     }
 
-    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperateLogEvent operateLogEvent)
+    private String setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam)
             throws JsonProcessingException {
         String operParams = argsArrayToString(joinPoint.getArgs());
 
@@ -174,15 +172,11 @@ public class OperateLogAspect {
                                 HashMap.class, String.class, Object.class));
                 if (!paramsMap.isEmpty()) {
                     fuzzyParams(paramsMap, excludeRequestParam);
-                    operParams = StringUtil.substring(
-                            objectMapper.writeValueAsString(paramsMap), 0, MAX_PARAM_LENGTH);
+                    operParams = objectMapper.writeValueAsString(paramsMap);
                 }
-            } else {
-                operParams = StringUtil.substring(operParams, 0, MAX_PARAM_LENGTH);
             }
         }
-
-        operateLogEvent.setOperParam(operParams);
+        return operParams;
     }
 
     private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {

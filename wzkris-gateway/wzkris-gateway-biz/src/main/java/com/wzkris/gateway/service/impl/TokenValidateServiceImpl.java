@@ -19,7 +19,6 @@ import com.wzkris.gateway.service.TokenValidateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -60,12 +59,12 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         try {
             jwt = jwtDecoder.decode(token);
         } catch (JwtException e) {
-            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+            return RoleContextAuthenticationToken.unauthenticated();
         }
 
         AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(jwt.getClaimAsString(JwtClaimConstants.AUTH_TYPE));
         if (authTypeEnum == null) {
-            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+            return RoleContextAuthenticationToken.unauthenticated();
         }
 
         if (authTypeEnum == AuthTypeEnum.CLIENT) {
@@ -105,7 +104,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         LoginUserQueryRequest LoginUserQueryRequest = new LoginUserQueryRequest(authTypeEnum, uid, sid);
         Result<LoginUserResponse> r = loginUserRemote.queryInfo(LoginUserQueryRequest);
         if (!ResultUtil.check(r)) {
-            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+            return RoleContextAuthenticationToken.unauthenticated();
         }
 
         LoginUserResponse LoginUserResponse = r.getData();
@@ -120,7 +119,7 @@ public class TokenValidateServiceImpl implements TokenValidateService {
         OAuth2TokenQueryRequest OAuth2TokenQueryRequest = new OAuth2TokenQueryRequest(token);
         Result<LoginUserResponse> r = loginUserRemote.queryOAuth2(OAuth2TokenQueryRequest);
         if (!ResultUtil.check(r)) {
-            return UsernamePasswordAuthenticationToken.unauthenticated(null, null);
+            return RoleContextAuthenticationToken.unauthenticated();
         }
 
         LoginUserResponse LoginUserResponse = r.getData();
