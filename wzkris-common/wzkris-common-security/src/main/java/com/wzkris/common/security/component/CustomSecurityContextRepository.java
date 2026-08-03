@@ -1,9 +1,9 @@
 package com.wzkris.common.security.component;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
@@ -18,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.function.Supplier;
 
 /**
@@ -52,13 +54,13 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
             return ctx;
         }
 
-        LoginUser loginUser = JsonUtil.parseObject(loginUserHeader, DefaultLoginUser.class);
+        LoginUser loginUser = JsonUtil.parseObject(decodeBase64(loginUserHeader), DefaultLoginUser.class);
 
         // 从角色上下文头读取权限信息（X_ROLE_CONTEXT）
         RoleContext roleContext = null;
         final String roleContextHeader = request.getHeader(CustomHeaderConstants.X_ROLE_CONTEXT);
         if (StringUtil.isNotBlank(roleContextHeader)) {
-            roleContext = JsonUtil.parseObject(roleContextHeader, RoleContext.class);
+            roleContext = JsonUtil.parseObject(decodeBase64(roleContextHeader), RoleContext.class);
         }
 
         RoleContextAuthenticationToken authenticationToken = RoleContextAuthenticationToken.authenticated(
@@ -77,6 +79,13 @@ public final class CustomSecurityContextRepository implements SecurityContextRep
     @Override
     public boolean containsContext(HttpServletRequest request) {
         return StringUtil.isNotBlank(request.getHeader(CustomHeaderConstants.X_USER_CONTEXT));
+    }
+
+    /**
+     * 解码 Base64 编码的 header 值（与网关端 encodeBase64 对应）
+     */
+    private static String decodeBase64(String str) {
+        return new String(Base64.getDecoder().decode(str), StandardCharsets.UTF_8);
     }
 
 }
