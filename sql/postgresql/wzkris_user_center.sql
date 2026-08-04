@@ -3136,6 +3136,52 @@ COMMENT ON COLUMN biz.admin_operate_log.oper_time IS '操作时间';
 
 
 --
+-- Name: customer_operate_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.customer_operate_log (
+    oper_id bigint NOT NULL,
+    title character varying(50) NOT NULL,
+    sub_title character varying(50) NOT NULL,
+    oper_type character(1) NOT NULL,
+    method character varying(200),
+    http_method character varying(10),
+    customer_id bigint NOT NULL,
+    username character varying(50) NOT NULL,
+    http_url character varying(500),
+    oper_ip inet,
+    oper_location character varying(100),
+    oper_param text,
+    json_result text,
+    success boolean NOT NULL,
+    error_msg text,
+    cost_time bigint,
+    oper_time timestamp(3) with time zone NOT NULL
+);
+
+ALTER TABLE biz.customer_operate_log OWNER TO postgres;
+
+COMMENT ON TABLE biz.customer_operate_log IS '用户操作日志记录';
+COMMENT ON COLUMN biz.customer_operate_log.oper_id IS '日志主键';
+COMMENT ON COLUMN biz.customer_operate_log.title IS '模块标题';
+COMMENT ON COLUMN biz.customer_operate_log.sub_title IS '子标题';
+COMMENT ON COLUMN biz.customer_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除 4授权 5导入导出）';
+COMMENT ON COLUMN biz.customer_operate_log.method IS '方法名称';
+COMMENT ON COLUMN biz.customer_operate_log.http_method IS '请求方式';
+COMMENT ON COLUMN biz.customer_operate_log.customer_id IS '用户ID';
+COMMENT ON COLUMN biz.customer_operate_log.username IS '用户名';
+COMMENT ON COLUMN biz.customer_operate_log.http_url IS '请求URL';
+COMMENT ON COLUMN biz.customer_operate_log.oper_ip IS '主机地址';
+COMMENT ON COLUMN biz.customer_operate_log.oper_location IS '操作地点';
+COMMENT ON COLUMN biz.customer_operate_log.oper_param IS '请求参数';
+COMMENT ON COLUMN biz.customer_operate_log.json_result IS '返回参数';
+COMMENT ON COLUMN biz.customer_operate_log.success IS '操作状态';
+COMMENT ON COLUMN biz.customer_operate_log.error_msg IS '错误消息';
+COMMENT ON COLUMN biz.customer_operate_log.cost_time IS '耗时（毫秒）';
+COMMENT ON COLUMN biz.customer_operate_log.oper_time IS '操作时间';
+
+
+--
 -- TOC entry 217 (class 1259 OID 26130)
 -- Name: announcement_info; Type: TABLE; Schema: biz; Owner: postgres
 --
@@ -4060,6 +4106,14 @@ COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_m
 
 
 --
+-- Data for Name: customer_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.customer_operate_log (oper_id, title, sub_title, oper_type, method, http_method, customer_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+\.
+
+
+--
 -- TOC entry 3390 (class 0 OID 26130)
 -- Dependencies: 217
 -- Data for Name: announcement_info; Type: TABLE DATA; Schema: biz; Owner: postgres
@@ -4199,6 +4253,14 @@ ALTER TABLE ONLY biz.admin_operate_log
 
 
 --
+-- Name: customer_operate_log customer_operate_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.customer_operate_log
+    ADD CONSTRAINT customer_operate_log_pkey PRIMARY KEY (oper_id);
+
+
+--
 -- TOC entry 3225 (class 2606 OID 26181)
 -- Name: announcement_info announcement_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
@@ -4293,6 +4355,13 @@ CREATE INDEX idx_admin_login_log_login_time ON biz.admin_login_log USING brin (l
 --
 
 CREATE INDEX idx_admin_operate_log_oper_time ON biz.admin_operate_log USING brin (oper_time);
+
+
+--
+-- Name: idx_customer_operate_log_oper_time; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_customer_operate_log_oper_time ON biz.customer_operate_log USING brin (oper_time);
 
 
 --

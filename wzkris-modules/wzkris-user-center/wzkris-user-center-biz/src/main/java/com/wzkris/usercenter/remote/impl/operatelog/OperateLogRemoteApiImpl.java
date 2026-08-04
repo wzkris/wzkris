@@ -3,10 +3,12 @@ package com.wzkris.usercenter.remote.impl.operatelog;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.domain.AdminOperateLogDO;
+import com.wzkris.usercenter.domain.CustomerOperateLogDO;
 import com.wzkris.usercenter.domain.TenantOperateLogDO;
 import com.wzkris.usercenter.remote.api.operatelog.OperateLogRemoteApi;
 import com.wzkris.usercenter.remote.api.operatelog.request.OperateLogEventRequest;
 import com.wzkris.usercenter.service.AdminOperateLogService;
+import com.wzkris.usercenter.service.CustomerOperateLogService;
 import com.wzkris.usercenter.service.TenantOperateLogService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,6 +28,8 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
 
     private final TenantOperateLogService tenantOperateLogService;
 
+    private final CustomerOperateLogService customerOperateLogService;
+
     @Override
     public Result<Void> save(List<OperateLogEventRequest> requestList) {
         if (CollectionUtils.isEmpty(requestList)) {
@@ -38,6 +42,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
                 .collect(Collectors.groupingBy(OperateLogEventRequest::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
+        saveCustomerLogs(listMap.getOrDefault(AuthTypeEnum.CUSTOMER, Collections.emptyList()));
         return Result.ok();
     }
 
@@ -96,6 +101,34 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             operLogs.add(tenantOperateLogDO);
         }
         tenantOperateLogService.saveBatch(operLogs, 1000);
+    }
+
+    private void saveCustomerLogs(List<OperateLogEventRequest> requestList) {
+        if (CollectionUtils.isEmpty(requestList)) {
+            return;
+        }
+        List<CustomerOperateLogDO> operLogs = new ArrayList<>();
+        for (OperateLogEventRequest request : requestList) {
+            CustomerOperateLogDO customerOperateLogDO = new CustomerOperateLogDO();
+            customerOperateLogDO.setTitle(request.getTitle());
+            customerOperateLogDO.setSubTitle(request.getSubTitle());
+            customerOperateLogDO.setOperType(request.getOperType());
+            customerOperateLogDO.setMethod(request.getMethod());
+            customerOperateLogDO.setHttpMethod(request.getHttpMethod());
+            customerOperateLogDO.setCustomerId(request.getOperatorId());
+            customerOperateLogDO.setUsername(request.getOperName());
+            customerOperateLogDO.setHttpUrl(request.getHttpUrl());
+            customerOperateLogDO.setOperIp(request.getOperIp());
+            customerOperateLogDO.setOperParam(request.getOperParam());
+            customerOperateLogDO.setJsonResult(request.getJsonResult());
+            customerOperateLogDO.setOperLocation(request.getOperLocation());
+            customerOperateLogDO.setSuccess(request.getSuccess());
+            customerOperateLogDO.setErrorMsg(request.getErrorMsg());
+            customerOperateLogDO.setOperTime(request.getOperTime());
+            customerOperateLogDO.setCostTime(request.getCostTime());
+            operLogs.add(customerOperateLogDO);
+        }
+        customerOperateLogService.saveBatch(operLogs, 1000);
     }
 
 }
