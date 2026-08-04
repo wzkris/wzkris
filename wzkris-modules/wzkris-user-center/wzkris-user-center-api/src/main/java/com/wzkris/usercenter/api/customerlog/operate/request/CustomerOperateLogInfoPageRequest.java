@@ -24,4 +24,7 @@ public class CustomerOperateLogInfoPageRequest extends PagingRequest {
     @Parameter(description = "操作状态")
     private Boolean success;
 
+    @Parameter(description = "链路追踪ID")
+    private String traceId;
+
 }

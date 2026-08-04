@@ -113,6 +113,7 @@ public class OperateLogAspect {
         operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
         operateLogEvent.setOperTime(OffsetDateTime.now());
+        operateLogEvent.setTraceId(TraceIdUtil.getOrGenerate());
         operateLogEvent.setCostTime(costTime);
 
         // 设置方法信息

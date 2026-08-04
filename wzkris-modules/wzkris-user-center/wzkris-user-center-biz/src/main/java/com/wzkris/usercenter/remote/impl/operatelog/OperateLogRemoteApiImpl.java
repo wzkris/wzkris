@@ -69,6 +69,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             adminOperateLogDO.setErrorMsg(request.getErrorMsg());
             adminOperateLogDO.setOperTime(request.getOperTime());
             adminOperateLogDO.setCostTime(request.getCostTime());
+            adminOperateLogDO.setTraceId(request.getTraceId());
             operLogs.add(adminOperateLogDO);
         }
         adminOperateLogService.saveBatch(operLogs, 1000);
@@ -98,6 +99,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             tenantOperateLogDO.setOperTime(request.getOperTime());
             tenantOperateLogDO.setCostTime(request.getCostTime());
             tenantOperateLogDO.setTenantId(request.getTenantId());
+            tenantOperateLogDO.setTraceId(request.getTraceId());
             operLogs.add(tenantOperateLogDO);
         }
         tenantOperateLogService.saveBatch(operLogs, 1000);
@@ -126,6 +128,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             customerOperateLogDO.setErrorMsg(request.getErrorMsg());
             customerOperateLogDO.setOperTime(request.getOperTime());
             customerOperateLogDO.setCostTime(request.getCostTime());
+            customerOperateLogDO.setTraceId(request.getTraceId());
             operLogs.add(customerOperateLogDO);
         }
         customerOperateLogService.saveBatch(operLogs, 1000);

@@ -35,6 +35,7 @@ public class CustomerOperateLogInfoApiImpl
         return new LambdaQueryWrapper<CustomerOperateLogDO>()
                 .eq(CustomerOperateLogDO::getCustomerId, SecurityUtil.getUid())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), CustomerOperateLogDO::getSuccess, request.getSuccess())
+                .eq(StringUtil.isNotEmpty(request.getTraceId()), CustomerOperateLogDO::getTraceId, request.getTraceId())
                 .like(StringUtil.isNotBlank(request.getTitle()), CustomerOperateLogDO::getTitle, request.getTitle())
                 .like(StringUtil.isNotBlank(request.getSubTitle()), CustomerOperateLogDO::getSubTitle, request.getSubTitle())
                 .eq(StringUtil.isNotEmpty(request.getOperType()), CustomerOperateLogDO::getOperType, request.getOperType())

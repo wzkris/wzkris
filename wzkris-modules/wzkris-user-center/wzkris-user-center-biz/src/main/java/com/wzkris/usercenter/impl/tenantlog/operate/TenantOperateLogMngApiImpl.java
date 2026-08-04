@@ -34,6 +34,7 @@ public class TenantOperateLogMngApiImpl
         return new LambdaQueryWrapper<TenantOperateLogDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantOperateLogDO::getMemberId, request.getMemberId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantOperateLogDO::getSuccess, request.getSuccess())
+                .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantOperateLogDO::getTraceId, request.getTraceId())
                 .like(StringUtil.isNotBlank(request.getTitle()), TenantOperateLogDO::getTitle, request.getTitle())
                 .like(StringUtil.isNotBlank(request.getSubTitle()), TenantOperateLogDO::getSubTitle, request.getSubTitle())
                 .eq(StringUtil.isNotEmpty(request.getOperType()), TenantOperateLogDO::getOperType, request.getOperType())

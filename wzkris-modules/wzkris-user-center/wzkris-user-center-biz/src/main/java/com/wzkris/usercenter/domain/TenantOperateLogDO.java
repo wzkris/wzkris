@@ -75,4 +75,7 @@ public class TenantOperateLogDO implements Serializable {
     @Schema(description = "租户ID")
     private Long tenantId;
 
+    @Schema(description = "链路追踪ID")
+    private String traceId;
+
 }

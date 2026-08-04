@@ -52,4 +52,7 @@ public class CustomerOperateLogInfoResponse {
     @Schema(description = "耗时（毫秒）")
     private Long costTime;
 
+    @Schema(description = "链路追踪ID")
+    private String traceId;
+
 }

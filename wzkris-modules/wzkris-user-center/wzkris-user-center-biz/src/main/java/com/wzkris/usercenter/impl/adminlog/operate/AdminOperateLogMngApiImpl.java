@@ -34,6 +34,7 @@ public class AdminOperateLogMngApiImpl
         return new LambdaQueryWrapper<AdminOperateLogDO>()
                 .eq(ObjectUtils.isNotEmpty(request.getAdminId()), AdminOperateLogDO::getAdminId, request.getAdminId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), AdminOperateLogDO::getSuccess, request.getSuccess())
+                .eq(StringUtil.isNotEmpty(request.getTraceId()), AdminOperateLogDO::getTraceId, request.getTraceId())
                 .like(StringUtil.isNotBlank(request.getTitle()), AdminOperateLogDO::getTitle, request.getTitle())
                 .like(StringUtil.isNotBlank(request.getSubTitle()), AdminOperateLogDO::getSubTitle, request.getSubTitle())
                 .eq(StringUtil.isNotEmpty(request.getOperType()), AdminOperateLogDO::getOperType, request.getOperType())

@@ -104,4 +104,9 @@ public class OperateLogEvent {
      */
     private Long tenantId;
 
+    /**
+     * 链路追踪ID
+     */
+    private String traceId;
+
 }

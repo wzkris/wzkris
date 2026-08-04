@@ -44,4 +44,6 @@ public class OperateLogEventRequest {
 
     private Long tenantId;
 
+    private String traceId;
+
 }

@@ -2976,7 +2976,8 @@ CREATE TABLE biz.admin_operate_log (
     success boolean NOT NULL,
     error_msg text,
     cost_time bigint,
-    oper_time timestamp(3) with time zone NOT NULL
+    oper_time timestamp(0) with time zone NOT NULL,
+    trace_id character varying(64) NOT NULL
 );
 
 
@@ -3133,6 +3134,7 @@ COMMENT ON COLUMN biz.admin_operate_log.error_msg IS '错误消息';
 --
 
 COMMENT ON COLUMN biz.admin_operate_log.oper_time IS '操作时间';
+COMMENT ON COLUMN biz.admin_operate_log.trace_id IS '链路追踪ID';
 
 
 --
@@ -3156,7 +3158,8 @@ CREATE TABLE biz.customer_operate_log (
     success boolean NOT NULL,
     error_msg text,
     cost_time bigint,
-    oper_time timestamp(3) with time zone NOT NULL
+    oper_time timestamp(0) with time zone NOT NULL,
+    trace_id character varying(64) NOT NULL
 );
 
 ALTER TABLE biz.customer_operate_log OWNER TO postgres;
@@ -3179,6 +3182,42 @@ COMMENT ON COLUMN biz.customer_operate_log.success IS '操作状态';
 COMMENT ON COLUMN biz.customer_operate_log.error_msg IS '错误消息';
 COMMENT ON COLUMN biz.customer_operate_log.cost_time IS '耗时（毫秒）';
 COMMENT ON COLUMN biz.customer_operate_log.oper_time IS '操作时间';
+COMMENT ON COLUMN biz.customer_operate_log.trace_id IS '链路追踪ID';
+
+
+--
+-- Name: customer_login_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.customer_login_log (
+    log_id bigint NOT NULL,
+    customer_id bigint NOT NULL,
+    username character varying(32) NOT NULL,
+    login_type character varying(32) NOT NULL,
+    success boolean NOT NULL,
+    error_msg character varying(50) NOT NULL,
+    login_ip inet NOT NULL,
+    login_location character varying(50) NOT NULL,
+    login_time timestamp(0) with time zone NOT NULL,
+    trace_id character varying(64) NOT NULL,
+    user_agent character varying(200) NOT NULL
+);
+
+
+ALTER TABLE biz.customer_login_log OWNER TO postgres;
+
+COMMENT ON TABLE biz.customer_login_log IS '用户登录日志';
+COMMENT ON COLUMN biz.customer_login_log.log_id IS '日志主键';
+COMMENT ON COLUMN biz.customer_login_log.customer_id IS '用户ID';
+COMMENT ON COLUMN biz.customer_login_log.username IS '用户名';
+COMMENT ON COLUMN biz.customer_login_log.login_type IS '登录类型';
+COMMENT ON COLUMN biz.customer_login_log.success IS '登录状态';
+COMMENT ON COLUMN biz.customer_login_log.error_msg IS '失败信息';
+COMMENT ON COLUMN biz.customer_login_log.login_ip IS '登录ip';
+COMMENT ON COLUMN biz.customer_login_log.login_location IS '登录地址';
+COMMENT ON COLUMN biz.customer_login_log.login_time IS '登录时间';
+COMMENT ON COLUMN biz.customer_login_log.trace_id IS '链路追踪ID';
+COMMENT ON COLUMN biz.customer_login_log.user_agent IS '原始UA';
 
 
 --
@@ -3917,7 +3956,8 @@ CREATE TABLE biz.tenant_operate_log (
     success boolean NOT NULL,
     error_msg text,
     cost_time bigint,
-    oper_time timestamp(3) with time zone NOT NULL
+    oper_time timestamp(0) with time zone NOT NULL,
+    trace_id character varying(64) NOT NULL
 );
 
 
@@ -4083,6 +4123,7 @@ COMMENT ON COLUMN biz.tenant_operate_log.error_msg IS '错误消息';
 --
 
 COMMENT ON COLUMN biz.tenant_operate_log.oper_time IS '操作时间';
+COMMENT ON COLUMN biz.tenant_operate_log.trace_id IS '链路追踪ID';
 
 
 --
@@ -4101,7 +4142,7 @@ COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error
 -- Data for Name: admin_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_method, admin_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_method, admin_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
 \.
 
 
@@ -4109,7 +4150,15 @@ COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_m
 -- Data for Name: customer_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_operate_log (oper_id, title, sub_title, oper_type, method, http_method, customer_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.customer_operate_log (oper_id, title, sub_title, oper_type, method, http_method, customer_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: customer_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+COPY biz.customer_login_log (log_id, customer_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 \.
 
 
@@ -4230,7 +4279,7 @@ COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, s
 -- Data for Name: tenant_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, http_method, tenant_id, member_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, http_method, tenant_id, member_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
 \.
 
 
@@ -4258,6 +4307,14 @@ ALTER TABLE ONLY biz.admin_operate_log
 
 ALTER TABLE ONLY biz.customer_operate_log
     ADD CONSTRAINT customer_operate_log_pkey PRIMARY KEY (oper_id);
+
+
+--
+-- Name: customer_login_log customer_login_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.customer_login_log
+    ADD CONSTRAINT customer_login_log_pkey PRIMARY KEY (log_id);
 
 
 --
@@ -4362,6 +4419,13 @@ CREATE INDEX idx_admin_operate_log_oper_time ON biz.admin_operate_log USING brin
 --
 
 CREATE INDEX idx_customer_operate_log_oper_time ON biz.customer_operate_log USING brin (oper_time);
+
+
+--
+-- Name: idx_customer_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_customer_login_log_login_time ON biz.customer_login_log USING brin (login_time);
 
 
 --
