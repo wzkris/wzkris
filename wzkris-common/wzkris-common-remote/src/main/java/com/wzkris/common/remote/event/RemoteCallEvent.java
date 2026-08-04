@@ -14,9 +14,9 @@ import java.util.Map;
 @NoArgsConstructor
 public class RemoteCallEvent {
 
-    private String requestMethod;
+    private String httpMethod;
 
-    private String requestUri;
+    private String httpUri;
 
     private Integer httpStatusCode;
 

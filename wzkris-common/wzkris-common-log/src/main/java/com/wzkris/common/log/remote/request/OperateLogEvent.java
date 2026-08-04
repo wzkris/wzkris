@@ -30,14 +30,14 @@ public class OperateLogEvent {
     private String operType;
 
     /**
-     * 请求方法
+     * 方法
      */
     private String method;
 
     /**
-     * 请求方式
+     * http方法
      */
-    private String requestMethod;
+    private String httpMethod;
 
     /**
      * 认证类型
@@ -57,7 +57,7 @@ public class OperateLogEvent {
     /**
      * 请求url
      */
-    private String operUrl;
+    private String httpUrl;
 
     /**
      * 操作地址
@@ -93,6 +93,11 @@ public class OperateLogEvent {
      * 操作时间
      */
     private OffsetDateTime operTime;
+
+    /**
+     * 耗时（毫秒）
+     */
+    private Long costTime;
 
     /**
      * 租户ID

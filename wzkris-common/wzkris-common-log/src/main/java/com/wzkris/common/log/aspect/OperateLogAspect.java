@@ -14,8 +14,8 @@ import com.wzkris.common.log.remote.request.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
@@ -60,23 +60,35 @@ public class OperateLogAspect {
     }
 
     /**
-     * 处理完请求后执行
+     * 环绕拦截：采集操作耗时，并保留原语义（正常返回/Exception 记录，Error 不记录）
      */
-    @AfterReturning(pointcut = "@annotation(operateLog)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, OperateLog operateLog, Object jsonResult) {
-        handleLog(joinPoint, operateLog, jsonResult, null);
+    @Around("@annotation(operateLog)")
+    public Object doAround(ProceedingJoinPoint joinPoint, OperateLog operateLog) throws Throwable {
+        long startNanos = System.nanoTime();
+        Object jsonResult = null;
+        Exception exception = null;
+        boolean shouldLog = true;
+        try {
+            jsonResult = joinPoint.proceed();
+            return jsonResult;
+        } catch (Exception e) {
+            exception = e;
+            throw e;
+        } catch (Error e) {
+            // 与原 @AfterThrowing(Exception) 一致：Error 不记日志
+            shouldLog = false;
+            throw e;
+        } finally {
+            if (shouldLog) {
+                long costTime = (System.nanoTime() - startNanos) / 1_000_000L;
+                handleLog(joinPoint, operateLog, jsonResult, exception, costTime);
+            }
+        }
     }
 
-    /**
-     * 拦截异常操作
-     */
-    @AfterThrowing(pointcut = "@annotation(operateLog)", throwing = "exception")
-    public void doAfterThrowing(JoinPoint joinPoint, OperateLog operateLog, Exception exception) {
-        handleLog(joinPoint, operateLog, null, exception);
-    }
-
-    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, Object jsonResult, Exception exception) {
-        OperateLogEvent operateLogEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception);
+    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog,
+                             Object jsonResult, Exception exception, long costTime) {
+        OperateLogEvent operateLogEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception, costTime);
 
         SpringUtil.getContext().publishEvent(operateLogEvent);
     }
@@ -85,22 +97,23 @@ public class OperateLogAspect {
      * 构建操作事件 - 不依赖HTTP请求
      */
     private OperateLogEvent buildOperateEvent(JoinPoint joinPoint, OperateLog operateLog,
-                                              Object jsonResult, Exception exception) {
+                                              Object jsonResult, Exception exception, long costTime) {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
         LoginUser loginUser = userContextHelper.getLoginUser();
-        operateLogEvent.setOperatorId(loginUser.getUid());
-        operateLogEvent.setAuthType(loginUser.getAuthType());
-        operateLogEvent.setOperName(loginUser.getName());
-
-        // 设置租户ID
-        operateLogEvent.setTenantId(loginUser.getTenantId());
+        if (loginUser != null) {
+            operateLogEvent.setOperatorId(loginUser.getUid());
+            operateLogEvent.setAuthType(loginUser.getAuthType());
+            operateLogEvent.setOperName(loginUser.getName());
+            operateLogEvent.setTenantId(loginUser.getTenantId());
+        }
 
         // 设置操作信息
         operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
         operateLogEvent.setOperTime(OffsetDateTime.now());
+        operateLogEvent.setCostTime(costTime);
 
         // 设置方法信息
         String className = joinPoint.getTarget().getClass().getName();
@@ -108,7 +121,7 @@ public class OperateLogAspect {
         operateLogEvent.setMethod(className + StringUtil.DOT + methodName + "()");
 
         // 对于Web环境，尝试获取请求信息；非Web环境则为空
-        setRequestParams(operateLogEvent);
+        setHttpParams(operateLogEvent);
 
         // 处理异常情况
         if (exception != null) {
@@ -126,7 +139,7 @@ public class OperateLogAspect {
 
         // 处理参数和结果
         try {
-            String operParams = setRequestValue(joinPoint, operateLog.excludeRequestParam());
+            String operParams = handleRequestValue(joinPoint, operateLog.excludeRequestParam());
             operateLogEvent.setOperParam(operParams);
 
             if (jsonResult != null) {
@@ -142,24 +155,27 @@ public class OperateLogAspect {
     /**
      * 设置Web环境信息（如果存在）
      */
-    private void setRequestParams(OperateLogEvent operateLogEvent) {
-        try {
-            ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
-                    RequestContextHolder.getRequestAttributes();
+    private void setHttpParams(OperateLogEvent operateLogEvent) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes();
 
-            HttpServletRequest request = requestAttributes.getRequest();
+        if (requestAttributes == null) {
+            return;
+        }
+        HttpServletRequest request = requestAttributes.getRequest();
 
-            String ip = ServletUtil.getClientIP(request);
-            operateLogEvent.setRequestMethod(request.getMethod());
-            operateLogEvent.setOperIp(ip);
-            operateLogEvent.setOperUrl(request.getRequestURI());
+        operateLogEvent.setHttpMethod(request.getMethod());
+        operateLogEvent.setHttpUrl(request.getRequestURI());
 
-        } catch (Exception e) {
-            log.info("非Web环境，跳过设置请求信息");
+        // getClientIP 在异常代理/enableLookups 等场景可能返回非 IP 值，
+        // 而 oper_ip 为 inet 列，非法值会导致整批 saveBatch 失败，故置空
+        String clientIp = ServletUtil.getClientIP(request);
+        if (StringUtil.isNotBlank(clientIp) && !"unknown".equalsIgnoreCase(clientIp.trim())) {
+            operateLogEvent.setOperIp(clientIp);
         }
     }
 
-    private String setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam)
+    private String handleRequestValue(JoinPoint joinPoint, String[] excludeRequestParam)
             throws JsonProcessingException {
         String operParams = argsArrayToString(joinPoint.getArgs());
 
@@ -180,9 +196,7 @@ public class OperateLogAspect {
     }
 
     private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {
-        Stream.concat(
-                        Arrays.stream(EXCLUDE_PROPERTIES),
-                        Arrays.stream(excludeRequestParam != null ? excludeRequestParam : new String[0]))
+        Stream.concat(Arrays.stream(EXCLUDE_PROPERTIES), Arrays.stream(excludeRequestParam))
                 .forEach(property -> {
                     if (paramsMap.containsKey(property)) {
                         paramsMap.put(property, "*");

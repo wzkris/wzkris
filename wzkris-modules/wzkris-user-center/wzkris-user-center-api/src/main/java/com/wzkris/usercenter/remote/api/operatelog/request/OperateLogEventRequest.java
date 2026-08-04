@@ -16,7 +16,7 @@ public class OperateLogEventRequest {
 
     private String method;
 
-    private String requestMethod;
+    private String httpMethod;
 
     private AuthTypeEnum authType;
 
@@ -24,7 +24,7 @@ public class OperateLogEventRequest {
 
     private String operName;
 
-    private String operUrl;
+    private String httpUrl;
 
     private String operIp;
 
@@ -39,6 +39,8 @@ public class OperateLogEventRequest {
     private String errorMsg;
 
     private OffsetDateTime operTime;
+
+    private Long costTime;
 
     private Long tenantId;
 

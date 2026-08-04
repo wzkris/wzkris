@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  *
  * @author wzkris
  */
-@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface OperateLog {

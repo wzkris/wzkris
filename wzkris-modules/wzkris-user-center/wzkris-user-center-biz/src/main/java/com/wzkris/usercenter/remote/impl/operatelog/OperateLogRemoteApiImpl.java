@@ -31,9 +31,11 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
         if (CollectionUtils.isEmpty(requestList)) {
             return Result.ok();
         }
-        Map<AuthTypeEnum, List<OperateLogEventRequest>> listMap =
-                requestList.stream()
-                        .collect(Collectors.groupingBy(OperateLogEventRequest::getAuthType));
+        // authType 为空表示无登录用户上下文（定时任务、异步、系统自动操作等普通方法），
+        // 此类日志按约定不落库；同时避免 Collectors.groupingBy 对 null 键抛 NPE 拖垮整批
+        Map<AuthTypeEnum, List<OperateLogEventRequest>> listMap = requestList.stream()
+                .filter(req -> req.getAuthType() != null)
+                .collect(Collectors.groupingBy(OperateLogEventRequest::getAuthType));
         saveAdminLogs(listMap.getOrDefault(AuthTypeEnum.ADMIN, Collections.emptyList()));
         saveTenantLogs(listMap.getOrDefault(AuthTypeEnum.TENANT, Collections.emptyList()));
         return Result.ok();
@@ -50,10 +52,10 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             adminOperateLogDO.setSubTitle(request.getSubTitle());
             adminOperateLogDO.setOperType(request.getOperType());
             adminOperateLogDO.setMethod(request.getMethod());
-            adminOperateLogDO.setRequestMethod(request.getRequestMethod());
+            adminOperateLogDO.setHttpMethod(request.getHttpMethod());
             adminOperateLogDO.setAdminId(request.getOperatorId());
             adminOperateLogDO.setUsername(request.getOperName());
-            adminOperateLogDO.setOperUrl(request.getOperUrl());
+            adminOperateLogDO.setHttpUrl(request.getHttpUrl());
             adminOperateLogDO.setOperIp(request.getOperIp());
             adminOperateLogDO.setOperParam(request.getOperParam());
             adminOperateLogDO.setJsonResult(request.getJsonResult());
@@ -61,6 +63,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             adminOperateLogDO.setSuccess(request.getSuccess());
             adminOperateLogDO.setErrorMsg(request.getErrorMsg());
             adminOperateLogDO.setOperTime(request.getOperTime());
+            adminOperateLogDO.setCostTime(request.getCostTime());
             operLogs.add(adminOperateLogDO);
         }
         adminOperateLogService.saveBatch(operLogs, 1000);
@@ -77,10 +80,10 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             tenantOperateLogDO.setSubTitle(request.getSubTitle());
             tenantOperateLogDO.setOperType(request.getOperType());
             tenantOperateLogDO.setMethod(request.getMethod());
-            tenantOperateLogDO.setRequestMethod(request.getRequestMethod());
+            tenantOperateLogDO.setHttpMethod(request.getHttpMethod());
             tenantOperateLogDO.setMemberId(request.getOperatorId());
             tenantOperateLogDO.setUsername(request.getOperName());
-            tenantOperateLogDO.setOperUrl(request.getOperUrl());
+            tenantOperateLogDO.setHttpUrl(request.getHttpUrl());
             tenantOperateLogDO.setOperIp(request.getOperIp());
             tenantOperateLogDO.setOperParam(request.getOperParam());
             tenantOperateLogDO.setJsonResult(request.getJsonResult());
@@ -88,6 +91,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             tenantOperateLogDO.setSuccess(request.getSuccess());
             tenantOperateLogDO.setErrorMsg(request.getErrorMsg());
             tenantOperateLogDO.setOperTime(request.getOperTime());
+            tenantOperateLogDO.setCostTime(request.getCostTime());
             tenantOperateLogDO.setTenantId(request.getTenantId());
             operLogs.add(tenantOperateLogDO);
         }

@@ -2961,21 +2961,22 @@ COMMENT ON COLUMN biz.admin_login_log.login_time IS '登录时间';
 
 CREATE TABLE biz.admin_operate_log (
     oper_id bigint NOT NULL,
-    title character varying(20) NOT NULL,
-    sub_title character varying(20) NOT NULL,
+    title character varying(50) NOT NULL,
+    sub_title character varying(50) NOT NULL,
     oper_type character(1) NOT NULL,
-    method character varying(100),
-    request_method character varying(10),
+    method character varying(200),
+    http_method character varying(10),
     admin_id bigint NOT NULL,
     username character varying(50) NOT NULL,
-    oper_url character varying(200) NOT NULL,
-    oper_ip inet NOT NULL,
+    http_url character varying(500),
+    oper_ip inet,
     oper_location character varying(100),
     oper_param text,
     json_result text,
     success boolean NOT NULL,
     error_msg text,
-    oper_time timestamp(0) with time zone NOT NULL
+    cost_time bigint,
+    oper_time timestamp(3) with time zone NOT NULL
 );
 
 
@@ -3023,7 +3024,7 @@ COMMENT ON COLUMN biz.admin_operate_log.sub_title IS '子标题';
 -- Name: COLUMN admin_operate_log.oper_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.admin_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除）';
+COMMENT ON COLUMN biz.admin_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除 4授权 5导入导出）';
 
 
 --
@@ -3038,10 +3039,10 @@ COMMENT ON COLUMN biz.admin_operate_log.method IS '方法名称';
 --
 -- TOC entry 3419 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN admin_operate_log.request_method; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN admin_operate_log.http_method; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.admin_operate_log.request_method IS '请求方式';
+COMMENT ON COLUMN biz.admin_operate_log.http_method IS '请求方式';
 
 
 --
@@ -3065,10 +3066,10 @@ COMMENT ON COLUMN biz.admin_operate_log.username IS '用户名';
 --
 -- TOC entry 3422 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN admin_operate_log.oper_url; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN admin_operate_log.http_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.admin_operate_log.oper_url IS '请求URL';
+COMMENT ON COLUMN biz.admin_operate_log.http_url IS '请求URL';
 
 
 --
@@ -3854,22 +3855,23 @@ COMMENT ON COLUMN biz.tenant_login_log.login_time IS '登录时间';
 
 CREATE TABLE biz.tenant_operate_log (
     oper_id bigint NOT NULL,
-    title character varying(20) NOT NULL,
-    sub_title character varying(20) NOT NULL,
+    title character varying(50) NOT NULL,
+    sub_title character varying(50) NOT NULL,
     oper_type character(1) NOT NULL,
-    method character varying(100),
-    request_method character varying(10),
+    method character varying(200),
+    http_method character varying(10),
     tenant_id bigint NOT NULL,
     member_id bigint NOT NULL,
     username character varying(50) NOT NULL,
-    oper_url character varying(200) NOT NULL,
-    oper_ip inet NOT NULL,
+    http_url character varying(500),
+    oper_ip inet,
     oper_location character varying(100),
     oper_param text,
     json_result text,
     success boolean NOT NULL,
     error_msg text,
-    oper_time timestamp(0) with time zone NOT NULL
+    cost_time bigint,
+    oper_time timestamp(3) with time zone NOT NULL
 );
 
 
@@ -3917,7 +3919,7 @@ COMMENT ON COLUMN biz.tenant_operate_log.sub_title IS '子标题';
 -- Name: COLUMN tenant_operate_log.oper_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除）';
+COMMENT ON COLUMN biz.tenant_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除 4授权 5导入导出）';
 
 
 --
@@ -3932,10 +3934,10 @@ COMMENT ON COLUMN biz.tenant_operate_log.method IS '方法名称';
 --
 -- TOC entry 3497 (class 0 OID 0)
 -- Dependencies: 224
--- Name: COLUMN tenant_operate_log.request_method; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_operate_log.http_method; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_operate_log.request_method IS '请求方式';
+COMMENT ON COLUMN biz.tenant_operate_log.http_method IS '请求方式';
 
 
 --
@@ -3968,10 +3970,10 @@ COMMENT ON COLUMN biz.tenant_operate_log.username IS '用户名';
 --
 -- TOC entry 3501 (class 0 OID 0)
 -- Dependencies: 224
--- Name: COLUMN tenant_operate_log.oper_url; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_operate_log.http_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_operate_log.oper_url IS '请求URL';
+COMMENT ON COLUMN biz.tenant_operate_log.http_url IS '请求URL';
 
 
 --
@@ -4053,7 +4055,7 @@ COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error
 -- Data for Name: admin_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, request_method, admin_id, username, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_method, admin_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
 \.
 
 
@@ -4174,7 +4176,7 @@ COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, s
 -- Data for Name: tenant_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, request_method, tenant_id, member_id, username, oper_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
+COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, http_method, tenant_id, member_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time) FROM stdin;
 \.
 
 

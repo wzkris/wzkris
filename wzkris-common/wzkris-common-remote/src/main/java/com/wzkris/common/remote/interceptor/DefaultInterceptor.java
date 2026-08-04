@@ -75,8 +75,8 @@ public class DefaultInterceptor implements RemoteClientRequestInterceptor, Order
             Throwable error) throws IOException {
         RemoteInterfaceProperties.ObservationProperties observationProperties = remoteInterfaceProperties.getObservation();
         final RemoteCallEvent event = new RemoteCallEvent();
-        event.setRequestMethod(request.getMethod().name());
-        event.setRequestUri(request.getURI().toString());
+        event.setHttpMethod(request.getMethod().name());
+        event.setHttpUri(request.getURI().toString());
         Map<String, String> requestHeaders = request.getHeaders().asSingleValueMap();
         event.setRequestHeaders(requestHeaders);
         String requestBody = formatBody(body);

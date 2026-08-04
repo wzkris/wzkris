@@ -68,8 +68,8 @@ class DefaultInterceptorTest {
         ArgumentCaptor<RemoteCallEvent> eventCaptor = ArgumentCaptor.forClass(RemoteCallEvent.class);
         verify(publisher).publishEvent(eventCaptor.capture());
         RemoteCallEvent event = eventCaptor.getValue();
-        assertEquals("POST", event.getRequestMethod());
-        assertEquals("http://test/api", event.getRequestUri());
+        assertEquals("POST", event.getHttpMethod());
+        assertEquals("http://test/api", event.getHttpUri());
         assertEquals(-1L, event.getCostTime());
         assertEquals(HttpStatus.OK.value(), event.getHttpStatusCode());
     }
@@ -92,8 +92,8 @@ class DefaultInterceptorTest {
         ArgumentCaptor<RemoteCallEvent> eventCaptor = ArgumentCaptor.forClass(RemoteCallEvent.class);
         verify(publisher).publishEvent(eventCaptor.capture());
         RemoteCallEvent event = eventCaptor.getValue();
-        assertEquals("GET", event.getRequestMethod());
-        assertEquals("http://test/fail", event.getRequestUri());
+        assertEquals("GET", event.getHttpMethod());
+        assertEquals("http://test/fail", event.getHttpUri());
         assertTrue(event.getErrorMessage().contains("downstream unavailable"));
     }
 

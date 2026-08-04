@@ -16,17 +16,17 @@ public class AdminOperateLogInfoResponse {
     @Schema(description = "子模块")
     private String subTitle;
 
-    @Schema(description = "操作类型（0其它 1新增 2修改 3删除）")
+    @Schema(description = "操作类型（0其它 1新增 2修改 3删除 4授权 5导入导出）")
     private String operType;
 
     @Schema(description = "请求方法")
     private String method;
 
     @Schema(description = "请求方式")
-    private String requestMethod;
+    private String httpMethod;
 
     @Schema(description = "请求url")
-    private String operUrl;
+    private String httpUrl;
 
     @Schema(description = "操作地址")
     private String operIp;
@@ -48,5 +48,8 @@ public class AdminOperateLogInfoResponse {
 
     @Schema(description = "操作时间")
     private OffsetDateTime operTime;
+
+    @Schema(description = "耗时（毫秒）")
+    private Long costTime;
 
 }
