@@ -6,21 +6,18 @@
 
     <parent>
         <groupId>com.wzkris</groupId>
-        <artifactId>wzkris</artifactId>
+        <artifactId>wzkris-modules</artifactId>
         <version>${revision}</version>
     </parent>
-
     <packaging>pom</packaging>
 
-    <artifactId>wzkris-modules</artifactId>
-
-    <description>
-        wzkris-modules业务模块
-    </description>
+    <description>支付网关服务</description>
 
     <modules>
-        <module>wzkris-user-center</module>
-        <module>wzkris-payment</module>
+        <module>wzkris-payment-api</module>
+        <module>wzkris-payment-biz</module>
     </modules>
+
+    <artifactId>wzkris-payment</artifactId>
 
 </project>

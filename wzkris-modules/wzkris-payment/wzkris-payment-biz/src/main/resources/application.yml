@@ -1,0 +1,10 @@
+server:
+  port: 8001
+  servlet:
+    context-path: /wzkris-payment-api
+
+spring:
+  application:
+    name: wzkris-payment
+  profiles:
+    active: @profiles.active@
