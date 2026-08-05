@@ -3,6 +3,7 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.usercenter.domain.MemberToPostDO;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.domain.PostToMenuDO;
 import com.wzkris.usercenter.enums.post.PostStatusEnum;
@@ -33,12 +34,12 @@ public class PostInfoServiceImpl
 
     @Override
     public List<PostInfoDO> listByMemberId(Long memberId) {
-        List<Long> postIds = memberToPostMapper.listPostIdByMemberId(memberId);
+        List<Long> postIds = memberToPostMapper.selectObjsByObj(MemberToPostDO::getPostId, MemberToPostDO::getMemberId, memberId);
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }
         return this.lambdaQuery()
-                .in(PostInfoDO::getPostId, postIds)
+                .in(PostInfoDO::getId, postIds)
                 .eq(PostInfoDO::getStatus, PostStatusEnum.ENABLE)
                 .list();
     }
@@ -46,14 +47,14 @@ public class PostInfoServiceImpl
     @Override
     public List<SelectResponse> listSelect(String postName) {
         return baseMapper.selectList(Wrappers.lambdaQuery(PostInfoDO.class)
-                        .select(PostInfoDO::getPostId, PostInfoDO::getPostName)
+                        .select(PostInfoDO::getId, PostInfoDO::getPostName)
                         .eq(PostInfoDO::getStatus, PostStatusEnum.ENABLE)
                         .like(StringUtil.isNotBlank(postName), PostInfoDO::getPostName, postName)
-                        .orderByAsc(PostInfoDO::getPostId))
+                        .orderByAsc(PostInfoDO::getId))
                 .stream()
                 .map(postInfoDO -> {
                     SelectResponse SelectResponse = new SelectResponse();
-                    SelectResponse.setId(postInfoDO.getPostId());
+                    SelectResponse.setId(postInfoDO.getId());
                     SelectResponse.setLabel(postInfoDO.getPostName());
                     return SelectResponse;
                 })
@@ -65,7 +66,7 @@ public class PostInfoServiceImpl
     public boolean savePost(PostInfoDO post, List<Long> menuIds) {
         boolean success = baseMapper.insert(post) > 0;
         if (success) {
-            this.insertPostMenu(post.getPostId(), menuIds);
+            this.insertPostMenu(post.getId(), menuIds);
         }
         return success;
     }
@@ -74,8 +75,9 @@ public class PostInfoServiceImpl
     public boolean updatePost(PostInfoDO post, List<Long> menuIds) {
         boolean success = baseMapper.updateById(post) > 0;
         if (success && menuIds != null) {
-            postToMenuMapper.deleteByPostId(post.getPostId());
-            this.insertPostMenu(post.getPostId(), menuIds);
+            postToMenuMapper.delete(Wrappers.lambdaQuery(PostToMenuDO.class)
+                    .eq(PostToMenuDO::getPostId, post.getId()));
+            this.insertPostMenu(post.getId(), menuIds);
         }
         return success;
     }
@@ -94,8 +96,10 @@ public class PostInfoServiceImpl
     public boolean removePosts(List<Long> postIds) {
         boolean success = baseMapper.deleteByIds(postIds) > 0;
         if (success) {
-            postToMenuMapper.deleteByPostIds(postIds);
-            memberToPostMapper.deleteByPostIds(postIds);
+            postToMenuMapper.delete(Wrappers.lambdaQuery(PostToMenuDO.class)
+                    .in(PostToMenuDO::getPostId, postIds));
+            memberToPostMapper.delete(Wrappers.lambdaQuery(MemberToPostDO.class)
+                    .in(MemberToPostDO::getPostId, postIds));
         }
         return success;
     }
@@ -103,7 +107,11 @@ public class PostInfoServiceImpl
     @Override
     public boolean existMember(List<Long> postIds) {
         postIds = postIds.stream().filter(Objects::nonNull).toList();
-        return memberToPostMapper.existByPostIds(postIds);
+        if (CollectionUtils.isEmpty(postIds)) {
+            return false;
+        }
+        return memberToPostMapper.exists(Wrappers.lambdaQuery(MemberToPostDO.class)
+                .in(MemberToPostDO::getPostId, postIds));
     }
 
 }

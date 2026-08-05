@@ -9,7 +9,7 @@ import lombok.Data;
 @Schema(description = "系统参数添加参数体")
 public class ConfigMngSaveRequest {
 
-    private Long configId;
+    private Long id;
 
     @NotBlank(message = "{invalidParameter.configName.invalid}")
     @Size(min = 1, max = 50, message = "{invalidParameter.configName.invalid}")

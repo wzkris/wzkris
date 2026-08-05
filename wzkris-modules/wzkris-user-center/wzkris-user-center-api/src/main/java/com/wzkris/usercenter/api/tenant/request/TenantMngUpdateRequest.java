@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 public class TenantMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long tenantId;
+    private Long id;
 
     @Schema(description = "租户类型")
     private TenantTypeEnum tenantType;

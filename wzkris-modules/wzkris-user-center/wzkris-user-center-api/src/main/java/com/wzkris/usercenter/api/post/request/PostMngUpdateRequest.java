@@ -14,7 +14,7 @@ import java.util.List;
 public class PostMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long postId;
+    private Long id;
 
     @Size(min = 2, max = 20, message = "{invalidParameter.roleName.invalid}")
     @Schema(description = "职位名称")

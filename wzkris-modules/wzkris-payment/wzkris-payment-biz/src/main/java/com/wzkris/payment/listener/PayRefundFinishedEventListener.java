@@ -54,12 +54,12 @@ public class PayRefundFinishedEventListener {
 
         PayNotifyRequest req = new PayNotifyRequest();
         req.setNotifyType(NotifyTypeEnum.REFUND);
-        req.setPayOrderId(order.getPayOrderId());
+        req.setPayOrderId(order.getId());
         req.setOrderNo(order.getOrderNo());
         req.setBizType(order.getBizType());
         req.setBizNo(order.getBizNo());
         req.setChannel(order.getChannel());
-        req.setRefundOrderId(refund.getRefundOrderId());
+        req.setRefundOrderId(refund.getId());
         req.setRefundNo(refund.getRefundNo());
         req.setRefundAmount(refund.getRefundAmount());
         req.setRefundStatus(refund.getStatus());
@@ -68,8 +68,8 @@ public class PayRefundFinishedEventListener {
 
         PayNotifyTaskDO task = new PayNotifyTaskDO();
         task.setNotifyType(NotifyTypeEnum.REFUND);
-        task.setPayOrderId(order.getPayOrderId());
-        task.setRefundOrderId(refund.getRefundOrderId());
+        task.setPayOrderId(order.getId());
+        task.setRefundOrderId(refund.getId());
         task.setBizType(order.getBizType());
         task.setTargetUrl(order.getNotifyUrl());
         task.setPayload(JsonUtil.toJsonString(req));

@@ -45,7 +45,7 @@ public class PayOrderMngApiImpl extends AbstractApi implements PayOrderMngApi {
                 .like(StringUtil.isNotEmpty(request.getBizNo()), PayOrderDO::getBizNo, request.getBizNo())
                 .eq(request.getChannel() != null, PayOrderDO::getChannel, request.getChannel())
                 .eq(request.getStatus() != null, PayOrderDO::getStatus, request.getStatus())
-                .orderByDesc(PayOrderDO::getPayOrderId);
+                .orderByDesc(PayOrderDO::getId);
     }
 
     @Override
@@ -65,6 +65,6 @@ public class PayOrderMngApiImpl extends AbstractApi implements PayOrderMngApi {
         // 关单沿用原成交配置
         ProviderContext ctx = router.resolve(order.getChannel(), order.getConfigId());
         ctx.getProvider().close(order, ctx.getConfig());
-        return toRes(payOrderService.updateToClosed(order.getPayOrderId()));
+        return toRes(payOrderService.updateToClosed(order.getId()));
     }
 }

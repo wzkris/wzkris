@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Data
 public class TenantWalletRecordResponse {
 
-    private Long recordId;
+    private Long id;
 
     private Long tenantId;
 

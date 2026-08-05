@@ -56,11 +56,11 @@ public class PermissionServiceImpl implements PermissionService {
 
         List<UserRole> roles = roleList.stream()
                 .map(role -> new UserRole(
-                        role.getRoleId(),
+                        role.getId(),
                         role.getRoleName(),
                         role.getDataScope().getValue(),
                         computeDataIdentities(role, deptId),
-                        menuInfoService.listPermsByRoleIds(List.of(role.getRoleId()))
+                        menuInfoService.listPermsByRoleIds(List.of(role.getId()))
                 ))
                 .collect(Collectors.toList());
 
@@ -79,8 +79,8 @@ public class PermissionServiceImpl implements PermissionService {
         } else {
             List<PostInfoDO> posts = postInfoService.listByMemberId(memberId);
             roles = posts.stream()
-                    .map(post -> new UserRole(post.getPostId(), post.getPostName(), null, null,
-                            menuInfoService.listPermsByPostIds(List.of(post.getPostId()))))
+                    .map(post -> new UserRole(post.getId(), post.getPostName(), null, null,
+                            menuInfoService.listPermsByPostIds(List.of(post.getId()))))
                     .collect(Collectors.toList());
         }
         return new MemberPermissionResponse(roles);
@@ -98,7 +98,7 @@ public class PermissionServiceImpl implements PermissionService {
         return switch (scope) {
             case ALL -> Collections.emptyList();
             case CUSTOM -> toDataIdentities(
-                    roleToDeptMapper.listDeptIdByRoleIds(List.of(role.getRoleId()))
+                    roleToDeptMapper.listDeptIdByRoleIds(List.of(role.getId()))
             );
             case DEPT -> deptId != null
                     ? toDataIdentities(List.of(deptId))
@@ -119,10 +119,10 @@ public class PermissionServiceImpl implements PermissionService {
         }
         return deptInfoMapper.selectList(
                         Wrappers.lambdaQuery(DeptInfoDO.class)
-                                .select(DeptInfoDO::getDeptId, DeptInfoDO::getDeptName)
-                                .in(DeptInfoDO::getDeptId, deptIds)
+                                .select(DeptInfoDO::getId, DeptInfoDO::getDeptName)
+                                .in(DeptInfoDO::getId, deptIds)
                 ).stream()
-                .map(d -> new DataIdentity(d.getDeptId(), d.getDeptName()))
+                .map(d -> new DataIdentity(d.getId(), d.getDeptName()))
                 .collect(Collectors.toList());
     }
 

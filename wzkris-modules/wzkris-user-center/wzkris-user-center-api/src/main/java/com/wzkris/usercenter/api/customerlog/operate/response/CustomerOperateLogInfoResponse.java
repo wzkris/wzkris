@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 @Data
 public class CustomerOperateLogInfoResponse {
 
-    private Long operId;
+    private Long id;
 
     @Schema(description = "操作模块")
     private String title;

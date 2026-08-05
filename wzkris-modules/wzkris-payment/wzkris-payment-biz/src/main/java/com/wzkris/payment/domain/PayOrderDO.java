@@ -1,6 +1,5 @@
 package com.wzkris.payment.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
@@ -22,9 +21,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "pay_order")
 public class PayOrderDO extends BaseEntity {
-
-    @TableId
-    private Long payOrderId;
 
     @Schema(description = "业务可读订单号")
     private String orderNo;
@@ -80,7 +76,7 @@ public class PayOrderDO extends BaseEntity {
     @Schema(description = "业务方通知地址")
     private String notifyUrl;
 
-    public PayOrderDO(Long payOrderId) {
-        this.payOrderId = payOrderId;
+    public PayOrderDO(Long id) {
+        this.setId(id);
     }
 }

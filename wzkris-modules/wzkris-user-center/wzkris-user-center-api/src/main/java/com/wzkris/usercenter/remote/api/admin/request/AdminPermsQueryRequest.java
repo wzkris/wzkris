@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class AdminPermsQueryRequest implements Serializable {
 
     @Nonnull
-    private Long adminId;
+    private Long id;
 
     @Nullable
     private Long deptId;

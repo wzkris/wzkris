@@ -42,7 +42,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToAdminDO> list = adminIds.stream()
-                    .map(uid -> new NotificationToAdminDO(notificationInfoDO.getNotificationId(), uid))
+                    .map(uid -> new NotificationToAdminDO(notificationInfoDO.getId(), uid))
                     .toList();
             notificationToAdminMapper.insert(list);
         });
@@ -60,7 +60,7 @@ public class NotificationInfoServiceImpl
             notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
             List<NotificationToTenantDO> list = memberIds.stream()
-                    .map(uid -> new NotificationToTenantDO(notificationInfoDO.getNotificationId(), uid))
+                    .map(uid -> new NotificationToTenantDO(notificationInfoDO.getId(), uid))
                     .toList();
             notificationToTenantMapper.insert(list);
         });

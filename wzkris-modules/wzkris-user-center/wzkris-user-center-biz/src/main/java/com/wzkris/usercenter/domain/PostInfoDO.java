@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.post.PostStatusEnum;
@@ -18,9 +17,6 @@ import lombok.NoArgsConstructor;
 @TableName(schema = "biz", value = "post_info")
 public class PostInfoDO extends BaseEntity {
 
-    @TableId
-    private Long postId;
-
     @Schema(description = "租户ID")
     private Long tenantId;
 
@@ -33,8 +29,8 @@ public class PostInfoDO extends BaseEntity {
     @Schema(description = "角色排序")
     private Integer postSort;
 
-    public PostInfoDO(Long postId) {
-        this.postId = postId;
+    public PostInfoDO(Long id) {
+        this.setId(id);
     }
 
     public PostInfoDO(PostStatusEnum status) {

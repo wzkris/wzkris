@@ -11,7 +11,7 @@ import lombok.Data;
 @Schema(description = "系统消息修改参数体")
 public class AnnouncementMngUpdateRequest {
 
-    private Long announcementId;
+    private Long id;
 
     @Xss
     @NotBlank(message = "{invalidParameter.messageTitle.invalid}")

@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 @Data
 public class AdminLoginLogMngResponse {
 
-    private Long logId;
+    private Long id;
 
     @Schema(description = "用户ID")
     private Long adminId;

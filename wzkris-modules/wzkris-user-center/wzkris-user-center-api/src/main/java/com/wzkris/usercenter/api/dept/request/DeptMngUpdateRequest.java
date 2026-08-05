@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.Range;
 public class DeptMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long deptId;
+    private Long id;
 
     @Schema(description = "租户 ID")
     private Long tenantId;

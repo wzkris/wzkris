@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.role.DataScopeEnum;
@@ -19,9 +18,6 @@ import lombok.NoArgsConstructor;
 @TableName(schema = "biz", value = "role_info", autoResultMap = true)
 public class RoleInfoDO extends BaseEntity {
 
-    @TableId
-    private Long roleId;
-
     @Schema(description = "数据范围")
     private DataScopeEnum dataScope;
 
@@ -34,8 +30,8 @@ public class RoleInfoDO extends BaseEntity {
     @Schema(description = "角色排序")
     private Integer roleSort;
 
-    public RoleInfoDO(Long roleId) {
-        this.roleId = roleId;
+    public RoleInfoDO(Long id) {
+        this.setId(id);
     }
 
     public RoleInfoDO(RoleStatusEnum status) {

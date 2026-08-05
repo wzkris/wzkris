@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class DictionaryMngResponse {
 
-    private Long dictId;
+    private Long id;
 
     @Schema(description = "字典键")
     private String dictKey;

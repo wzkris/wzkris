@@ -108,7 +108,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
     @Override
     public Result<MemberPermissionResponse> queryPermission(MemberPermsQueryRequest request) {
         return Result.ok(permissionService.getTenantPermission(
-                request.getMemberId(), request.getTenantId()));
+                request.getId(), request.getTenantId()));
     }
 
     @Override
@@ -136,7 +136,7 @@ public class MemberInfoRemoteApiImpl implements MemberInfoRemoteApi {
             return null;
         }
         MemberInfoResponse response = new MemberInfoResponse();
-        response.setMemberId(memberInfoDO.getMemberId());
+        response.setId(memberInfoDO.getId());
         response.setTenantId(memberInfoDO.getTenantId());
         response.setUsername(memberInfoDO.getUsername());
         response.setPhoneNumber(memberInfoDO.getPhoneNumber());

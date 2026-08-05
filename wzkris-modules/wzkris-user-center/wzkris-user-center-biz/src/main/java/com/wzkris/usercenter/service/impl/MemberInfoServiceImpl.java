@@ -36,7 +36,7 @@ public class MemberInfoServiceImpl
         }
         boolean success = baseMapper.insert(member) > 0;
         if (success) {
-            this.insertMemberPost(member.getMemberId(), postIds);
+            this.insertMemberPost(member.getId(), postIds);
         }
         return success;
     }
@@ -49,8 +49,9 @@ public class MemberInfoServiceImpl
         }
         boolean success = baseMapper.updateById(member) > 0;
         if (success && postIds != null) {
-            memberToPostMapper.deleteByMemberId(member.getMemberId());
-            this.insertMemberPost(member.getMemberId(), postIds);
+            memberToPostMapper.delete(new LambdaQueryWrapper<>(MemberToPostDO.class)
+                    .eq(MemberToPostDO::getMemberId, member.getId()));
+            this.insertMemberPost(member.getId(), postIds);
         }
         return success;
     }
@@ -58,7 +59,8 @@ public class MemberInfoServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean grantPosts(Long memberId, List<Long> postIds) {
-        memberToPostMapper.deleteByMemberId(memberId);
+        memberToPostMapper.delete(new LambdaQueryWrapper<>(MemberToPostDO.class)
+                .eq(MemberToPostDO::getMemberId, memberId));
         return this.insertMemberPost(memberId, postIds);
     }
 
@@ -67,7 +69,8 @@ public class MemberInfoServiceImpl
     public boolean removeMembers(List<Long> memberIds) {
         boolean success = baseMapper.deleteByIds(memberIds) > 0;
         if (success) {
-            memberToPostMapper.deleteByMemberIds(memberIds);
+            memberToPostMapper.delete(new LambdaQueryWrapper<>(MemberToPostDO.class)
+                    .in(MemberToPostDO::getMemberId, memberIds));
         }
         return success;
     }
@@ -77,7 +80,7 @@ public class MemberInfoServiceImpl
         return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<MemberInfoDO> lqw = new LambdaQueryWrapper<>(MemberInfoDO.class)
                     .eq(MemberInfoDO::getUsername, username)
-                    .ne(Objects.nonNull(memberId), MemberInfoDO::getMemberId, memberId);
+                    .ne(Objects.nonNull(memberId), MemberInfoDO::getId, memberId);
             return baseMapper.exists(lqw);
         });
     }
@@ -87,7 +90,7 @@ public class MemberInfoServiceImpl
         return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<MemberInfoDO> lqw = new LambdaQueryWrapper<>(MemberInfoDO.class)
                     .eq(MemberInfoDO::getPhoneNumber, phoneNumber)
-                    .ne(Objects.nonNull(memberId), MemberInfoDO::getMemberId, memberId);
+                    .ne(Objects.nonNull(memberId), MemberInfoDO::getId, memberId);
             return baseMapper.exists(lqw);
         });
     }
@@ -97,7 +100,7 @@ public class MemberInfoServiceImpl
             List<MemberToPostDO> list = postIds.stream()
                     .map(postId -> new MemberToPostDO(memberId, postId))
                     .toList();
-            return memberToPostMapper.insert(list) > 0;
+            return !memberToPostMapper.insert(list).isEmpty();
         }
         return false;
     }

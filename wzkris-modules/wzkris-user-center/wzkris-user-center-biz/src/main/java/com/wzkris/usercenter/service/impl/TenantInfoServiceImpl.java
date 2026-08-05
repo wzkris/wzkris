@@ -55,12 +55,12 @@ public class TenantInfoServiceImpl
         tenant.setAdministrator(memberId);
         baseMapper.insert(tenant);
 
-        TenantWalletInfoDO wallet = new TenantWalletInfoDO(tenant.getTenantId());
+        TenantWalletInfoDO wallet = new TenantWalletInfoDO(tenant.getId());
         tenantWalletInfoMapper.insert(wallet);
 
         MemberInfoDO memberInfoDO = new MemberInfoDO();
-        memberInfoDO.setMemberId(memberId);
-        memberInfoDO.setTenantId(tenant.getTenantId());
+        memberInfoDO.setId(memberId);
+        memberInfoDO.setTenantId(tenant.getId());
         memberInfoDO.setUsername(username);
         memberInfoDO.setPassword(password);
         return memberInfoService.saveMember(memberInfoDO, null);
@@ -78,19 +78,19 @@ public class TenantInfoServiceImpl
                 tenantWalletRecordMapper.delete(recordw);
 
                 LambdaQueryWrapper<MemberInfoDO> userw = Wrappers.lambdaQuery(MemberInfoDO.class)
-                        .select(MemberInfoDO::getMemberId)
+                        .select(MemberInfoDO::getId)
                         .eq(MemberInfoDO::getTenantId, tenantId);
                 List<Long> memberIds = memberInfoMapper.selectList(userw).stream()
-                        .map(MemberInfoDO::getMemberId)
+                        .map(MemberInfoDO::getId)
                         .toList();
                 if (CollectionUtils.isNotEmpty(memberIds)) {
                     memberInfoService.removeMembers(memberIds);
                 }
                 LambdaQueryWrapper<PostInfoDO> rolew = Wrappers.lambdaQuery(PostInfoDO.class)
-                        .select(PostInfoDO::getPostId)
+                        .select(PostInfoDO::getId)
                         .eq(PostInfoDO::getTenantId, tenantId);
                 List<Long> postIds = postInfoMapper.selectList(rolew).stream()
-                        .map(PostInfoDO::getPostId)
+                        .map(PostInfoDO::getId)
                         .toList();
                 if (CollectionUtils.isNotEmpty(postIds)) {
                     postInfoService.removePosts(postIds);

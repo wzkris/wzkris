@@ -39,13 +39,13 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
                 .apply(request.getParentId() != null && request.getParentId() != 0,
                         "{0} = ANY(ancestors)", request.getParentId())
                 .and(request.getDeptId() != null && request.getDeptId() != 0,
-                        w -> w.eq(DeptInfoDO::getDeptId, request.getDeptId())
+                        w -> w.eq(DeptInfoDO::getId, request.getDeptId())
                                 .or()
                                 .apply("{0} = ANY(ancestors)", request.getDeptId())
                 )
                 .like(StringUtil.isNotEmpty(request.getDeptName()), DeptInfoDO::getDeptName, request.getDeptName())
                 .eq(request.getStatus() != null, DeptInfoDO::getStatus, request.getStatus())
-                .orderByDesc(DeptInfoDO::getDeptSort, DeptInfoDO::getDeptId);
+                .orderByDesc(DeptInfoDO::getDeptSort, DeptInfoDO::getId);
     }
 
     @Override
@@ -75,10 +75,10 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
 
     @Override
     public Result<?> update(DeptMngUpdateRequest request) {
-        if (!deptInfoService.checkDataScopes(request.getDeptId())) {
+        if (!deptInfoService.checkDataScopes(request.getId())) {
             return accessDenied("数据权限不足");
         }
-        if (Objects.equals(request.getParentId(), request.getDeptId())) {
+        if (Objects.equals(request.getParentId(), request.getId())) {
             return requestFail("修改部门'" + request.getDeptName() + "'失败，上级部门不能是自己");
         }
         DeptInfoDO deptInfoDO = BeanCopierUtil.copy(request, DeptInfoDO.class);

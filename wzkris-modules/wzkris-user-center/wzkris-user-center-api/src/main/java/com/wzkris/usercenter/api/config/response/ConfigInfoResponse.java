@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class ConfigInfoResponse {
 
-    private Long configId;
+    private Long id;
 
     @Schema(description = "参数名称")
     private String configName;

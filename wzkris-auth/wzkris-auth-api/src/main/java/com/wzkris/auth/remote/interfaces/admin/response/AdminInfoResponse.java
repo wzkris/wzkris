@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 public class AdminInfoResponse implements Serializable {
 
-    private Long adminId;
+    private Long id;
 
     private Long deptId;
 

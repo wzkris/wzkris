@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TenantPackageMngResponse {
 
-    private Long packageId;
+    private Long id;
 
     @Schema(description = "套餐名称")
     private String packageName;

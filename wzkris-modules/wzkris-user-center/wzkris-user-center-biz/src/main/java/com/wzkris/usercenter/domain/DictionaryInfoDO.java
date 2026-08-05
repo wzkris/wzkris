@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.wzkris.common.orm.model.BaseEntity;
@@ -16,9 +15,6 @@ import lombok.Data;
 @Data
 @TableName(schema = "biz", value = "dictionary_info", autoResultMap = true)
 public class DictionaryInfoDO extends BaseEntity {
-
-    @TableId
-    private Long dictId;
 
     @Schema(description = "字典键")
     private String dictKey;

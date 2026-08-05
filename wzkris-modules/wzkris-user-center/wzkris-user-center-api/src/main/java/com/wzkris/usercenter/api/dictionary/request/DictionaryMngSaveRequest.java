@@ -11,7 +11,7 @@ import lombok.Data;
 @Schema(description = "字典添加参数体")
 public class DictionaryMngSaveRequest {
 
-    private Long dictId;
+    private Long id;
 
     @NotBlank(message = "{invalidParameter.dictKey.invalid}")
     @Size(min = 5, max = 30, message = "{invalidParameter.dictKey.invalid}")

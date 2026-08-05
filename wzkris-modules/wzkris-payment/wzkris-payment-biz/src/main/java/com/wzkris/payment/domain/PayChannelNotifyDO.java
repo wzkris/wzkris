@@ -1,6 +1,5 @@
 package com.wzkris.payment.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
@@ -20,9 +19,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "pay_channel_notify")
 public class PayChannelNotifyDO extends BaseEntity {
-
-    @TableId
-    private Long notifyId;
 
     @Schema(description = "支付渠道")
     private PayChannelEnum channel;

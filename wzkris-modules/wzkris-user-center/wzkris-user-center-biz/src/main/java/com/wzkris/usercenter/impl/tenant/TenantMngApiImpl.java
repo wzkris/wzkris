@@ -62,7 +62,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
                 .apply("t.deleted = false")
                 .like(StringUtil.isNotEmpty(request.getTenantName()), "tenant_name", request.getTenantName())
                 .eq(request.getStatus() != null, "t.status", request.getStatus())
-                .orderByDesc("t.tenant_id");
+                .orderByDesc("t.id");
     }
 
     @Override
@@ -74,13 +74,13 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     public Result<Page<SelectResponse>> querySelectPage(TenantMngPageRequest request) {
         String tenantName = request.getTenantName();
         LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
-                .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
+                .select(TenantInfoDO::getId, TenantInfoDO::getTenantName)
                 .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
-                .orderByAsc(TenantInfoDO::getTenantId);
+                .orderByAsc(TenantInfoDO::getId);
         IPage<TenantInfoDO> page = tenantInfoService.page(request.buildPage(), lqw);
         List<SelectResponse> list = page.getRecords().stream().map(tenantInfoDO -> {
             SelectResponse SelectResponse = new SelectResponse();
-            SelectResponse.setId(tenantInfoDO.getTenantId());
+            SelectResponse.setId(tenantInfoDO.getId());
             SelectResponse.setLabel(tenantInfoDO.getTenantName());
             return SelectResponse;
         }).collect(Collectors.toList());
@@ -91,15 +91,15 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     public Result<List<SelectResponse>> queryPackageSelect(TenantPackageMngListRequest request) {
         String packageName = request.getPackageName();
         LambdaQueryWrapper<TenantPackageInfoDO> lqw = new LambdaQueryWrapper<TenantPackageInfoDO>()
-                .select(TenantPackageInfoDO::getPackageId, TenantPackageInfoDO::getPackageName)
+                .select(TenantPackageInfoDO::getId, TenantPackageInfoDO::getPackageName)
                 .eq(TenantPackageInfoDO::getStatus, TenantPackageStatusEnum.ENABLE)
                 .like(StringUtil.isNotBlank(packageName), TenantPackageInfoDO::getPackageName, packageName)
-                .orderByAsc(TenantPackageInfoDO::getPackageId);
+                .orderByAsc(TenantPackageInfoDO::getId);
         List<SelectResponse> selectVOS = tenantPackageInfoService.list(lqw)
                 .stream()
                 .map(packageInfoDO -> {
                     SelectResponse SelectResponse = new SelectResponse();
-                    SelectResponse.setId(packageInfoDO.getPackageId());
+                    SelectResponse.setId(packageInfoDO.getId());
                     SelectResponse.setLabel(packageInfoDO.getPackageName());
                     return SelectResponse;
                 }).toList();

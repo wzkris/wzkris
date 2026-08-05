@@ -1,6 +1,5 @@
 package com.wzkris.payment.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.notify.NotifyTaskStatusEnum;
@@ -20,9 +19,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "pay_notify_task")
 public class PayNotifyTaskDO extends BaseEntity {
-
-    @TableId
-    private Long taskId;
 
     @Schema(description = "通知类型 PAY/REFUND")
     private NotifyTypeEnum notifyType;

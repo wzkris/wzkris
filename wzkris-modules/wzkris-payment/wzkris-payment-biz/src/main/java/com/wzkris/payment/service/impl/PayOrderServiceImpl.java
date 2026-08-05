@@ -33,7 +33,7 @@ public class PayOrderServiceImpl extends ServiceImplPlus<PayOrderMapper, PayOrde
     @Override
     public boolean updateToSuccess(Long payOrderId, String channelOrderNo, OffsetDateTime payAt) {
         return this.update(new LambdaUpdateWrapper<PayOrderDO>()
-                .eq(PayOrderDO::getPayOrderId, payOrderId)
+                .eq(PayOrderDO::getId, payOrderId)
                 .eq(PayOrderDO::getStatus, PayStatusEnum.PENDING)
                 .set(PayOrderDO::getStatus, PayStatusEnum.SUCCESS)
                 .set(PayOrderDO::getChannelOrderNo, channelOrderNo)
@@ -43,7 +43,7 @@ public class PayOrderServiceImpl extends ServiceImplPlus<PayOrderMapper, PayOrde
     @Override
     public boolean updateToClosed(Long payOrderId) {
         return this.update(new LambdaUpdateWrapper<PayOrderDO>()
-                .eq(PayOrderDO::getPayOrderId, payOrderId)
+                .eq(PayOrderDO::getId, payOrderId)
                 .eq(PayOrderDO::getStatus, PayStatusEnum.PENDING)
                 .set(PayOrderDO::getStatus, PayStatusEnum.CLOSED));
     }
@@ -51,7 +51,7 @@ public class PayOrderServiceImpl extends ServiceImplPlus<PayOrderMapper, PayOrde
     @Override
     public boolean updateToFailed(Long payOrderId, String reason) {
         return this.update(new LambdaUpdateWrapper<PayOrderDO>()
-                .eq(PayOrderDO::getPayOrderId, payOrderId)
+                .eq(PayOrderDO::getId, payOrderId)
                 .eq(PayOrderDO::getStatus, PayStatusEnum.PENDING)
                 .set(PayOrderDO::getStatus, PayStatusEnum.FAILED)
                 .set(PayOrderDO::getFailReason, reason));

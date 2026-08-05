@@ -67,7 +67,7 @@ public interface DeptInfoService extends IServicePlus<DeptInfoDO> {
      * @param queryWrapper 查询条件
      * @return 部门列表
      */
-    @DataScope(@DataPermission(column = "dept_id"))
+    @DataScope(@DataPermission(column = "id"))
     List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper);
 
 }

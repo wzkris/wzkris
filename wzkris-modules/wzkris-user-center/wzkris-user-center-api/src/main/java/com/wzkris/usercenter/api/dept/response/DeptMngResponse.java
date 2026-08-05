@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DeptMngResponse {
 
-    private Long deptId;
+    private Long id;
 
     @Schema(description = "父部门ID")
     private Long parentId;

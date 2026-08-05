@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Data
 public class CustomerResponse implements Serializable {
 
-    private Long customerId;
+    private Long id;
 
     private String nickname;
 

@@ -74,16 +74,16 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request) {
-        Long memberId = request.getMemberId();
+        Long memberId = request.getId();
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
-        checkedSelectResponse.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listByMemberId(memberId).stream().map(PostInfoDO::getPostId).toList());
+        checkedSelectResponse.setCheckedKeys(memberId == null ? Collections.emptyList() : postInfoService.listByMemberId(memberId).stream().map(PostInfoDO::getId).toList());
         checkedSelectResponse.setSelects(postInfoService.listSelect(request.getPostName()));
         return ok(checkedSelectResponse);
     }
 
     @Override
     public Result<Void> save(MemberMngSaveRequest memberReq) {
-        if (!tenantInfoService.checkAccountLimit(SecurityUtil.getLoginUser().getTenantId())) {
+        if (!tenantInfoService.checkAccountLimit(SecurityUtil.getTenantId())) {
             return requestFail("账号数量已达上限，请联系管理员");
         } else if (memberInfoService.existByUsername(null, memberReq.getUsername())) {
             return requestFail("添加成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
@@ -105,13 +105,13 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Void> update(MemberMngUpdateRequest memberReq) {
-        if (tenantInfoService.checkAdministrator(memberReq.getMemberId())) {
+        if (tenantInfoService.checkAdministrator(memberReq.getId())) {
             return accessDenied("数据权限不足");
         }
-        if (memberInfoService.existByUsername(memberReq.getMemberId(), memberReq.getUsername())) {
+        if (memberInfoService.existByUsername(memberReq.getId(), memberReq.getUsername())) {
             return requestFail("修改成员'" + memberReq.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(memberReq.getPhoneNumber())
-                && memberInfoService.existByPhoneNumber(memberReq.getMemberId(), memberReq.getPhoneNumber())) {
+                && memberInfoService.existByPhoneNumber(memberReq.getId(), memberReq.getPhoneNumber())) {
             return requestFail("修改成员'" + memberReq.getUsername() + "'失败，手机号码已存在");
         }
         MemberInfoDO member = BeanCopierUtil.copy(memberReq, MemberInfoDO.class);
@@ -131,10 +131,10 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
 
     @Override
     public Result<Void> grantPosts(MemberMngGrantPostRequest request) {
-        if (tenantInfoService.checkAdministrator(request.getMemberId())) {
+        if (tenantInfoService.checkAdministrator(request.getId())) {
             return accessDenied("数据权限不足");
         }
-        return toRes(memberInfoService.grantPosts(request.getMemberId(), request.getPostIds()));
+        return toRes(memberInfoService.grantPosts(request.getId(), request.getPostIds()));
     }
 
     @Override

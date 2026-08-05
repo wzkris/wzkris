@@ -1,6 +1,5 @@
 package com.wzkris.payment.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
@@ -21,9 +20,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "pay_refund_order")
 public class PayRefundOrderDO extends BaseEntity {
-
-    @TableId
-    private Long refundOrderId;
 
     @Schema(description = "退款单号")
     private String refundNo;

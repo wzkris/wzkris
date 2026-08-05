@@ -140,7 +140,7 @@ public class MenuInfoServiceImpl
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
         return this.listObjs(Wrappers.lambdaQuery(this.getEntityClass())
                         .select(MenuInfoDO::getPerms)
-                        .in(ObjectUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
+                        .in(ObjectUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
                         .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE), Object::toString)
                 .stream()
                 .filter(StringUtil::isNotBlank)
@@ -170,8 +170,8 @@ public class MenuInfoServiceImpl
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.SYSTEM.getValue())
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
@@ -192,8 +192,8 @@ public class MenuInfoServiceImpl
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
@@ -202,7 +202,7 @@ public class MenuInfoServiceImpl
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
@@ -251,8 +251,8 @@ public class MenuInfoServiceImpl
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, scope)
                 .eq(MenuInfoDO::getVisible, true)
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId));
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId));
     }
 
     /**
@@ -261,7 +261,7 @@ public class MenuInfoServiceImpl
     @Override
     public List<Long> listMenuIdByAdminId(Long adminId) {
         List<Long> roleIds = roleInfoService.listByAdminId(adminId, true).stream()
-                .map(RoleInfoDO::getRoleId).toList();
+                .map(RoleInfoDO::getId).toList();
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -271,7 +271,7 @@ public class MenuInfoServiceImpl
     @Override
     public List<Long> listMenuIdByMemberId(Long memberId) {
         List<Long> postIds = postInfoService.listByMemberId(memberId).stream()
-                .map(PostInfoDO::getPostId).toList();
+                .map(PostInfoDO::getId).toList();
         if (CollectionUtils.isEmpty(postIds)) {
             return Collections.emptyList();
         }
@@ -309,7 +309,7 @@ public class MenuInfoServiceImpl
         Map<Long, List<MenuInfoDO>> childMap = new HashMap<>(menus.size());
 
         for (MenuInfoDO menu : menus) {
-            allMenuIds.add(menu.getMenuId());
+            allMenuIds.add(menu.getId());
             childMap.computeIfAbsent(menu.getParentId(), k -> new ArrayList<>())
                     .add(menu);
         }
@@ -338,7 +338,7 @@ public class MenuInfoServiceImpl
         // 排序菜单
         List<MenuInfoDO> sortedMenus = menus.stream()
                 .sorted(Comparator.comparing(MenuInfoDO::getMenuSort, Comparator.reverseOrder())
-                        .thenComparing(MenuInfoDO::getMenuId, Comparator.reverseOrder()))
+                        .thenComparing(MenuInfoDO::getId, Comparator.reverseOrder()))
                 .toList();
 
         for (MenuInfoDO menu : sortedMenus) {
@@ -358,7 +358,7 @@ public class MenuInfoServiceImpl
 
             // 处理菜单类型
             if (Objects.equals(MenuTypeEnum.DIR, menu.getMenuType())) {
-                List<MenuInfoDO> children = childMap.get(menu.getMenuId());
+                List<MenuInfoDO> children = childMap.get(menu.getId());
                 router.setChildren(this.buildRouter(children, childMap));
             } else if (Objects.equals(menu.getMenuType(), MenuTypeEnum.INNERLINK)
                     || Objects.equals(menu.getMenuType(), MenuTypeEnum.OUTLINK)) {
@@ -382,7 +382,7 @@ public class MenuInfoServiceImpl
         Map<Long, List<MenuInfoDO>> childMap = new HashMap<>(menus.size());
 
         for (MenuInfoDO menu : menus) {
-            allMenuIds.add(menu.getMenuId());
+            allMenuIds.add(menu.getId());
             childMap.computeIfAbsent(menu.getParentId(), k -> new ArrayList<>())
                     .add(menu);
         }
@@ -398,10 +398,10 @@ public class MenuInfoServiceImpl
 
     private SelectTreeResponse convertToSelectTreeResp(MenuInfoDO menu, Map<Long, List<MenuInfoDO>> childMap) {
         SelectTreeResponse response = new SelectTreeResponse();
-        response.setId(menu.getMenuId());
+        response.setId(menu.getId());
         response.setLabel(menu.getMenuName());
 
-        List<MenuInfoDO> children = childMap.get(menu.getMenuId());
+        List<MenuInfoDO> children = childMap.get(menu.getId());
         // 递归转换子节点
         if (children != null && !children.isEmpty()) {
             List<SelectTreeResponse> childrenResp = children.stream()
@@ -423,8 +423,10 @@ public class MenuInfoServiceImpl
     public boolean removeMenu(Long menuId) {
         boolean success = baseMapper.deleteById(menuId) > 0;
         if (success) {
-            roleToMenuMapper.deleteByMenuId(menuId);
-            postToMenuMapper.deleteByMenuId(menuId);
+            roleToMenuMapper.delete(Wrappers.lambdaQuery(RoleToMenuDO.class)
+                    .eq(RoleToMenuDO::getMenuId, menuId));
+            postToMenuMapper.delete(Wrappers.lambdaQuery(PostToMenuDO.class)
+                    .eq(PostToMenuDO::getMenuId, menuId));
         }
         return success;
     }

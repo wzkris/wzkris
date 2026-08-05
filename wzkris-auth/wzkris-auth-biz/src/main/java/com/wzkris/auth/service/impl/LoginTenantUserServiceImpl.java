@@ -112,7 +112,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
 
         // 获取权限信息
         Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.queryPermission(
-                new MemberPermsQueryRequest(memberInfoResponse.getMemberId(), memberInfoResponse.getTenantId()));
+                new MemberPermsQueryRequest(memberInfoResponse.getId(), memberInfoResponse.getTenantId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(
                     BizBaseCodeEnum.API_REQUEST_ERROR.value(),
@@ -121,7 +121,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         MemberPermissionResponse permissions = permissionsResult.getData();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(memberInfoResponse.getMemberId());
+        loginUser.setUid(memberInfoResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setName(memberInfoResponse.getUsername());
         loginUser.setTenantId(memberInfoResponse.getTenantId());
@@ -161,7 +161,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
+        loginUser.setUid(memberResp.getId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
         loginUser.setName(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());

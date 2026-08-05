@@ -85,7 +85,7 @@ public class DictionaryInfoServiceImpl
     @Override
     public boolean checkUsedByDictKey(Long dictId, String dictKey) {
         LambdaQueryWrapper<DictionaryInfoDO> lqw = new LambdaQueryWrapper<DictionaryInfoDO>()
-                .eq(DictionaryInfoDO::getDictId, dictId)
+                .eq(DictionaryInfoDO::getId, dictId)
                 .ne(Objects.nonNull(dictId), DictionaryInfoDO::getDictKey, dictKey);
         return baseMapper.exists(lqw);
     }

@@ -9,7 +9,7 @@ import lombok.Data;
 public class MemberMngPostSelectRequest {
 
     @Parameter(description = "成员ID")
-    private Long memberId;
+    private Long id;
 
     @Parameter(description = "职位名称")
     private String postName;

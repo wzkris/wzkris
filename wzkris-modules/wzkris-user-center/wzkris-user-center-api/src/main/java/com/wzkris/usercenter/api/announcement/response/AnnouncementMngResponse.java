@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class AnnouncementMngResponse {
 
-    private Long announcementId;
+    private Long id;
 
     @Schema(description = "标题")
     private String title;

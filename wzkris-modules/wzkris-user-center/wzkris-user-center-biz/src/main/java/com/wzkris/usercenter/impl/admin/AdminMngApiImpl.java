@@ -82,12 +82,12 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request) {
-        Long adminId = request.getAdminId();
+        Long adminId = request.getId();
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
-        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listByAdminId(adminId, false).stream().map(RoleInfoDO::getRoleId).toList());
+        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listByAdminId(adminId, false).stream().map(RoleInfoDO::getId).toList());
         checkedSelectResponse.setSelects(roleInfoService.listRoleSelect(request.getRoleName()));
         return ok(checkedSelectResponse);
     }
@@ -123,13 +123,13 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Void> update(AdminMngUpdateRequest request) {
-        if (!adminInfoMapper.checkDataScopes(request.getAdminId())) {
+        if (!adminInfoMapper.checkDataScopes(request.getId())) {
             return accessDenied("数据权限不足");
         }
-        if (adminInfoService.existByUsername(request.getAdminId(), request.getUsername())) {
+        if (adminInfoService.existByUsername(request.getId(), request.getUsername())) {
             return requestFail("修改管理员'" + request.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(request.getPhoneNumber())
-                && adminInfoService.existByPhoneNumber(request.getAdminId(), request.getPhoneNumber())) {
+                && adminInfoService.existByPhoneNumber(request.getId(), request.getPhoneNumber())) {
             return requestFail("修改管理员'" + request.getUsername() + "'失败，手机号码已存在");
         }
         AdminInfoDO admin = BeanCopierUtil.copy(request, AdminInfoDO.class);
@@ -139,13 +139,13 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Void> grantRoles(AdminMngGrantRequest request) {
-        if (!adminInfoMapper.checkDataScopes(request.getAdminId())) {
+        if (!adminInfoMapper.checkDataScopes(request.getId())) {
             return accessDenied("数据权限不足");
         }
         if (!roleInfoMapper.checkDataScopes(request.getRoleIds())) {
             return accessDenied("数据权限不足");
         }
-        return toRes(adminInfoService.grantRoles(request.getAdminId(), request.getRoleIds()));
+        return toRes(adminInfoService.grantRoles(request.getId(), request.getRoleIds()));
     }
 
     @Override

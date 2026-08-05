@@ -42,7 +42,7 @@ public class CustomerLoginlogInfoApiImpl
                         CustomerLoginLogDO::getLoginTime,
                         request.getBeginTime(),
                         request.getEndTime())
-                .orderByDesc(CustomerLoginLogDO::getLogId);
+                .orderByDesc(CustomerLoginLogDO::getId);
     }
 
 }

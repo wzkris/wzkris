@@ -1,8 +1,11 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,9 +14,11 @@ import lombok.NoArgsConstructor;
  * @author wzkris
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 @NoArgsConstructor
 @TableName(schema = "biz", value = "notification_to_admin")
-public class NotificationToAdminDO {
+public class NotificationToAdminDO extends BaseEntity {
 
     @Schema(description = "通知ID")
     private Long notificationId;

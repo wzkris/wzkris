@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class MemberPermsQueryRequest implements Serializable {
 
     @Nonnull
-    private Long memberId;
+    private Long id;
 
     @Nonnull
     private Long tenantId;

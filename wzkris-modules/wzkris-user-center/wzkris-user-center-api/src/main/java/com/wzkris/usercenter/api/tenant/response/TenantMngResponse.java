@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 @Data
 public class TenantMngResponse {
 
-    private Long tenantId;
+    private Long id;
 
     @Schema(description = "管理员ID")
     private Long administrator;

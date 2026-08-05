@@ -17,9 +17,9 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
 
     @Select("""
             SELECT s.*, STRING_AGG(p.post_name, ',') AS post_name
-            FROM biz.member_info s LEFT JOIN biz.member_to_post sp ON s.member_id = sp.member_id
-             LEFT JOIN biz.post_info p ON sp.post_id = p.post_id AND p.status = '0'
-            ${ew.customSqlSegment} GROUP BY s.member_id ORDER BY s.member_id DESC
+            FROM biz.member_info s LEFT JOIN biz.member_to_post sp ON s.id = sp.member_id AND sp.deleted = false
+             LEFT JOIN biz.post_info p ON sp.post_id = p.id AND p.status = '0'
+            ${ew.customSqlSegment} GROUP BY s.id ORDER BY s.id DESC
             """)
     IPage<MemberMngResponse> selectVOPage(IPage<MemberMngResponse> page, @Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 

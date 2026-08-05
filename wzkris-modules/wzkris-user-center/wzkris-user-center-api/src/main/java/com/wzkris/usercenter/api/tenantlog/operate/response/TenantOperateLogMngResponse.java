@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Schema(description = "租户管理操作日志信息")
 public class TenantOperateLogMngResponse {
 
-    private Long operId;
+    private Long id;
 
     @Schema(description = "操作模块")
     private String title;

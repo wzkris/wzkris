@@ -29,10 +29,10 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     /**
      * 带权限查询分页数据
      */
-    @DataScope(@DataPermission(alias = "d", column = "dept_id"))
+    @DataScope(@DataPermission(alias = "d", column = "id"))
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
-            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
+            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.id
             ${ew.customSqlSegment}
             """)
     List<AdminMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
@@ -40,10 +40,10 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     /**
      * 带权限查询分页数据（分页）
      */
-    @DataScope(@DataPermission(alias = "d", column = "dept_id"))
+    @DataScope(@DataPermission(alias = "d", column = "id"))
     @Select("""
             SELECT u.*, d.dept_name, d.status AS deptStatus
-            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.dept_id
+            FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.id
             ${ew.customSqlSegment}
             """)
     IPage<AdminMngResponse> selectVOPage(IPage<AdminMngResponse> page, @Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
@@ -57,9 +57,9 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
     @DataScope(@DataPermission(alias = "ai", column = "dept_id"))
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT ai.admin_id) = ${adminIds.size()} THEN true ELSE false END
+                SELECT CASE WHEN COUNT(DISTINCT ai.id) = ${adminIds.size()} THEN true ELSE false END
                 FROM biz.admin_info ai
-                WHERE ai.deleted = false AND ai.admin_id IN
+                WHERE ai.deleted = false AND ai.id IN
                 <foreach collection="collection" item="adminId" open="(" separator="," close=")">
                     #{adminId}
                 </foreach>

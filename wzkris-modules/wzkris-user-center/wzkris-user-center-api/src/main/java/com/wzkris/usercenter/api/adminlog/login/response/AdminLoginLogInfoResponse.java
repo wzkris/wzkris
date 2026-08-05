@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 @Data
 public class AdminLoginLogInfoResponse {
 
-    private Long logId;
+    private Long id;
 
     @Schema(description = "登录类型")
     private String loginType;

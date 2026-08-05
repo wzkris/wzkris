@@ -27,20 +27,20 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
 
     @Override
     public Result<TenantInfoResponse> queryInfo() {
-        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getLoginUser().getTenantId()));
+        return ok(tenantInfoMapper.selectVOById(SecurityUtil.getTenantId()));
     }
 
     @Override
     public Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request) {
-        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(SecurityUtil.getLoginUser().getTenantId()));
+        TenantInfoDO tenantInfoDO = BeanCopierUtil.copy(request, new TenantInfoDO(SecurityUtil.getTenantId()));
         return toRes(tenantInfoService.updateById(tenantInfoDO));
     }
 
     @Override
     public Result<Void> updateOperPwd(PasswordUpdateRequest request) {
-        Long tenantId = SecurityUtil.getLoginUser().getTenantId();
+        Long tenantId = SecurityUtil.getTenantId();
         String operPwd = tenantInfoService.getObjByObj(TenantInfoDO::getOperPwd,
-                TenantInfoDO::getTenantId, tenantId);
+                TenantInfoDO::getId, tenantId);
         if (!passwordEncoder.matches(request.getOldPassword(), operPwd)) {
             return requestFail("修改密码失败，旧密码错误");
         }

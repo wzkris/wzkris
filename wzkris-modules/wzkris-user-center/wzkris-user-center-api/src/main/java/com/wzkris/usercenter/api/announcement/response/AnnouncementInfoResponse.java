@@ -9,7 +9,7 @@ import java.time.OffsetDateTime;
 @Schema(description = "公告信息")
 public class AnnouncementInfoResponse {
 
-    private Long announcementId;
+    private Long id;
 
     @Schema(description = "标题")
     private String title;

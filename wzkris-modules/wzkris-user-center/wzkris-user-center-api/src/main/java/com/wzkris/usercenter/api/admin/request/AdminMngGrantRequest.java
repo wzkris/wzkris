@@ -12,7 +12,7 @@ public class AdminMngGrantRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
     @Schema(description = "管理员 ID")
-    private Long adminId;
+    private Long id;
 
     @Schema(description = "角色 ID 列表")
     private List<Long> roleIds;

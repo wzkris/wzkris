@@ -21,7 +21,7 @@ public class TenantPackageInfoResponse {
     private String tenantName;
 
     @Schema(description = "套餐ID")
-    private Long packageId;
+    private Long id;
 
     @Schema(description = "套餐名称")
     private String packageName;

@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.customerwallet.CustomerWalletStatusEnum;
@@ -22,7 +21,7 @@ import java.math.BigDecimal;
 @TableName(schema = "biz", value = "customer_wallet_info")
 public class CustomerWalletInfoDO extends BaseEntity {
 
-    @TableId
+    @Schema(description = "客户ID")
     private Long customerId;
 
     @Schema(description = "余额, 元")

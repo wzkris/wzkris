@@ -42,7 +42,7 @@ public class TenantOperateLogMngApiImpl
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantOperateLogDO::getOperTime,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(TenantOperateLogDO::getOperId);
+                .orderByDesc(TenantOperateLogDO::getId);
     }
 
 }

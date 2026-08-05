@@ -19,7 +19,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class MemberMngResponse {
 
-    private Long memberId;
+    private Long id;
 
     @Schema(description = "租户ID")
     private Long tenantId;

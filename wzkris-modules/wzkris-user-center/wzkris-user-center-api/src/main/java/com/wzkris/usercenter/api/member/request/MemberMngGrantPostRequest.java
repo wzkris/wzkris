@@ -12,7 +12,7 @@ public class MemberMngGrantPostRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
     @Schema(description = "成员 ID")
-    private Long memberId;
+    private Long id;
 
     @Schema(description = "职位 ID 列表")
     private List<Long> postIds;

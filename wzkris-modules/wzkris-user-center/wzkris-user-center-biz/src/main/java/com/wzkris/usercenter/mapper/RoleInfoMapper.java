@@ -29,7 +29,7 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
      */
     @DataScope(@DataPermission(alias = "rd", column = "dept_id"))
     @Select("""
-            SELECT DISTINCT r.* FROM biz.role_info r LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
+            SELECT DISTINCT r.* FROM biz.role_info r LEFT JOIN biz.role_to_dept rd ON r.id = rd.role_id AND rd.deleted = false
             ${ew.customSqlSegment}
             """)
     IPage<RoleInfoDO> selectPageList(IPage<RoleInfoDO> page, @Param(Constants.WRAPPER) Wrapper<RoleInfoDO> queryWrapper);
@@ -43,10 +43,10 @@ public interface RoleInfoMapper extends BaseMapperPlus<RoleInfoDO> {
     @DataScope(@DataPermission(alias = "rd", column = "dept_id"))
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT r.role_id) = ${roleIds.size()} THEN true ELSE false END
+                SELECT CASE WHEN COUNT(DISTINCT r.id) = ${roleIds.size()} THEN true ELSE false END
                 FROM biz.role_info r
-                LEFT JOIN biz.role_to_dept rd ON r.role_id = rd.role_id
-                WHERE r.deleted = false AND r.role_id IN
+                LEFT JOIN biz.role_to_dept rd ON r.id = rd.role_id AND rd.deleted = false
+                WHERE r.deleted = false AND r.id IN
                 <foreach collection="collection" item="roleId" open="(" separator="," close=")">
                     #{roleId}
                 </foreach>

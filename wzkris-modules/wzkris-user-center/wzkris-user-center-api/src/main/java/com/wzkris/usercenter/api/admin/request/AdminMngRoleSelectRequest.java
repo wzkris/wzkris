@@ -9,7 +9,7 @@ import lombok.Data;
 public class AdminMngRoleSelectRequest {
 
     @Parameter(description = "管理员ID")
-    private Long adminId;
+    private Long id;
 
     @Parameter(description = "角色名称")
     private String roleName;

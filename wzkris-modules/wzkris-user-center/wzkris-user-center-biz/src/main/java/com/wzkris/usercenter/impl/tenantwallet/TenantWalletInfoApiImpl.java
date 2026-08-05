@@ -37,7 +37,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<TenantWalletInfoResponse> queryInfo() {
-        return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getLoginUser().getTenantId(), TenantWalletInfoResponse.class));
+        return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getTenantId(), TenantWalletInfoResponse.class));
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     @Override
     public Result<Void> withdrawal(WalletWithdrawalRequest request) {
-        TenantInfoDO tenantInfoDO = tenantInfoService.getById(SecurityUtil.getLoginUser().getTenantId());
+        TenantInfoDO tenantInfoDO = tenantInfoService.getById(SecurityUtil.getTenantId());
         if (!passwordEncoder.matches(request.getOperPwd(), tenantInfoDO.getOperPwd())) {
             return Result.requestFail("密码错误");
         }
@@ -58,17 +58,17 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
 
     private LambdaQueryWrapper<TenantWalletRecordDO> buildWalletQueryWrapper(TenantWalletRecordInfoPageRequest request) {
         return new LambdaQueryWrapper<TenantWalletRecordDO>()
-                .eq(TenantWalletRecordDO::getTenantId, SecurityUtil.getLoginUser().getTenantId())
+                .eq(TenantWalletRecordDO::getTenantId, SecurityUtil.getTenantId())
                 .like(Objects.nonNull(request.getRecordType()), TenantWalletRecordDO::getRecordType, request.getRecordType())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(TenantWalletRecordDO::getRecordId);
+                .orderByDesc(TenantWalletRecordDO::getId);
     }
 
     private TenantWalletRecordResponse toResponse(TenantWalletRecordDO recordDO) {
         TenantWalletRecordResponse response = new TenantWalletRecordResponse();
-        response.setRecordId(recordDO.getRecordId());
+        response.setId(recordDO.getId());
         response.setTenantId(recordDO.getTenantId());
         response.setAmount(recordDO.getAmount());
         response.setRecordType(recordDO.getRecordType());

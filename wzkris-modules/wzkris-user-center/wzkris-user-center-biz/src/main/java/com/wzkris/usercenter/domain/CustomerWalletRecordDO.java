@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
@@ -21,9 +20,6 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "customer_wallet_record")
 public class CustomerWalletRecordDO extends BaseEntity {
-
-    @TableId
-    private Long recordId;
 
     @Schema(description = "客户ID")
     private Long customerId;

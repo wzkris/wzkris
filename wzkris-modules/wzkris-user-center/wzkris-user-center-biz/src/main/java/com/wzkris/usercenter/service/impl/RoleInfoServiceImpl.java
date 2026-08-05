@@ -1,7 +1,9 @@
 package com.wzkris.usercenter.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.usercenter.domain.AdminToRoleDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleInheritanceDO;
 import com.wzkris.usercenter.domain.RoleToDeptDO;
@@ -15,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -40,13 +43,14 @@ public class RoleInfoServiceImpl
             return Collections.emptyList();
         }
         return this.lambdaQuery()
-                .in(RoleInfoDO::getRoleId, roleIds)
+                .in(RoleInfoDO::getId, roleIds)
                 .eq(RoleInfoDO::getStatus, RoleStatusEnum.ENABLE)
                 .list();
     }
 
     private List<Long> listRoleIdsByAdminId(Long adminId, boolean includeInherited) {
-        List<Long> roleIds = adminToRoleMapper.listRoleIdByAdminId(adminId);
+        List<Long> roleIds = new ArrayList<>(adminToRoleMapper.selectObjsByObj(
+                AdminToRoleDO::getRoleId, AdminToRoleDO::getAdminId, adminId));
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -64,9 +68,9 @@ public class RoleInfoServiceImpl
     public boolean saveRole(RoleInfoDO role, List<Long> menuIds, List<Long> deptIds, List<Long> childIds) {
         boolean success = baseMapper.insert(role) > 0;
         if (success) {
-            this.insertRoleMenu(role.getRoleId(), menuIds);
-            this.insertRoleDept(role.getRoleId(), deptIds);
-            this.insertRoleInheritance(role.getRoleId(), childIds);
+            this.insertRoleMenu(role.getId(), menuIds);
+            this.insertRoleDept(role.getId(), deptIds);
+            this.insertRoleInheritance(role.getId(), childIds);
         }
         return success;
     }
@@ -77,16 +81,19 @@ public class RoleInfoServiceImpl
         boolean success = baseMapper.updateById(role) > 0;
         if (success) {
             if (childIds != null) {
-                roleInheritanceMapper.deleteByRoleId(role.getRoleId());
-                this.insertRoleInheritance(role.getRoleId(), childIds);
+                roleInheritanceMapper.delete(new LambdaQueryWrapper<>(RoleInheritanceDO.class)
+                        .eq(RoleInheritanceDO::getRoleId, role.getId()));
+                this.insertRoleInheritance(role.getId(), childIds);
             }
             if (menuIds != null) {
-                roleToMenuMapper.deleteByRoleId(role.getRoleId());
-                this.insertRoleMenu(role.getRoleId(), menuIds);
+                roleToMenuMapper.delete(new LambdaQueryWrapper<>(RoleToMenuDO.class)
+                        .eq(RoleToMenuDO::getRoleId, role.getId()));
+                this.insertRoleMenu(role.getId(), menuIds);
             }
             if (deptIds != null) {
-                roleToDeptMapper.deleteByRoleId(role.getRoleId());
-                this.insertRoleDept(role.getRoleId(), deptIds);
+                roleToDeptMapper.delete(new LambdaQueryWrapper<>(RoleToDeptDO.class)
+                        .eq(RoleToDeptDO::getRoleId, role.getId()));
+                this.insertRoleDept(role.getId(), deptIds);
             }
         }
         return success;
@@ -115,11 +122,16 @@ public class RoleInfoServiceImpl
     public boolean removeRoles(List<Long> roleIds) {
         boolean success = baseMapper.deleteByIds(roleIds) > 0;
         if (success) {
-            roleToMenuMapper.deleteByRoleIds(roleIds);
-            roleToDeptMapper.deleteByRoleIds(roleIds);
-            adminToRoleMapper.deleteByRoleIds(roleIds);
-            roleInheritanceMapper.deleteByRoleIds(roleIds);
-            roleInheritanceMapper.deleteByChildIds(roleIds);
+            roleToMenuMapper.delete(new LambdaQueryWrapper<>(RoleToMenuDO.class)
+                    .in(RoleToMenuDO::getRoleId, roleIds));
+            roleToDeptMapper.delete(new LambdaQueryWrapper<>(RoleToDeptDO.class)
+                    .in(RoleToDeptDO::getRoleId, roleIds));
+            adminToRoleMapper.delete(new LambdaQueryWrapper<>(AdminToRoleDO.class)
+                    .in(AdminToRoleDO::getRoleId, roleIds));
+            roleInheritanceMapper.delete(new LambdaQueryWrapper<>(RoleInheritanceDO.class)
+                    .in(RoleInheritanceDO::getRoleId, roleIds));
+            roleInheritanceMapper.delete(new LambdaQueryWrapper<>(RoleInheritanceDO.class)
+                    .in(RoleInheritanceDO::getChildId, roleIds));
         }
         return success;
     }
@@ -127,7 +139,11 @@ public class RoleInfoServiceImpl
     @Override
     public boolean existAdmin(List<Long> roleIds) {
         roleIds = roleIds.stream().filter(Objects::nonNull).toList();
-        return adminToRoleMapper.existByRoleIds(roleIds);
+        if (CollectionUtils.isEmpty(roleIds)) {
+            return false;
+        }
+        return adminToRoleMapper.exists(new LambdaQueryWrapper<>(AdminToRoleDO.class)
+                .in(AdminToRoleDO::getRoleId, roleIds));
     }
 
     @Override
@@ -135,7 +151,8 @@ public class RoleInfoServiceImpl
         if (CollectionUtils.isEmpty(roleIds)) {
             return false;
         }
-        return roleInheritanceMapper.existChildRole(roleIds) > 0;
+        return roleInheritanceMapper.exists(new LambdaQueryWrapper<>(RoleInheritanceDO.class)
+                .in(RoleInheritanceDO::getChildId, roleIds));
     }
 
     private void insertRoleInheritance(Long roleId, List<Long> childIds) {
@@ -155,7 +172,7 @@ public class RoleInfoServiceImpl
                 .stream()
                 .map(roleInfoDO -> {
                     SelectResponse selectResponse = new SelectResponse();
-                    selectResponse.setId(roleInfoDO.getRoleId());
+                    selectResponse.setId(roleInfoDO.getId());
                     selectResponse.setLabel(roleInfoDO.getRoleName());
                     return selectResponse;
                 })

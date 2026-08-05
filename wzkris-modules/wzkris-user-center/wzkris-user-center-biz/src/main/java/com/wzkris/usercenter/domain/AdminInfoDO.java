@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -22,9 +21,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "admin_info")
 public class AdminInfoDO extends BaseEntity {
-
-    @TableId
-    private Long adminId;
 
     @Schema(description = "部门ID")
     private Long deptId;
@@ -63,12 +59,12 @@ public class AdminInfoDO extends BaseEntity {
     @Schema(description = "用户额外信息")
     private String remark;
 
-    public AdminInfoDO(Long adminId) {
-        this.adminId = adminId;
+    public AdminInfoDO(Long id) {
+        this.setId(id);
     }
 
-    public static boolean isSuperAdmin(Long adminId) {
-        return SecurityConstants.SUPER_ADMIN_ID.equals(adminId);
+    public static boolean isSuperAdmin(Long id) {
+        return SecurityConstants.SUPER_ADMIN_ID.equals(id);
     }
 
 }

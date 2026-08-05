@@ -43,7 +43,7 @@ public class AdminOperateLogInfoApiImpl
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         AdminOperateLogDO::getOperTime,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(AdminOperateLogDO::getOperId);
+                .orderByDesc(AdminOperateLogDO::getId);
     }
 
 }

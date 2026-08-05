@@ -16,7 +16,7 @@ import lombok.Data;
 public class PayChannelConfigUpdateRequest {
 
     @NotNull(message = "配置ID不能为空")
-    private Long configId;
+    private Long id;
 
     @Schema(description = "支付渠道")
     private PayChannelEnum channel;

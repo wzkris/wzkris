@@ -63,7 +63,7 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
         PayOrderDO order = BeanCopierUtil.copy(request, PayOrderDO.class);
         order.setOrderNo(orderNoGenerator.nextOrderNo());
         order.setChannel(request.getChannel());
-        order.setConfigId(ctx.getConfig().getConfigId());
+        order.setConfigId(ctx.getConfig().getId());
         order.setPayMode(request.getPayMode());
         order.setAmount(request.getAmount());
         order.setStatus(PayStatusEnum.PENDING);
@@ -83,14 +83,14 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
      */
     private Result<PrepayResponse> doPrepay(PayOrderDO order, ProviderContext ctx) {
         PayChannelLogDO channelLog = new PayChannelLogDO();
-        channelLog.setPayOrderId(order.getPayOrderId());
+        channelLog.setPayOrderId(order.getId());
         channelLog.setChannel(order.getChannel());
-        channelLog.setConfigId(ctx.getConfig().getConfigId());
+        channelLog.setConfigId(ctx.getConfig().getId());
         channelLog.setPayMode(order.getPayMode());
         channelLog.setRequestParams(JsonUtil.toJsonString(order));
         try {
             PrepayResponse resp = ctx.getProvider().prepay(order, ctx.getConfig());
-            resp.setPayOrderId(order.getPayOrderId());
+            resp.setId(order.getId());
             resp.setOrderNo(order.getOrderNo());
             resp.setChannel(order.getChannel());
             resp.setPayMode(order.getPayMode());

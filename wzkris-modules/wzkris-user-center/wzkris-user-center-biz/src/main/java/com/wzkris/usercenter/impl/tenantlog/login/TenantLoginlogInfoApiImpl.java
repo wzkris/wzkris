@@ -42,7 +42,7 @@ public class TenantLoginlogInfoApiImpl
                         TenantLoginLogDO::getLoginTime,
                         request.getBeginTime(),
                         request.getEndTime())
-                .orderByDesc(TenantLoginLogDO::getLogId);
+                .orderByDesc(TenantLoginLogDO::getId);
     }
 
 }

@@ -1,11 +1,10 @@
 package com.wzkris.usercenter.mapper;
 
+import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.NotificationToAdminDO;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,20 +14,6 @@ import java.util.List;
  */
 @Mapper
 @Repository
-public interface NotificationToAdminMapper {
-
-    @Insert("""
-            <script>
-                INSERT INTO biz.notification_to_admin(notification_id, admin_id, read) VALUES
-                    <foreach collection="list" item="item" index="index" separator=",">
-                        (#{item.notificationId},  #{item.adminId},  #{item.read})
-                    </foreach>
-            </script>
-            """)
-    int insert(List<NotificationToAdminDO> list);
-
-    default int insert(NotificationToAdminDO notification) {
-        return this.insert(Collections.singletonList(notification));
-    }
+public interface NotificationToAdminMapper extends BaseMapperPlus<NotificationToAdminDO> {
 
 }

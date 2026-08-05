@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class CustomerWalletRecordResponse {
 
-    private Long recordId;
+    private Long id;
 
     @Schema(description = "客户ID")
     private Long customerId;

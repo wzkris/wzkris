@@ -25,7 +25,7 @@ public class WxPayServiceFactory {
     private final ConcurrentHashMap<Long, WxPayService> cache = new ConcurrentHashMap<>();
 
     public WxPayService get(PayChannelConfigDO config) {
-        return cache.computeIfAbsent(config.getConfigId(), k -> build(config));
+        return cache.computeIfAbsent(config.getId(), k -> build(config));
     }
 
     private WxPayService build(PayChannelConfigDO config) {

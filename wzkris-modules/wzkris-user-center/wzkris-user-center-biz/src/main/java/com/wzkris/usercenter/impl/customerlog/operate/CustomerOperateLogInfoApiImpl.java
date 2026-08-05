@@ -43,7 +43,7 @@ public class CustomerOperateLogInfoApiImpl
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         CustomerOperateLogDO::getOperTime,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(CustomerOperateLogDO::getOperId);
+                .orderByDesc(CustomerOperateLogDO::getId);
     }
 
 }

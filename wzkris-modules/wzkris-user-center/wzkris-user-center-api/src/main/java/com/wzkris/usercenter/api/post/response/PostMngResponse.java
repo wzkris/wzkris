@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PostMngResponse {
 
-    private Long postId;
+    private Long id;
 
     @Schema(description = "租户ID")
     private Long tenantId;

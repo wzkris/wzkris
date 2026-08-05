@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
@@ -21,9 +20,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "tenant_info")
 public class TenantInfoDO extends BaseEntity {
-
-    @TableId
-    private Long tenantId;
 
     @Schema(description = "管理员ID")
     private Long administrator;
@@ -56,8 +52,8 @@ public class TenantInfoDO extends BaseEntity {
     @Schema(description = "过期时间")
     private OffsetDateTime expireTime;
 
-    public TenantInfoDO(Long tenantId) {
-        this.tenantId = tenantId;
+    public TenantInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

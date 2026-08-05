@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PrepayResponse {
 
-    private Long payOrderId;
+    private Long id;
 
     private String orderNo;
 

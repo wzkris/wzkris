@@ -41,11 +41,11 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
             menuIds = menuInfoService.listMenuIdByAdminId(SecurityUtil.getUid());
         }
         return new LambdaQueryWrapper<MenuInfoDO>()
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
                 .like(StringUtil.isNotEmpty(request.getMenuName()), MenuInfoDO::getMenuName, request.getMenuName())
                 .eq(request.getStatus() != null, MenuInfoDO::getStatus, request.getStatus())
                 .eq(Objects.nonNull(request.getScope()), MenuInfoDO::getScope, request.getScope())
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
                 || Objects.equals(request.getMenuType(), MenuTypeEnum.OUTLINK))
                 && !StringUtil.ishttp(request.getPath())) {
             return requestFail("修改菜单'" + request.getMenuName() + "'失败，地址必须以http(s)://开头");
-        } else if (request.getMenuId().equals(request.getParentId())) {
+        } else if (request.getId().equals(request.getParentId())) {
             return requestFail("修改菜单'" + request.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         MenuInfoDO menuInfoDO = BeanCopierUtil.copy(request, MenuInfoDO.class);

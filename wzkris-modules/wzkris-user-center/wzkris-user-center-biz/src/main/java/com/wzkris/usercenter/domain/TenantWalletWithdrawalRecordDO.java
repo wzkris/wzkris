@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.tenantwallet.TenantWalletWithdrawalStatusEnum;
@@ -24,9 +23,6 @@ import java.time.OffsetDateTime;
 @EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_wallet_withdrawal_record")
 public class TenantWalletWithdrawalRecordDO extends BaseEntity {
-
-    @TableId
-    private Long withdrawalId;
 
     @Schema(description = "订单号")
     private String orderNo;

@@ -44,7 +44,7 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
         return new LambdaQueryWrapper<PayChannelConfigDO>()
                 .eq(request.getChannel() != null, PayChannelConfigDO::getChannel, request.getChannel())
                 .eq(request.getStatus() != null, PayChannelConfigDO::getStatus, request.getStatus())
-                .orderByDesc(PayChannelConfigDO::getConfigId);
+                .orderByDesc(PayChannelConfigDO::getId);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
         config.setStatus(ChannelStatusEnum.ENABLED);
         boolean ok = configService.save(config);
         if (ok) {
-            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(config.getConfigId()));
+            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(config.getId()));
         }
         return toRes(ok);
     }
@@ -69,7 +69,7 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
         PayChannelConfigDO config = BeanCopierUtil.copy(request, PayChannelConfigDO.class);
         boolean ok = configService.updateById(config);
         if (ok) {
-            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(request.getConfigId()));
+            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(request.getId()));
         }
         return toRes(ok);
     }

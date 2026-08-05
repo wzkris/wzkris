@@ -17,7 +17,7 @@ import java.util.List;
 public class MemberMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long memberId;
+    private Long id;
 
     @Pattern(regexp = "^[a-z0-9_]+$", message = "{invalidParameter.username.invalid}")// 用户名只能为小写英文、数字和下划线
     @Xss

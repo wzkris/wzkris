@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
@@ -19,9 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "menu_info")
 public class MenuInfoDO extends BaseEntity {
-
-    @TableId
-    private Long menuId;
 
     @Schema(description = "菜单名称")
     private String menuName;
@@ -62,8 +58,8 @@ public class MenuInfoDO extends BaseEntity {
     @Schema(description = "菜单域")
     private MenuScopeEnum scope;
 
-    public MenuInfoDO(Long menuId) {
-        this.menuId = menuId;
+    public MenuInfoDO(Long id) {
+        this.setId(id);
     }
 
     public MenuInfoDO(MenuStatusEnum status) {

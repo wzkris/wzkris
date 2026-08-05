@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.announcement.AnnouncementStatusEnum;
@@ -17,9 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "announcement_info")
 public class AnnouncementInfoDO extends BaseEntity {
-
-    @TableId
-    private Long announcementId;
 
     @Schema(description = "标题")
     private String title;

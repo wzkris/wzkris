@@ -1,12 +1,11 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.time.OffsetDateTime;
 
 /**
@@ -16,14 +15,9 @@ import java.time.OffsetDateTime;
  * @date : 2023/8/26 14:35
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "admin_login_log")
-public class AdminLoginLogDO implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 5062210547731436343L;
-
-    @TableId
-    private Long logId;
+public class AdminLoginLogDO extends BaseEntity {
 
     @Schema(description = "用户ID")
     private Long adminId;

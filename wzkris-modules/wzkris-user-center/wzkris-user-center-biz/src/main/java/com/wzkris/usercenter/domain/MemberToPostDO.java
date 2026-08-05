@@ -1,8 +1,11 @@
 package com.wzkris.usercenter.domain;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
@@ -11,9 +14,11 @@ import lombok.NoArgsConstructor;
  * @author wzkris
  */
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
-public class MemberToPostDO {
+@NoArgsConstructor
+@TableName(schema = "biz", value = "member_to_post", autoResultMap = true)
+public class MemberToPostDO extends BaseEntity {
 
     @Schema(description = "成员ID")
     private Long memberId;

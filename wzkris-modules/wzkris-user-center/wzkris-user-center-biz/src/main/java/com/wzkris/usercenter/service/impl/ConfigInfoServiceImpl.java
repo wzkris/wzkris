@@ -93,7 +93,7 @@ public class ConfigInfoServiceImpl
     public boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey) {
         LambdaQueryWrapper<ConfigInfoDO> lqw = new LambdaQueryWrapper<ConfigInfoDO>()
                 .eq(ConfigInfoDO::getConfigKey, configKey)
-                .ne(Objects.nonNull(configId), ConfigInfoDO::getConfigId, configId);
+                .ne(Objects.nonNull(configId), ConfigInfoDO::getId, configId);
         return baseMapper.exists(lqw);
     }
 

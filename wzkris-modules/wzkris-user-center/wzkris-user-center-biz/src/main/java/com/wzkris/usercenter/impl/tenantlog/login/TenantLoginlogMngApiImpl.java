@@ -41,7 +41,7 @@ public class TenantLoginlogMngApiImpl
                         TenantLoginLogDO::getLoginTime,
                         request.getBeginTime(),
                         request.getEndTime())
-                .orderByDesc(TenantLoginLogDO::getLogId);
+                .orderByDesc(TenantLoginLogDO::getId);
     }
 
 }

@@ -121,9 +121,9 @@ public class PayNotifyServiceImpl implements PayNotifyService {
             return false;
         }
         boolean updated = payOrderService.updateToSuccess(
-                order.getPayOrderId(), parsed.getChannelNo(), parsed.getPayAt());
+                order.getId(), parsed.getChannelNo(), parsed.getPayAt());
         if (updated) {
-            eventPublisher.publishEvent(new PayOrderPaidEvent(order.getPayOrderId(), order.getBizType()));
+            eventPublisher.publishEvent(new PayOrderPaidEvent(order.getId(), order.getBizType()));
         }
         return updated;
     }
@@ -139,13 +139,13 @@ public class PayNotifyServiceImpl implements PayNotifyService {
         }
         if (parsed.isRefundSuccess()) {
             boolean updated = refundOrderService.updateToSuccess(
-                    refund.getRefundOrderId(), parsed.getChannelNo(), parsed.getRefundAt());
+                    refund.getId(), parsed.getChannelNo(), parsed.getRefundAt());
             if (updated) {
-                eventPublisher.publishEvent(new PayRefundFinishedEvent(refund.getRefundOrderId(), refund.getPayOrderId()));
+                eventPublisher.publishEvent(new PayRefundFinishedEvent(refund.getId(), refund.getPayOrderId()));
             }
             return updated;
         }
-        return refundOrderService.updateToFailed(refund.getRefundOrderId(), parsed.getErrorMsg());
+        return refundOrderService.updateToFailed(refund.getId(), parsed.getErrorMsg());
     }
 
     private PayChannelNotifyDO saveRecord(PayChannelEnum channel, NotifyParseResult parsed,

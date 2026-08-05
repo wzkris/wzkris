@@ -14,7 +14,7 @@ import java.util.List;
 public class RoleMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long roleId;
+    private Long id;
 
     @Schema(description = "数据范围")
     private DataScopeEnum dataScope;

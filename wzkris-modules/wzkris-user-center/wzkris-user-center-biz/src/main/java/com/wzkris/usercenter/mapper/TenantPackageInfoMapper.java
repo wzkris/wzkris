@@ -26,7 +26,7 @@ public interface TenantPackageInfoMapper extends BaseMapperPlus<TenantPackageInf
         }
         TenantPackageInfoDO tenantPackage = this.selectOne(new LambdaQueryWrapper<TenantPackageInfoDO>()
                 .select(TenantPackageInfoDO::getMenuIds)
-                .eq(TenantPackageInfoDO::getPackageId, packageId));
+                .eq(TenantPackageInfoDO::getId, packageId));
         return tenantPackage == null ? Collections.emptyList() : Arrays.asList(tenantPackage.getMenuIds());
     }
 

@@ -44,7 +44,7 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         CustomerWalletRecordDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(CustomerWalletRecordDO::getRecordId);
+                .orderByDesc(CustomerWalletRecordDO::getId);
     }
 
 }

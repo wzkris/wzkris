@@ -41,7 +41,7 @@ public class AdminLoginlogMngApiImpl
                         AdminLoginLogDO::getLoginTime,
                         request.getBeginTime(),
                         request.getEndTime())
-                .orderByDesc(AdminLoginLogDO::getLogId);
+                .orderByDesc(AdminLoginLogDO::getId);
     }
 
 }

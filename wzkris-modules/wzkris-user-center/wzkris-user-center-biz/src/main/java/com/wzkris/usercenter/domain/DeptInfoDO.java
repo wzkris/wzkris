@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
@@ -22,9 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "dept_info", autoResultMap = true)
 public class DeptInfoDO extends BaseEntity {
-
-    @TableId
-    private Long deptId;
 
     @Schema(description = "父部门ID")
     private Long parentId;
@@ -52,8 +48,8 @@ public class DeptInfoDO extends BaseEntity {
     @Schema(description = "子部门")
     private List<DeptInfoDO> children = new ArrayList<>();
 
-    public DeptInfoDO(Long deptId) {
-        this.deptId = deptId;
+    public DeptInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

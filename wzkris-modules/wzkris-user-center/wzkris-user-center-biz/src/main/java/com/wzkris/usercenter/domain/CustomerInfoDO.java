@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.common.validator.annotation.Xss;
@@ -21,9 +20,6 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "customer_info")
 public class CustomerInfoDO extends BaseEntity {
-
-    @TableId
-    private Long customerId;
 
     @Xss
     @Schema(description = "用户昵称")
@@ -47,8 +43,8 @@ public class CustomerInfoDO extends BaseEntity {
     @Schema(description = "最近登录日期")
     private OffsetDateTime loginDate;
 
-    public CustomerInfoDO(Long customerId) {
-        this.customerId = customerId;
+    public CustomerInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

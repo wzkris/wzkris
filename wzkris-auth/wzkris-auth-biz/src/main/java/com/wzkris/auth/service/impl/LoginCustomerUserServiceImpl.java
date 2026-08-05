@@ -95,9 +95,9 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         this.checkAccount(customerResponse);
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(customerResponse.getCustomerId());
+        loginUser.setUid(customerResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setName(String.valueOf(customerResponse.getCustomerId()));
+        loginUser.setName(String.valueOf(customerResponse.getId()));
 
         // Customer 用户没有权限，使用空集合
         return UsernamePasswordAuthenticationToken.authenticated(
@@ -118,9 +118,9 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(CustomerResponse.getCustomerId());
+        loginUser.setUid(CustomerResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setName(String.valueOf(CustomerResponse.getCustomerId()));
+        loginUser.setName(String.valueOf(CustomerResponse.getId()));
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(

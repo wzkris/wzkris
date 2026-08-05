@@ -39,7 +39,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
                 .like(StringUtil.isNotEmpty(request.getConfigType()),
                         ConfigInfoDO::getConfigType,
                         request.getConfigType())
-                .orderByDesc(ConfigInfoDO::getConfigId);
+                .orderByDesc(ConfigInfoDO::getId);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
 
     @Override
     public Result<Void> update(ConfigMngUpdateRequest request) {
-        if (configInfoService.checkUsedByConfigKey(request.getConfigId(), request.getConfigKey())) {
+        if (configInfoService.checkUsedByConfigKey(request.getId(), request.getConfigKey())) {
             return requestFail("修改参数'" + request.getConfigName() + "'失败，参数键名已存在");
         }
         return toRes(configInfoService.updateConfig(BeanCopierUtil.copy(request, ConfigInfoDO.class)));

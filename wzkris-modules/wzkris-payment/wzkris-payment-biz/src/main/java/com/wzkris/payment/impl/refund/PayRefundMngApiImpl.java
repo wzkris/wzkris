@@ -39,7 +39,7 @@ public class PayRefundMngApiImpl extends AbstractApi implements PayRefundMngApi 
                 .eq(request.getPayOrderId() != null, PayRefundOrderDO::getPayOrderId, request.getPayOrderId())
                 .eq(request.getChannel() != null, PayRefundOrderDO::getChannel, request.getChannel())
                 .eq(request.getStatus() != null, PayRefundOrderDO::getStatus, request.getStatus())
-                .orderByDesc(PayRefundOrderDO::getRefundOrderId);
+                .orderByDesc(PayRefundOrderDO::getId);
     }
 
     @Override

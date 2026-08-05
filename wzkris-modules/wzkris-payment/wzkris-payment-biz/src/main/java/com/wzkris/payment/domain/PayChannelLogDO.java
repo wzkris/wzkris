@@ -1,6 +1,5 @@
 package com.wzkris.payment.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
@@ -19,9 +18,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "pay_channel_log")
 public class PayChannelLogDO extends BaseEntity {
-
-    @TableId
-    private Long channelLogId;
 
     @Schema(description = "支付订单ID")
     private Long payOrderId;

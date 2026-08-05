@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Range;
 public class MenuMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long menuId;
+    private Long id;
 
     @Size(min = 0, max = 30, message = "{invalidParameter.menuName.invalid}")
     @Schema(description = "菜单名称")

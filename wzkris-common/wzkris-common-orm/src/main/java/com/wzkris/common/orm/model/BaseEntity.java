@@ -2,6 +2,7 @@ package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
@@ -17,6 +18,12 @@ import java.time.OffsetDateTime;
 @Data
 @FieldNameConstants
 public class BaseEntity implements Serializable {
+
+    /**
+     * 主键
+     */
+    @TableId
+    private Long id;
 
     /**
      * 创建时间

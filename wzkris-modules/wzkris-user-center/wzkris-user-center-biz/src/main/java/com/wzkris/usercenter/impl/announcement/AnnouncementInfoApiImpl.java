@@ -26,7 +26,7 @@ public class AnnouncementInfoApiImpl extends AbstractApi implements Announcement
     public Result<Page<AnnouncementInfoResponse>> queryPage(AnnouncementInfoPageRequest request) {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
-                .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
+                .orderByDesc(AnnouncementInfoDO::getId);
         IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), lqw);
         return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementInfoResponse.class)));
     }

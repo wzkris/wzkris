@@ -17,9 +17,9 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
 
     @Select("""
             <script>
-                SELECT n.notification_id, n.title, n.content, s.read, n.create_at
+                SELECT n.id, n.title, n.content, s.read, n.create_at
                 FROM biz.notification_to_admin s
-                INNER JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                INNER JOIN biz.notification_info n ON s.notification_id = n.id
                 WHERE n.deleted = false AND s.admin_id = #{adminId}
             	    <if test="notificationType != null and notificationType != ''">
             	        AND n.notification_type = #{notificationType}
@@ -38,9 +38,9 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
 
     @Select("""
             <script>
-                SELECT n.notification_id, n.title, n.content, s.read, n.create_at
+                SELECT n.id, n.title, n.content, s.read, n.create_at
                 FROM biz.notification_to_tenant s
-                INNER JOIN biz.notification_info n ON s.notification_id = n.notification_id
+                INNER JOIN biz.notification_info n ON s.notification_id = n.id
                 WHERE n.deleted = false AND s.member_id = #{memberId}
             	    <if test="notificationType != null and notificationType != ''">
             	        AND n.notification_type = #{notificationType}
@@ -69,7 +69,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     @Select("""
             <script>
                 SELECT COUNT(*) FROM
-                (SELECT 1 FROM biz.notification_to_admin u INNER JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                (SELECT 1 FROM biz.notification_to_admin u INNER JOIN biz.notification_info n ON u.notification_id = n.id
                 WHERE n.deleted = false AND u.admin_id = #{adminId} AND u.read = FALSE
                     <if test="notificationType != null and notificationType != ''">
             	        AND notification_type = #{notificationType}
@@ -91,7 +91,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     @Select("""
             <script>
                 SELECT COUNT(*) FROM
-                (SELECT 1 FROM biz.notification_to_tenant u INNER JOIN biz.notification_info n ON u.notification_id = n.notification_id
+                (SELECT 1 FROM biz.notification_to_tenant u INNER JOIN biz.notification_info n ON u.notification_id = n.id
                 WHERE n.deleted = false AND u.member_id = #{memberId} AND u.read = FALSE
                     <if test="notificationType != null and notificationType != ''">
                         AND notification_type = #{notificationType}

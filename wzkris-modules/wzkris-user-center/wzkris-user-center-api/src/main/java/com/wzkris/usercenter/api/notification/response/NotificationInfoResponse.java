@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 public class NotificationInfoResponse {
 
     @Schema(description = "通知ID")
-    private Long notificationId;
+    private Long id;
 
     @Schema(description = "标题")
     private String title;

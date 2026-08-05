@@ -47,7 +47,7 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE biz.admin_info (
-    admin_id bigint NOT NULL,
+    id bigint NOT NULL,
     dept_id bigint,
     username character varying(30) NOT NULL,
     email character varying(50),
@@ -83,10 +83,10 @@ COMMENT ON TABLE biz.admin_info IS '管理员表';
 --
 -- TOC entry 3521 (class 0 OID 0)
 -- Dependencies: 215
--- Name: COLUMN admin_info.admin_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN admin_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.admin_info.admin_id IS '管理员ID';
+COMMENT ON COLUMN biz.admin_info.id IS '管理员ID';
 
 
 --
@@ -230,12 +230,21 @@ COMMENT ON COLUMN biz.admin_info.hint IS '标签';
 --
 
 CREATE TABLE biz.admin_to_role (
+    id bigint NOT NULL,
     admin_id bigint NOT NULL,
-    role_id bigint NOT NULL
+    role_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.admin_to_role OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_admin_to_role ON biz.admin_to_role USING btree (admin_id, role_id) WHERE deleted = false;
 
 --
 -- TOC entry 3537 (class 0 OID 0)
@@ -270,7 +279,7 @@ COMMENT ON COLUMN biz.admin_to_role.role_id IS '角色ID';
 --
 
 CREATE TABLE biz.customer_info (
-    customer_id bigint NOT NULL,
+    id bigint NOT NULL,
     nickname character varying(30),
     phone_number character varying(16),
     status character(1) DEFAULT 0 NOT NULL,
@@ -301,10 +310,10 @@ COMMENT ON TABLE biz.customer_info IS '用户信息表';
 --
 -- TOC entry 3541 (class 0 OID 0)
 -- Dependencies: 217
--- Name: COLUMN customer_info.customer_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN customer_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.customer_info.customer_id IS '用户ID';
+COMMENT ON COLUMN biz.customer_info.id IS '用户ID';
 
 
 --
@@ -403,6 +412,7 @@ COMMENT ON COLUMN biz.customer_info.hint IS '标签';
 --
 
 CREATE TABLE biz.customer_social_info (
+    id bigint NOT NULL,
     customer_id bigint NOT NULL,
     identifier character varying(32) NOT NULL,
     identifier_type character varying(10) NOT NULL,
@@ -416,6 +426,8 @@ CREATE TABLE biz.customer_social_info (
 
 
 ALTER TABLE biz.customer_social_info OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_customer_social_info_customer ON biz.customer_social_info USING btree (customer_id) WHERE deleted = false;
 
 --
 -- TOC entry 3552 (class 0 OID 0)
@@ -450,6 +462,7 @@ COMMENT ON COLUMN biz.customer_social_info.identifier_type IS '三方渠道';
 --
 
 CREATE TABLE biz.customer_wallet_info (
+    id bigint NOT NULL,
     customer_id bigint NOT NULL,
     balance numeric(10,2) NOT NULL,
     status character(1) NOT NULL,
@@ -463,6 +476,8 @@ CREATE TABLE biz.customer_wallet_info (
 
 
 ALTER TABLE biz.customer_wallet_info OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_customer_wallet_info_customer ON biz.customer_wallet_info USING btree (customer_id) WHERE deleted = false;
 
 --
 -- TOC entry 3555 (class 0 OID 0)
@@ -497,7 +512,7 @@ COMMENT ON COLUMN biz.customer_wallet_info.status IS '状态';
 --
 
 CREATE TABLE biz.customer_wallet_record (
-    record_id bigint NOT NULL,
+    id bigint NOT NULL,
     customer_id bigint NOT NULL,
     amount numeric(10,2) NOT NULL,
     record_type character(1) NOT NULL,
@@ -573,7 +588,7 @@ COMMENT ON COLUMN biz.customer_wallet_record.remark IS '备注';
 --
 
 CREATE TABLE biz.dept_info (
-    dept_id bigint NOT NULL,
+    id bigint NOT NULL,
     parent_id bigint DEFAULT 0 NOT NULL,
     ancestors bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     dept_name character varying(30),
@@ -604,10 +619,10 @@ COMMENT ON TABLE biz.dept_info IS '部门表';
 --
 -- TOC entry 3565 (class 0 OID 0)
 -- Dependencies: 221
--- Name: COLUMN dept_info.dept_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dept_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.dept_info.dept_id IS '部门id';
+COMMENT ON COLUMN biz.dept_info.id IS '部门id';
 
 
 --
@@ -706,7 +721,7 @@ COMMENT ON COLUMN biz.dept_info.hint IS '标签';
 --
 
 CREATE TABLE biz.member_info (
-    member_id bigint NOT NULL,
+    id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     username character varying(30) NOT NULL,
     phone_number character varying(16),
@@ -740,10 +755,10 @@ COMMENT ON TABLE biz.member_info IS '租户成员表';
 --
 -- TOC entry 3577 (class 0 OID 0)
 -- Dependencies: 222
--- Name: COLUMN member_info.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN member_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.member_id IS 'ID';
+COMMENT ON COLUMN biz.member_info.id IS 'ID';
 
 
 --
@@ -869,6 +884,7 @@ COMMENT ON COLUMN biz.member_info.hint IS '标签';
 --
 
 CREATE TABLE biz.member_social_info (
+    id bigint NOT NULL,
     member_id bigint NOT NULL,
     identifier character varying(32) NOT NULL,
     identifier_type character varying(10) NOT NULL,
@@ -882,6 +898,8 @@ CREATE TABLE biz.member_social_info (
 
 
 ALTER TABLE biz.member_social_info OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_member_social_info_member ON biz.member_social_info USING btree (member_id) WHERE deleted = false;
 
 --
 -- TOC entry 3591 (class 0 OID 0)
@@ -916,12 +934,21 @@ COMMENT ON COLUMN biz.member_social_info.identifier_type IS '三方渠道';
 --
 
 CREATE TABLE biz.member_to_post (
+    id bigint NOT NULL,
     member_id bigint NOT NULL,
-    post_id bigint NOT NULL
+    post_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.member_to_post OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_member_to_post ON biz.member_to_post USING btree (member_id, post_id) WHERE deleted = false;
 
 --
 -- TOC entry 3594 (class 0 OID 0)
@@ -956,7 +983,7 @@ COMMENT ON COLUMN biz.member_to_post.post_id IS '职位ID';
 --
 
 CREATE TABLE biz.menu_info (
-    menu_id bigint NOT NULL,
+    id bigint NOT NULL,
     menu_name character varying(30) NOT NULL,
     parent_id bigint NOT NULL,
     menu_sort integer NOT NULL,
@@ -993,10 +1020,10 @@ COMMENT ON TABLE biz.menu_info IS '菜单权限表';
 --
 -- TOC entry 3598 (class 0 OID 0)
 -- Dependencies: 225
--- Name: COLUMN menu_info.menu_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN menu_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.menu_info.menu_id IS '菜单ID';
+COMMENT ON COLUMN biz.menu_info.id IS '菜单ID';
 
 
 --
@@ -1256,7 +1283,7 @@ COMMENT ON COLUMN biz.oauth2_client.hint IS '标签';
 --
 
 CREATE TABLE biz.post_info (
-    post_id bigint NOT NULL,
+    id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     post_name character varying(20) NOT NULL,
     status character(1) NOT NULL,
@@ -1284,10 +1311,10 @@ COMMENT ON TABLE biz.post_info IS '租户职位信息';
 --
 -- TOC entry 3625 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.post_id; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.id; Type: COMMENT; Schema: biz; Owner: root
 --
 
-COMMENT ON COLUMN biz.post_info.post_id IS '职位ID';
+COMMENT ON COLUMN biz.post_info.id IS '职位ID';
 
 
 --
@@ -1341,12 +1368,21 @@ COMMENT ON COLUMN biz.post_info.hint IS '标签';
 --
 
 CREATE TABLE biz.post_to_menu (
+    id bigint NOT NULL,
     post_id bigint NOT NULL,
-    menu_id bigint NOT NULL
+    menu_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.post_to_menu OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_post_to_menu ON biz.post_to_menu USING btree (post_id, menu_id) WHERE deleted = false;
 
 --
 -- TOC entry 3631 (class 0 OID 0)
@@ -1381,7 +1417,7 @@ COMMENT ON COLUMN biz.post_to_menu.menu_id IS '菜单ID';
 --
 
 CREATE TABLE biz.role_info (
-    role_id bigint NOT NULL,
+    id bigint NOT NULL,
     data_scope character(1) NOT NULL,
     role_name character varying(20) NOT NULL,
     status character(1) NOT NULL,
@@ -1400,10 +1436,10 @@ ALTER TABLE biz.role_info OWNER TO root;
 --
 -- TOC entry 3634 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.role_id; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.id; Type: COMMENT; Schema: biz; Owner: root
 --
 
-COMMENT ON COLUMN biz.role_info.role_id IS '角色ID';
+COMMENT ON COLUMN biz.role_info.id IS '角色ID';
 
 
 --
@@ -1457,12 +1493,21 @@ COMMENT ON COLUMN biz.role_info.hint IS '标签';
 --
 
 CREATE TABLE biz.role_inheritance (
+    id bigint NOT NULL,
     role_id bigint NOT NULL,
-    child_id bigint NOT NULL
+    child_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.role_inheritance OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_role_inheritance ON biz.role_inheritance USING btree (role_id, child_id) WHERE deleted = false;
 
 --
 -- TOC entry 3640 (class 0 OID 0)
@@ -1497,12 +1542,21 @@ COMMENT ON COLUMN biz.role_inheritance.child_id IS '子ID';
 --
 
 CREATE TABLE biz.role_to_dept (
+    id bigint NOT NULL,
     role_id bigint NOT NULL,
-    dept_id bigint NOT NULL
+    dept_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.role_to_dept OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_role_to_dept ON biz.role_to_dept USING btree (role_id, dept_id) WHERE deleted = false;
 
 --
 -- TOC entry 3643 (class 0 OID 0)
@@ -1537,12 +1591,21 @@ COMMENT ON COLUMN biz.role_to_dept.dept_id IS '部门id';
 --
 
 CREATE TABLE biz.role_to_menu (
+    id bigint NOT NULL,
     role_id bigint NOT NULL,
-    menu_id bigint NOT NULL
+    menu_id bigint NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.role_to_menu OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_role_to_menu ON biz.role_to_menu USING btree (role_id, menu_id) WHERE deleted = false;
 
 --
 -- TOC entry 3646 (class 0 OID 0)
@@ -1577,7 +1640,7 @@ COMMENT ON COLUMN biz.role_to_menu.menu_id IS '菜单ID';
 --
 
 CREATE TABLE biz.tenant_info (
-    tenant_id bigint NOT NULL,
+    id bigint NOT NULL,
     administrator bigint NOT NULL,
     tenant_type character(1) NOT NULL,
     contact_phone character varying(20),
@@ -1611,10 +1674,10 @@ COMMENT ON TABLE biz.tenant_info IS '租户表';
 --
 -- TOC entry 3650 (class 0 OID 0)
 -- Dependencies: 233
--- Name: COLUMN tenant_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_info.tenant_id IS '租户编号';
+COMMENT ON COLUMN biz.tenant_info.id IS '租户编号';
 
 
 --
@@ -1758,7 +1821,7 @@ COMMENT ON COLUMN biz.tenant_info.hint IS '标签';
 --
 
 CREATE TABLE biz.tenant_package_info (
-    package_id bigint NOT NULL,
+    id bigint NOT NULL,
     package_name character varying(20) NOT NULL,
     status character(1) NOT NULL,
     menu_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
@@ -1788,10 +1851,10 @@ COMMENT ON TABLE biz.tenant_package_info IS '租户套餐表';
 --
 -- TOC entry 3667 (class 0 OID 0)
 -- Dependencies: 234
--- Name: COLUMN tenant_package_info.package_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_package_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_package_info.package_id IS '租户套餐id';
+COMMENT ON COLUMN biz.tenant_package_info.id IS '租户套餐id';
 
 
 --
@@ -1899,6 +1962,7 @@ COMMENT ON COLUMN biz.tenant_package_info.post_num_limit IS '租户职位数量�
 --
 
 CREATE TABLE biz.tenant_wallet_info (
+    id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     balance numeric(10,2) NOT NULL,
     status character(1) NOT NULL,
@@ -1912,6 +1976,8 @@ CREATE TABLE biz.tenant_wallet_info (
 
 
 ALTER TABLE biz.tenant_wallet_info OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_tenant_wallet_info_tenant ON biz.tenant_wallet_info USING btree (tenant_id) WHERE deleted = false;
 
 --
 -- TOC entry 3679 (class 0 OID 0)
@@ -1946,7 +2012,7 @@ COMMENT ON COLUMN biz.tenant_wallet_info.status IS '状态';
 --
 
 CREATE TABLE biz.tenant_wallet_record (
-    record_id bigint NOT NULL,
+    id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     amount numeric(10,2) NOT NULL,
     record_type character(1) NOT NULL,
@@ -2042,7 +2108,7 @@ COMMENT ON COLUMN biz.tenant_wallet_record.remark IS '备注';
 --
 
 CREATE TABLE biz.tenant_wallet_withdrawal_record (
-    withdrawal_id bigint NOT NULL,
+    id bigint NOT NULL,
     order_no character varying(32) NOT NULL,
     status character(1) NOT NULL,
     tenant_id bigint NOT NULL,
@@ -2074,10 +2140,10 @@ COMMENT ON TABLE biz.tenant_wallet_withdrawal_record IS '系统提现记录';
 --
 -- TOC entry 3691 (class 0 OID 0)
 -- Dependencies: 237
--- Name: COLUMN tenant_wallet_withdrawal_record.withdrawal_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_wallet_withdrawal_record.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.withdrawal_id IS 'id';
+COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.id IS 'id';
 
 
 --
@@ -2188,7 +2254,7 @@ COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.hint IS '标签';
 -- Data for Name: admin_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_info (admin_id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.admin_info (id, dept_id, username, email, nickname, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 100	\N	super	\N	nick_a	13512312311	0	1	https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1B91c8.img?w=660&h=648&m=6&x=219&y=147&s=204&d=204	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 09:14:57+08	\N	1	0	2024-04-17 14:08:55+08	2026-04-14 09:14:58+08		f
 \.
 
@@ -2209,7 +2275,7 @@ COPY biz.admin_to_role (admin_id, role_id) FROM stdin;
 -- Data for Name: customer_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, avatar, login_ip, login_date, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.customer_info (id, nickname, phone_number, status, gender, avatar, login_ip, login_date, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 1988138628742279170	123	\N	0	0	http://tmp/f0iJwZfGvBx9bd2d939bf0fbdab283f01e98a4d9bc31.png	172.16.8.131	2025-11-20 10:16:17+08	0	0	2025-11-11 14:56:02+08	2025-11-20 10:16:17+08		f
 \.
 
@@ -2220,8 +2286,8 @@ COPY biz.customer_info (customer_id, nickname, phone_number, status, gender, ava
 -- Data for Name: customer_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_social_info (customer_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
-1988138628742279170	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	0	\N	2025-11-11 14:56:02+08	\N		f
+COPY biz.customer_social_info (id, customer_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1988138628742279170	1988138628742279170	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	0	\N	2025-11-11 14:56:02+08	\N		f
 \.
 
 
@@ -2231,8 +2297,8 @@ COPY biz.customer_social_info (customer_id, identifier, identifier_type, creator
 -- Data for Name: customer_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_wallet_info (customer_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
-1988138628742279170	0.00	0	0	\N	2025-11-11 14:56:02+08	\N		f
+COPY biz.customer_wallet_info (id, customer_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1988138628742279170	1988138628742279170	0.00	0	0	\N	2025-11-11 14:56:02+08	\N		f
 \.
 
 
@@ -2242,7 +2308,7 @@ COPY biz.customer_wallet_info (customer_id, balance, status, creator_id, updater
 -- Data for Name: customer_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
+COPY biz.customer_wallet_record (id, customer_id, amount, record_type, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2252,7 +2318,7 @@ COPY biz.customer_wallet_record (record_id, customer_id, amount, record_type, cr
 -- Data for Name: dept_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort, contact, email, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.dept_info (id, parent_id, ancestors, dept_name, status, dept_sort, contact, email, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2262,7 +2328,7 @@ COPY biz.dept_info (dept_id, parent_id, ancestors, dept_name, status, dept_sort,
 -- Data for Name: member_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.member_info (id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 1910557183820165120	1910557183820165122	testadmin	\N	0	0	http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png	{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2	172.16.8.59	2026-04-14 14:09:01+08	\N	1	0	2025-04-11 12:55:04+08	2026-04-14 14:09:01+08		f
 \.
 
@@ -2273,8 +2339,8 @@ COPY biz.member_info (member_id, tenant_id, username, phone_number, status, gend
 -- Data for Name: member_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.member_social_info (member_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
-1910557183820165120	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	1	\N	2025-04-11 12:55:04+08	\N		f
+COPY biz.member_social_info (id, member_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1910557183820165120	1910557183820165120	ozNXO5eZpDZXZMInfjKhkkr7LQzs	we_xcx	1	\N	2025-04-11 12:55:04+08	\N		f
 \.
 
 
@@ -2294,7 +2360,7 @@ COPY biz.member_to_post (member_id, post_id) FROM stdin;
 -- Data for Name: menu_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.menu_info (menu_id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 1980906033277222913	日志审计	0	0	audit-log	\N	\N	D	0	\N	carbon:catalog-publish	f	t	tenant	1	1	2025-10-22 15:56:16+08	2025-10-22 15:58:02+08		f
 1906263415450001129	重置租户操作密码	1906263415450000601	11	#	\N	\N	B	0	user-mod:tenant-mng:reset-operpwd	#	f	t	system	1	1	2024-05-26 12:30:16+08	2025-09-03 16:17:24+08		f
 1906263415450000104	日志审计	0	1	audit-log	\N	\N	D	0	\N	carbon:ibm-knowledge-catalog-premium	f	t	system	1	1	2024-05-26 12:30:16+08	2025-10-22 15:59:16+08		f
@@ -2400,7 +2466,7 @@ COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, autho
 -- Data for Name: post_info; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
-COPY biz.post_info (post_id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
+COPY biz.post_info (id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
 1978377271113371649	1910557183820165122	CEO	0	0	2025-10-15 16:27:53+08	1910557183820165120	2025-10-15 16:27:53+08	1910557183820165120		f
 1978377302486765569	1910557183820165122	CFO	0	0	2025-10-15 16:28:00+08	1910557183820165120	2025-10-15 16:44:51+08	1910557183820165120		f
 \.
@@ -2412,17 +2478,17 @@ COPY biz.post_info (post_id, tenant_id, post_name, status, post_sort, create_at,
 -- Data for Name: post_to_menu; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.post_to_menu (post_id, menu_id) FROM stdin;
-1978377271113371649	1906272182215585793
-1978377271113371649	1915322746249367554
-1978377271113371649	1906263415450001127
-1978377271113371649	1906263415450001126
-1978377302486765569	1976565556872667137
-1978377302486765569	1976570103963770881
-1978377302486765569	1976586772002037762
-1978377302486765569	1976586698882736130
-1978377302486765569	1976586612681400321
-1978377302486765569	1976586554187636737
+COPY biz.post_to_menu (id, post_id, menu_id, creator_id, create_at) FROM stdin;
+1	1978377271113371649	1906272182215585793	1910557183820165120	2025-10-15 16:27:53+08
+2	1978377271113371649	1915322746249367554	1910557183820165120	2025-10-15 16:27:53+08
+3	1978377271113371649	1906263415450001127	1910557183820165120	2025-10-15 16:27:53+08
+4	1978377271113371649	1906263415450001126	1910557183820165120	2025-10-15 16:27:53+08
+5	1978377302486765569	1976565556872667137	1910557183820165120	2025-10-15 16:27:53+08
+6	1978377302486765569	1976570103963770881	1910557183820165120	2025-10-15 16:27:53+08
+7	1978377302486765569	1976586772002037762	1910557183820165120	2025-10-15 16:27:53+08
+8	1978377302486765569	1976586698882736130	1910557183820165120	2025-10-15 16:27:53+08
+9	1978377302486765569	1976586612681400321	1910557183820165120	2025-10-15 16:27:53+08
+10	1978377302486765569	1976586554187636737	1910557183820165120	2025-10-15 16:27:53+08
 \.
 
 
@@ -2432,7 +2498,7 @@ COPY biz.post_to_menu (post_id, menu_id) FROM stdin;
 -- Data for Name: role_info; Type: TABLE DATA; Schema: biz; Owner: root
 --
 
-COPY biz.role_info (role_id, data_scope, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
+COPY biz.role_info (id, data_scope, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
 \.
 
 
@@ -2472,7 +2538,7 @@ COPY biz.role_to_menu (role_id, menu_id) FROM stdin;
 -- Data for Name: tenant_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
+COPY biz.tenant_info (id, administrator, tenant_type, contact_phone, tenant_name, oper_pwd, status, domain, remark, package_id, expire_time, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
 1910557183820165122	1910557183820165120	0		test1	{bcrypt}$2a$10$1UJgROjrOvMKJD4way7dKeBsJuLGVLWGy/pBGooa.sFqfsP3Vrupm	0		\N	1773625804122202113	2026-05-01 00:00:00+08	1	2025-04-11 12:55:04+08	1910557183820165120	2025-11-18 15:02:28+08		f
 \.
 
@@ -2483,7 +2549,7 @@ COPY biz.tenant_info (tenant_id, administrator, tenant_type, contact_phone, tena
 -- Data for Name: tenant_package_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit, deleted) FROM stdin;
+COPY biz.tenant_package_info (id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit, deleted) FROM stdin;
 1773625804122202113	默认套餐	0	{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}	通用租户套餐	1	2024-04-17 14:08:54+08	100	2026-04-14 14:07:58+08		5	5	f
 \.
 
@@ -2494,8 +2560,8 @@ COPY biz.tenant_package_info (package_id, package_name, status, menu_ids, remark
 -- Data for Name: tenant_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_info (tenant_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
-1910557183820165122	0.00	0	1	\N	2025-04-11 12:55:04+08	\N		f
+COPY biz.tenant_wallet_info (id, tenant_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+1910557183820165122	1910557183820165122	0.00	0	1	\N	2025-04-11 12:55:04+08	\N		f
 \.
 
 
@@ -2505,7 +2571,7 @@ COPY biz.tenant_wallet_info (tenant_id, balance, status, creator_id, updater_id,
 -- Data for Name: tenant_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_record (record_id, tenant_id, amount, record_type, biz_type, biz_no, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
+COPY biz.tenant_wallet_record (id, tenant_id, amount, record_type, biz_type, biz_no, create_at, remark, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -2515,7 +2581,7 @@ COPY biz.tenant_wallet_record (record_id, tenant_id, amount, record_type, biz_ty
 -- Data for Name: tenant_wallet_withdrawal_record; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenant_id, request_params, amount, error_msg, creator_id, create_at, complete_at, remark, hint, updater_id, update_at, deleted) FROM stdin;
+COPY biz.tenant_wallet_withdrawal_record (id, order_no, status, tenant_id, request_params, amount, error_msg, creator_id, create_at, complete_at, remark, hint, updater_id, update_at, deleted) FROM stdin;
 \.
 
 
@@ -2525,7 +2591,7 @@ COPY biz.tenant_wallet_withdrawal_record (withdrawal_id, order_no, status, tenan
 --
 
 ALTER TABLE ONLY biz.admin_info
-    ADD CONSTRAINT admin_info_pkey PRIMARY KEY (admin_id);
+    ADD CONSTRAINT admin_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2534,7 +2600,7 @@ ALTER TABLE ONLY biz.admin_info
 --
 
 ALTER TABLE ONLY biz.admin_to_role
-    ADD CONSTRAINT admin_to_role_pkey PRIMARY KEY (admin_id, role_id);
+    ADD CONSTRAINT admin_to_role_pkey PRIMARY KEY (id);
 
 
 --
@@ -2543,7 +2609,7 @@ ALTER TABLE ONLY biz.admin_to_role
 --
 
 ALTER TABLE ONLY biz.customer_info
-    ADD CONSTRAINT customer_info_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2552,7 +2618,7 @@ ALTER TABLE ONLY biz.customer_info
 --
 
 ALTER TABLE ONLY biz.customer_social_info
-    ADD CONSTRAINT customer_social_info_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_social_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2561,7 +2627,7 @@ ALTER TABLE ONLY biz.customer_social_info
 --
 
 ALTER TABLE ONLY biz.customer_wallet_info
-    ADD CONSTRAINT customer_wallet_info_pkey PRIMARY KEY (customer_id);
+    ADD CONSTRAINT customer_wallet_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2570,7 +2636,7 @@ ALTER TABLE ONLY biz.customer_wallet_info
 --
 
 ALTER TABLE ONLY biz.customer_wallet_record
-    ADD CONSTRAINT customer_wallet_record_pkey PRIMARY KEY (record_id);
+    ADD CONSTRAINT customer_wallet_record_pkey PRIMARY KEY (id);
 
 
 --
@@ -2579,7 +2645,7 @@ ALTER TABLE ONLY biz.customer_wallet_record
 --
 
 ALTER TABLE ONLY biz.dept_info
-    ADD CONSTRAINT dept_info_pkey PRIMARY KEY (dept_id);
+    ADD CONSTRAINT dept_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2588,7 +2654,7 @@ ALTER TABLE ONLY biz.dept_info
 --
 
 ALTER TABLE ONLY biz.member_info
-    ADD CONSTRAINT member_info_pkey PRIMARY KEY (member_id);
+    ADD CONSTRAINT member_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2597,7 +2663,7 @@ ALTER TABLE ONLY biz.member_info
 --
 
 ALTER TABLE ONLY biz.member_social_info
-    ADD CONSTRAINT member_social_info_pkey PRIMARY KEY (member_id);
+    ADD CONSTRAINT member_social_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2606,7 +2672,7 @@ ALTER TABLE ONLY biz.member_social_info
 --
 
 ALTER TABLE ONLY biz.member_to_post
-    ADD CONSTRAINT member_to_post_pkey PRIMARY KEY (member_id, post_id);
+    ADD CONSTRAINT member_to_post_pkey PRIMARY KEY (id);
 
 
 --
@@ -2615,7 +2681,7 @@ ALTER TABLE ONLY biz.member_to_post
 --
 
 ALTER TABLE ONLY biz.menu_info
-    ADD CONSTRAINT menu_info_pkey PRIMARY KEY (menu_id);
+    ADD CONSTRAINT menu_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2633,7 +2699,7 @@ ALTER TABLE ONLY biz.oauth2_client
 --
 
 ALTER TABLE ONLY biz.post_info
-    ADD CONSTRAINT post_info_pkey PRIMARY KEY (post_id);
+    ADD CONSTRAINT post_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2642,7 +2708,7 @@ ALTER TABLE ONLY biz.post_info
 --
 
 ALTER TABLE ONLY biz.post_to_menu
-    ADD CONSTRAINT post_to_menu_pkey PRIMARY KEY (post_id, menu_id);
+    ADD CONSTRAINT post_to_menu_pkey PRIMARY KEY (id);
 
 
 --
@@ -2651,7 +2717,7 @@ ALTER TABLE ONLY biz.post_to_menu
 --
 
 ALTER TABLE ONLY biz.role_info
-    ADD CONSTRAINT role_info_pkey PRIMARY KEY (role_id);
+    ADD CONSTRAINT role_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2660,7 +2726,7 @@ ALTER TABLE ONLY biz.role_info
 --
 
 ALTER TABLE ONLY biz.role_inheritance
-    ADD CONSTRAINT role_inheritance_pkey PRIMARY KEY (role_id, child_id);
+    ADD CONSTRAINT role_inheritance_pkey PRIMARY KEY (id);
 
 
 --
@@ -2669,7 +2735,7 @@ ALTER TABLE ONLY biz.role_inheritance
 --
 
 ALTER TABLE ONLY biz.role_to_dept
-    ADD CONSTRAINT role_to_dept_pkey PRIMARY KEY (role_id, dept_id);
+    ADD CONSTRAINT role_to_dept_pkey PRIMARY KEY (id);
 
 
 --
@@ -2678,7 +2744,7 @@ ALTER TABLE ONLY biz.role_to_dept
 --
 
 ALTER TABLE ONLY biz.role_to_menu
-    ADD CONSTRAINT role_to_menu_pkey PRIMARY KEY (role_id, menu_id);
+    ADD CONSTRAINT role_to_menu_pkey PRIMARY KEY (id);
 
 
 --
@@ -2687,7 +2753,7 @@ ALTER TABLE ONLY biz.role_to_menu
 --
 
 ALTER TABLE ONLY biz.tenant_info
-    ADD CONSTRAINT tenant_info_pkey PRIMARY KEY (tenant_id);
+    ADD CONSTRAINT tenant_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2696,7 +2762,7 @@ ALTER TABLE ONLY biz.tenant_info
 --
 
 ALTER TABLE ONLY biz.tenant_package_info
-    ADD CONSTRAINT tenant_package_info_pkey PRIMARY KEY (package_id);
+    ADD CONSTRAINT tenant_package_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2705,7 +2771,7 @@ ALTER TABLE ONLY biz.tenant_package_info
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_info
-    ADD CONSTRAINT tenant_wallet_info_pkey PRIMARY KEY (tenant_id);
+    ADD CONSTRAINT tenant_wallet_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -2714,7 +2780,7 @@ ALTER TABLE ONLY biz.tenant_wallet_info
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_record
-    ADD CONSTRAINT tenant_wallet_record_pkey PRIMARY KEY (record_id);
+    ADD CONSTRAINT tenant_wallet_record_pkey PRIMARY KEY (id);
 
 
 --
@@ -2723,7 +2789,7 @@ ALTER TABLE ONLY biz.tenant_wallet_record
 --
 
 ALTER TABLE ONLY biz.tenant_wallet_withdrawal_record
-    ADD CONSTRAINT tenant_wallet_withdrawal_record_pkey PRIMARY KEY (withdrawal_id);
+    ADD CONSTRAINT tenant_wallet_withdrawal_record_pkey PRIMARY KEY (id);
 
 
 --
@@ -2857,7 +2923,7 @@ CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree 
 --
 
 CREATE TABLE biz.admin_login_log (
-    log_id bigint NOT NULL,
+    id bigint NOT NULL,
     admin_id bigint NOT NULL,
     username character varying(32) NOT NULL,
     login_type character varying(32) NOT NULL,
@@ -2867,7 +2933,13 @@ CREATE TABLE biz.admin_login_log (
     login_location character varying(50) NOT NULL,
     login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
-    user_agent character varying(200) NOT NULL
+    user_agent character varying(200) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -2960,7 +3032,7 @@ COMMENT ON COLUMN biz.admin_login_log.login_time IS '登录时间';
 --
 
 CREATE TABLE biz.admin_operate_log (
-    oper_id bigint NOT NULL,
+    id bigint NOT NULL,
     title character varying(50) NOT NULL,
     sub_title character varying(50) NOT NULL,
     oper_type character(1) NOT NULL,
@@ -2977,7 +3049,13 @@ CREATE TABLE biz.admin_operate_log (
     error_msg text,
     cost_time bigint,
     oper_time timestamp(0) with time zone NOT NULL,
-    trace_id character varying(64) NOT NULL
+    trace_id character varying(64) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -2995,10 +3073,10 @@ COMMENT ON TABLE biz.admin_operate_log IS '操作日志记录';
 --
 -- TOC entry 3414 (class 0 OID 0)
 -- Dependencies: 216
--- Name: COLUMN admin_operate_log.oper_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN admin_operate_log.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.admin_operate_log.oper_id IS '日志主键';
+COMMENT ON COLUMN biz.admin_operate_log.id IS '日志主键';
 
 
 --
@@ -3142,7 +3220,7 @@ COMMENT ON COLUMN biz.admin_operate_log.trace_id IS '链路追踪ID';
 --
 
 CREATE TABLE biz.customer_operate_log (
-    oper_id bigint NOT NULL,
+    id bigint NOT NULL,
     title character varying(50) NOT NULL,
     sub_title character varying(50) NOT NULL,
     oper_type character(1) NOT NULL,
@@ -3159,13 +3237,19 @@ CREATE TABLE biz.customer_operate_log (
     error_msg text,
     cost_time bigint,
     oper_time timestamp(0) with time zone NOT NULL,
-    trace_id character varying(64) NOT NULL
+    trace_id character varying(64) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 ALTER TABLE biz.customer_operate_log OWNER TO postgres;
 
 COMMENT ON TABLE biz.customer_operate_log IS '用户操作日志记录';
-COMMENT ON COLUMN biz.customer_operate_log.oper_id IS '日志主键';
+COMMENT ON COLUMN biz.customer_operate_log.id IS '日志主键';
 COMMENT ON COLUMN biz.customer_operate_log.title IS '模块标题';
 COMMENT ON COLUMN biz.customer_operate_log.sub_title IS '子标题';
 COMMENT ON COLUMN biz.customer_operate_log.oper_type IS '操作类型（0其他 1新增 2修改 3删除 4授权 5导入导出）';
@@ -3190,7 +3274,7 @@ COMMENT ON COLUMN biz.customer_operate_log.trace_id IS '链路追踪ID';
 --
 
 CREATE TABLE biz.customer_login_log (
-    log_id bigint NOT NULL,
+    id bigint NOT NULL,
     customer_id bigint NOT NULL,
     username character varying(32) NOT NULL,
     login_type character varying(32) NOT NULL,
@@ -3200,14 +3284,20 @@ CREATE TABLE biz.customer_login_log (
     login_location character varying(50) NOT NULL,
     login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
-    user_agent character varying(200) NOT NULL
+    user_agent character varying(200) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.customer_login_log OWNER TO postgres;
 
 COMMENT ON TABLE biz.customer_login_log IS '用户登录日志';
-COMMENT ON COLUMN biz.customer_login_log.log_id IS '日志主键';
+COMMENT ON COLUMN biz.customer_login_log.id IS '日志主键';
 COMMENT ON COLUMN biz.customer_login_log.customer_id IS '用户ID';
 COMMENT ON COLUMN biz.customer_login_log.username IS '用户名';
 COMMENT ON COLUMN biz.customer_login_log.login_type IS '登录类型';
@@ -3226,7 +3316,7 @@ COMMENT ON COLUMN biz.customer_login_log.user_agent IS '原始UA';
 --
 
 CREATE TABLE biz.announcement_info (
-    announcement_id bigint NOT NULL,
+    id bigint NOT NULL,
     title character varying(30) NOT NULL,
     content text NOT NULL,
     status character(1) NOT NULL,
@@ -3253,10 +3343,10 @@ COMMENT ON TABLE biz.announcement_info IS '系统消息表';
 --
 -- TOC entry 3431 (class 0 OID 0)
 -- Dependencies: 217
--- Name: COLUMN announcement_info.announcement_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN announcement_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.announcement_info.announcement_id IS '公告ID';
+COMMENT ON COLUMN biz.announcement_info.id IS '公告ID';
 
 
 --
@@ -3337,7 +3427,7 @@ COMMENT ON COLUMN biz.announcement_info.hint IS '标签';
 --
 
 CREATE TABLE biz.chat_persist_info (
-    chat_id bigint NOT NULL,
+    id bigint NOT NULL,
     receiver_id bigint NOT NULL,
     sender_id bigint NOT NULL,
     send_time timestamp(0) with time zone NOT NULL,
@@ -3444,7 +3534,7 @@ COMMENT ON COLUMN biz.chat_persist_info.media_format IS '媒体格式(png/jpg/mp
 --
 
 CREATE TABLE biz.config_info (
-    config_id bigint NOT NULL,
+    id bigint NOT NULL,
     config_name character varying(50) NOT NULL,
     config_key character varying(50) NOT NULL,
     config_value text NOT NULL,
@@ -3473,10 +3563,10 @@ COMMENT ON TABLE biz.config_info IS '参数配置表';
 --
 -- TOC entry 3450 (class 0 OID 0)
 -- Dependencies: 218
--- Name: COLUMN config_info.config_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN config_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.config_info.config_id IS '参数主键';
+COMMENT ON COLUMN biz.config_info.id IS '参数主键';
 
 
 --
@@ -3539,7 +3629,7 @@ COMMENT ON COLUMN biz.config_info.hint IS '标签';
 --
 
 CREATE TABLE biz.dictionary_info (
-    dict_id bigint NOT NULL,
+    id bigint NOT NULL,
     dict_key character varying(32) NOT NULL,
     dict_name character varying(32) NOT NULL,
     dict_value jsonb NOT NULL,
@@ -3558,10 +3648,10 @@ ALTER TABLE biz.dictionary_info OWNER TO postgres;
 --
 -- TOC entry 3457 (class 0 OID 0)
 -- Dependencies: 219
--- Name: COLUMN dictionary_info.dict_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN dictionary_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.dictionary_info.dict_id IS '字典主键';
+COMMENT ON COLUMN biz.dictionary_info.id IS '字典主键';
 
 
 --
@@ -3651,7 +3741,7 @@ COMMENT ON COLUMN biz.dictionary_info.hint IS '标签';
 --
 
 CREATE TABLE biz.notification_info (
-    notification_id bigint NOT NULL,
+    id bigint NOT NULL,
     notification_type character(1) NOT NULL,
     title character varying(32) NOT NULL,
     content text NOT NULL,
@@ -3726,13 +3816,22 @@ COMMENT ON COLUMN biz.notification_info.creator_id IS '创建者ID';
 --
 
 CREATE TABLE biz.notification_to_admin (
+    id bigint NOT NULL,
     notification_id bigint NOT NULL,
     admin_id bigint NOT NULL,
-    read boolean NOT NULL
+    read boolean NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.notification_to_admin OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_notification_to_admin ON biz.notification_to_admin USING btree (notification_id, admin_id) WHERE deleted = false;
 
 --
 -- TOC entry 3473 (class 0 OID 0)
@@ -3776,13 +3875,22 @@ COMMENT ON COLUMN biz.notification_to_admin.read IS '是否已读';
 --
 
 CREATE TABLE biz.notification_to_tenant (
+    id bigint NOT NULL,
     notification_id bigint NOT NULL,
     member_id bigint NOT NULL,
-    read boolean NOT NULL
+    read boolean NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE biz.notification_to_tenant OWNER TO postgres;
+
+CREATE UNIQUE INDEX uk_notification_to_tenant ON biz.notification_to_tenant USING btree (notification_id, member_id) WHERE deleted = false;
 
 --
 -- TOC entry 3477 (class 0 OID 0)
@@ -3826,7 +3934,7 @@ COMMENT ON COLUMN biz.notification_to_tenant.read IS '是否已读';
 --
 
 CREATE TABLE biz.tenant_login_log (
-    log_id bigint NOT NULL,
+    id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     member_id bigint NOT NULL,
     username character varying(32) NOT NULL,
@@ -3837,7 +3945,13 @@ CREATE TABLE biz.tenant_login_log (
     login_location character varying(50) NOT NULL,
     login_time timestamp(0) with time zone NOT NULL,
     trace_id character varying(64) NOT NULL,
-    user_agent character varying(200) NOT NULL
+    user_agent character varying(200) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3939,7 +4053,7 @@ COMMENT ON COLUMN biz.tenant_login_log.login_time IS '登录时间';
 --
 
 CREATE TABLE biz.tenant_operate_log (
-    oper_id bigint NOT NULL,
+    id bigint NOT NULL,
     title character varying(50) NOT NULL,
     sub_title character varying(50) NOT NULL,
     oper_type character(1) NOT NULL,
@@ -3957,7 +4071,13 @@ CREATE TABLE biz.tenant_operate_log (
     error_msg text,
     cost_time bigint,
     oper_time timestamp(0) with time zone NOT NULL,
-    trace_id character varying(64) NOT NULL
+    trace_id character varying(64) NOT NULL,
+    creator_id bigint,
+    updater_id bigint,
+    create_at timestamp(0) with time zone,
+    update_at timestamp(0) with time zone,
+    hint character varying(10),
+    deleted boolean DEFAULT false NOT NULL
 );
 
 
@@ -3975,10 +4095,10 @@ COMMENT ON TABLE biz.tenant_operate_log IS '租户操作日志';
 --
 -- TOC entry 3492 (class 0 OID 0)
 -- Dependencies: 224
--- Name: COLUMN tenant_operate_log.oper_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_operate_log.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_operate_log.oper_id IS '日志主键';
+COMMENT ON COLUMN biz.tenant_operate_log.id IS '日志主键';
 
 
 --
@@ -4132,7 +4252,7 @@ COMMENT ON COLUMN biz.tenant_operate_log.trace_id IS '链路追踪ID';
 -- Data for Name: admin_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
+COPY biz.admin_login_log (id, admin_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 \.
 
 
@@ -4142,7 +4262,7 @@ COPY biz.admin_login_log (log_id, admin_id, username, login_type, success, error
 -- Data for Name: admin_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_method, admin_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
+COPY biz.admin_operate_log (id, title, sub_title, oper_type, method, http_method, admin_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
 \.
 
 
@@ -4150,7 +4270,7 @@ COPY biz.admin_operate_log (oper_id, title, sub_title, oper_type, method, http_m
 -- Data for Name: customer_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_operate_log (oper_id, title, sub_title, oper_type, method, http_method, customer_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
+COPY biz.customer_operate_log (id, title, sub_title, oper_type, method, http_method, customer_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
 \.
 
 
@@ -4158,7 +4278,7 @@ COPY biz.customer_operate_log (oper_id, title, sub_title, oper_type, method, htt
 -- Data for Name: customer_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.customer_login_log (log_id, customer_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
+COPY biz.customer_login_log (id, customer_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 \.
 
 
@@ -4168,7 +4288,7 @@ COPY biz.customer_login_log (log_id, customer_id, username, login_type, success,
 -- Data for Name: announcement_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.announcement_info (announcement_id, title, content, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.announcement_info (id, title, content, status, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4178,7 +4298,7 @@ COPY biz.announcement_info (announcement_id, title, content, status, creator_id,
 -- Data for Name: chat_persist_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.chat_persist_info (chat_id, receiver_id, sender_id, send_time, receive_time, read, resource_type, content, media_format, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.chat_persist_info (id, receiver_id, sender_id, send_time, receive_time, read, resource_type, content, media_format, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4188,7 +4308,7 @@ COPY biz.chat_persist_info (chat_id, receiver_id, sender_id, send_time, receive_
 -- Data for Name: config_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.config_info (config_id, config_name, config_key, config_value, config_type, built_in, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
+COPY biz.config_info (id, config_name, config_key, config_value, config_type, built_in, creator_id, create_at, updater_id, update_at, hint, deleted) FROM stdin;
 1	用户管理-账号初始密码	sys.user.initPassword	123456	Y	f	1	2025-09-17 17:31:01+08	1	2025-09-25 15:44:21+08		f
 \.
 
@@ -4199,7 +4319,7 @@ COPY biz.config_info (config_id, config_name, config_key, config_value, config_t
 -- Data for Name: dictionary_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
+COPY biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
 1905175932909101057	user_sex	用户性别	[{"label": "男", "value": "0", "tableCls": ""}, {"label": "女", "value": "1", "tableCls": ""}, {"label": "未知", "value": "2", "tableCls": ""}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:29:21+08		f
 1905175933034930178	menu_visible	菜单可见状态	[{"label": "显示", "value": "true", "tableCls": "primary"}, {"label": "隐藏", "value": "false", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:30:10+08		f
 1905175933097844737	common_disable	是否禁用	[{"label": "正常", "value": "0", "tableCls": "primary"}, {"label": "停用", "value": "1", "tableCls": "danger"}]	\N	1	1	2024-04-17 14:08:55+08	2024-11-20 14:34:03+08		f
@@ -4225,7 +4345,7 @@ COPY biz.dictionary_info (dict_id, dict_key, dict_name, dict_value, remark, crea
 -- Data for Name: notification_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.notification_info (notification_id, notification_type, title, content, create_at, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
+COPY biz.notification_info (id, notification_type, title, content, create_at, creator_id, updater_id, update_at, hint, deleted) FROM stdin;
 \.
 
 
@@ -4255,7 +4375,7 @@ COPY biz.notification_to_tenant (notification_id, member_id, read) FROM stdin;
 -- Data for Name: tenant_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
+COPY biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent) FROM stdin;
 2039616960859942914	1910557183820165122	1910557183820165120	testadmin	password	t		172.16.8.59	 局域网	2026-04-02 16:12:31+08	20260402161230015-2-5218330	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}
 2039619680941584385	1910557183820165122	1910557183820165120	testadmin	password	f	商户已过期，请联系管理员	172.16.8.59	 局域网	2026-04-02 16:23:20+08	20260402162319581-24-4431240	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}
 2039875760288346113	1910557183820165122	1910557183820165120	testadmin	password	f	商户已过期，请联系管理员	172.16.8.59	 局域网	2026-04-03 09:20:54+08	20260403092053754-3-1020537	{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}
@@ -4279,7 +4399,7 @@ COPY biz.tenant_login_log (log_id, tenant_id, member_id, username, login_type, s
 -- Data for Name: tenant_operate_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, http_method, tenant_id, member_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
+COPY biz.tenant_operate_log (id, title, sub_title, oper_type, method, http_method, tenant_id, member_id, username, http_url, oper_ip, oper_location, oper_param, json_result, success, error_msg, oper_time, trace_id) FROM stdin;
 \.
 
 
@@ -4289,7 +4409,7 @@ COPY biz.tenant_operate_log (oper_id, title, sub_title, oper_type, method, http_
 --
 
 ALTER TABLE ONLY biz.admin_login_log
-    ADD CONSTRAINT admin_login_log_pkey PRIMARY KEY (log_id);
+    ADD CONSTRAINT admin_login_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -4298,7 +4418,7 @@ ALTER TABLE ONLY biz.admin_login_log
 --
 
 ALTER TABLE ONLY biz.admin_operate_log
-    ADD CONSTRAINT admin_operate_log_pkey PRIMARY KEY (oper_id);
+    ADD CONSTRAINT admin_operate_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -4306,7 +4426,7 @@ ALTER TABLE ONLY biz.admin_operate_log
 --
 
 ALTER TABLE ONLY biz.customer_operate_log
-    ADD CONSTRAINT customer_operate_log_pkey PRIMARY KEY (oper_id);
+    ADD CONSTRAINT customer_operate_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -4314,7 +4434,7 @@ ALTER TABLE ONLY biz.customer_operate_log
 --
 
 ALTER TABLE ONLY biz.customer_login_log
-    ADD CONSTRAINT customer_login_log_pkey PRIMARY KEY (log_id);
+    ADD CONSTRAINT customer_login_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -4323,7 +4443,7 @@ ALTER TABLE ONLY biz.customer_login_log
 --
 
 ALTER TABLE ONLY biz.announcement_info
-    ADD CONSTRAINT announcement_info_pkey PRIMARY KEY (announcement_id);
+    ADD CONSTRAINT announcement_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -4332,7 +4452,7 @@ ALTER TABLE ONLY biz.announcement_info
 --
 
 ALTER TABLE ONLY biz.chat_persist_info
-    ADD CONSTRAINT chat_persist_info_pkey PRIMARY KEY (chat_id);
+    ADD CONSTRAINT chat_persist_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -4341,7 +4461,7 @@ ALTER TABLE ONLY biz.chat_persist_info
 --
 
 ALTER TABLE ONLY biz.config_info
-    ADD CONSTRAINT config_info_pkey PRIMARY KEY (config_id);
+    ADD CONSTRAINT config_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -4350,7 +4470,7 @@ ALTER TABLE ONLY biz.config_info
 --
 
 ALTER TABLE ONLY biz.dictionary_info
-    ADD CONSTRAINT dictionary_info_pkey PRIMARY KEY (dict_id);
+    ADD CONSTRAINT dictionary_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -4359,7 +4479,7 @@ ALTER TABLE ONLY biz.dictionary_info
 --
 
 ALTER TABLE ONLY biz.notification_info
-    ADD CONSTRAINT notification_info_pkey PRIMARY KEY (notification_id);
+    ADD CONSTRAINT notification_info_pkey PRIMARY KEY (id);
 
 
 --
@@ -4368,7 +4488,7 @@ ALTER TABLE ONLY biz.notification_info
 --
 
 ALTER TABLE ONLY biz.notification_to_admin
-    ADD CONSTRAINT notification_to_admin_pkey PRIMARY KEY (notification_id, admin_id);
+    ADD CONSTRAINT notification_to_admin_pkey PRIMARY KEY (id);
 
 
 --
@@ -4377,7 +4497,7 @@ ALTER TABLE ONLY biz.notification_to_admin
 --
 
 ALTER TABLE ONLY biz.notification_to_tenant
-    ADD CONSTRAINT notification_to_tenant_pkey PRIMARY KEY (notification_id, member_id);
+    ADD CONSTRAINT notification_to_tenant_pkey PRIMARY KEY (id);
 
 
 --
@@ -4386,7 +4506,7 @@ ALTER TABLE ONLY biz.notification_to_tenant
 --
 
 ALTER TABLE ONLY biz.tenant_login_log
-    ADD CONSTRAINT tenant_login_log_pkey PRIMARY KEY (log_id);
+    ADD CONSTRAINT tenant_login_log_pkey PRIMARY KEY (id);
 
 
 --
@@ -4395,7 +4515,7 @@ ALTER TABLE ONLY biz.tenant_login_log
 --
 
 ALTER TABLE ONLY biz.tenant_operate_log
-    ADD CONSTRAINT tenant_operate_log_pkey PRIMARY KEY (oper_id);
+    ADD CONSTRAINT tenant_operate_log_pkey PRIMARY KEY (id);
 
 
 --

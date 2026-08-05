@@ -63,7 +63,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     private List<ChatPersonResponse> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
         return adminInfoDOS.stream().map(userInfoDO ->
-                        new ChatPersonResponse(userInfoDO.getAdminId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
+                        new ChatPersonResponse(userInfoDO.getId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
                 .collect(Collectors.toList());
     }
 

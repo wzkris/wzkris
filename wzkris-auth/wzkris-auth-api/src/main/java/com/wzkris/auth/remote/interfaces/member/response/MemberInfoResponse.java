@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Data
 public class MemberInfoResponse implements Serializable {
 
-    private Long memberId;
+    private Long id;
 
     private Long tenantId;
 

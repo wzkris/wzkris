@@ -18,7 +18,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class RefundOrderResponse {
 
-    private Long refundOrderId;
+    private Long id;
 
     private String refundNo;
 

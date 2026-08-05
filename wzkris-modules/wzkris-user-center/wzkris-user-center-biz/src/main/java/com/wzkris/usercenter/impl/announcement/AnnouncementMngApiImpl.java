@@ -35,7 +35,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
         return new LambdaQueryWrapper<AnnouncementInfoDO>()
                 .like(StringUtil.isNotBlank(request.getTitle()), AnnouncementInfoDO::getTitle, request.getTitle())
                 .eq(request.getStatus() != null, AnnouncementInfoDO::getStatus, request.getStatus())
-                .orderByDesc(AnnouncementInfoDO::getAnnouncementId);
+                .orderByDesc(AnnouncementInfoDO::getId);
     }
 
     @Override

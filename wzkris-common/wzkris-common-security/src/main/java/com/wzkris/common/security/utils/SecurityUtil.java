@@ -147,6 +147,17 @@ public final class SecurityUtil {
     }
 
     /**
+     * 获取租户ID,未登录返回null
+     *
+     * @return 租户ID，未登录时为 null
+     */
+    @Nullable
+    public static Long getTenantId() {
+        LoginUser loginUser = getLoginUser();
+        return loginUser == null ? null : loginUser.getTenantId();
+    }
+
+    /**
      * 获取当前标签,未登录返回空字符串
      *
      * @return 标签

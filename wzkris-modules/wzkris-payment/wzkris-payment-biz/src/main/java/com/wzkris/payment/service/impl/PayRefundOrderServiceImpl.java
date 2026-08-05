@@ -24,7 +24,7 @@ public class PayRefundOrderServiceImpl
     @Override
     public boolean updateToSuccess(Long refundOrderId, String channelRefundNo, OffsetDateTime refundAt) {
         return this.update(new LambdaUpdateWrapper<PayRefundOrderDO>()
-                .eq(PayRefundOrderDO::getRefundOrderId, refundOrderId)
+                .eq(PayRefundOrderDO::getId, refundOrderId)
                 .eq(PayRefundOrderDO::getStatus, RefundStatusEnum.REFUNDING)
                 .set(PayRefundOrderDO::getStatus, RefundStatusEnum.SUCCESS)
                 .set(PayRefundOrderDO::getChannelRefundNo, channelRefundNo)
@@ -39,7 +39,7 @@ public class PayRefundOrderServiceImpl
             return false;
         }
         boolean updated = this.update(new LambdaUpdateWrapper<PayRefundOrderDO>()
-                .eq(PayRefundOrderDO::getRefundOrderId, refundOrderId)
+                .eq(PayRefundOrderDO::getId, refundOrderId)
                 .eq(PayRefundOrderDO::getStatus, RefundStatusEnum.REFUNDING)
                 .set(PayRefundOrderDO::getStatus, RefundStatusEnum.FAILED)
                 .set(PayRefundOrderDO::getFailReason, reason));

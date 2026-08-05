@@ -111,19 +111,19 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
         // 获取权限信息
         Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.queryPermission(
-                new AdminPermsQueryRequest(adminInfoResponse.getAdminId(), adminInfoResponse.getDeptId()));
+                new AdminPermsQueryRequest(adminInfoResponse.getId(), adminInfoResponse.getDeptId()));
         if (!ResultUtil.check(permissionsResult)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }
         AdminPermissionResponse permissions = permissionsResult.getData();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(adminInfoResponse.getAdminId());
+        loginUser.setUid(adminInfoResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setName(adminInfoResponse.getUsername());
 
         RoleContext roleContext = new RoleContext(permissions.getRoles(),
-                SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getAdminId()));
+                SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getId()));
 
         return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
@@ -144,7 +144,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(userResp.getAdminId());
+        loginUser.setUid(userResp.getId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
         loginUser.setName(userResp.getUsername());
 

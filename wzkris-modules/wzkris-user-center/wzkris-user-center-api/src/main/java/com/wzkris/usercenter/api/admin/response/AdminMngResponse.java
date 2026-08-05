@@ -20,7 +20,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class AdminMngResponse {
 
-    private Long adminId;
+    private Long id;
 
     @Schema(description = "部门ID")
     private Long deptId;

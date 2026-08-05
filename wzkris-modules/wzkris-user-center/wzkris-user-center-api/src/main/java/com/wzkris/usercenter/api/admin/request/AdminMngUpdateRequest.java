@@ -18,7 +18,7 @@ import java.util.List;
 public class AdminMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long adminId;
+    private Long id;
 
     @Schema(description = "部门ID")
     private Long deptId;

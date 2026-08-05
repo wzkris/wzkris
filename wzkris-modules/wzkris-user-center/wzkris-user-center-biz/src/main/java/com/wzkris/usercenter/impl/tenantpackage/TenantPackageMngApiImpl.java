@@ -47,7 +47,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
                         TenantPackageInfoDO::getPackageName,
                         request.getPackageName())
                 .eq(request.getStatus() != null, TenantPackageInfoDO::getStatus, request.getStatus())
-                .orderByDesc(TenantPackageInfoDO::getPackageId);
+                .orderByDesc(TenantPackageInfoDO::getId);
     }
 
     @Override

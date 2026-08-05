@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class CustomerMngResponse {
 
-    private Long customerId;
+    private Long id;
 
     @Schema(description = "用户昵称")
     private String nickname;

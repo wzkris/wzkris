@@ -111,7 +111,7 @@ public class CustomerInfoRemoteApiImpl implements CustomerInfoRemoteApi {
             return null;
         }
         CustomerResponse response = new CustomerResponse();
-        response.setCustomerId(customerInfoDO.getCustomerId());
+        response.setId(customerInfoDO.getId());
         response.setNickname(customerInfoDO.getNickname());
         response.setPhoneNumber(customerInfoDO.getPhoneNumber());
         response.setStatus(customerInfoDO.getStatus());

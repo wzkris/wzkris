@@ -78,7 +78,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
 
     @Override
     public Result<TenantPackageInfoResponse> queryInfo() {
-        TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getLoginUser().getTenantId());
+        TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");
         }
@@ -95,12 +95,12 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         resp.setRenewalStatus(resolveRenewalStatus(assigned ? pkg.getStatus() : null, tenant.getExpireTime()));
 
         if (assigned) {
-            resp.setPackageId(pkg.getPackageId());
+            resp.setId(pkg.getId());
             resp.setPackageName(pkg.getPackageName());
             resp.setPackageStatus(pkg.getStatus());
             resp.setPackageRemark(pkg.getRemark());
-            resp.setQuotaItems(buildQuotaItems(pkg, tenant.getTenantId()));
-            resp.setBenefitItems(buildBenefitItems(pkg.getPackageId()));
+            resp.setQuotaItems(buildQuotaItems(pkg, tenant.getId()));
+            resp.setBenefitItems(buildBenefitItems(pkg.getId()));
         }
 
         return ok(resp);
@@ -136,8 +136,8 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
                 .in(MenuInfoDO::getMenuType, MenuTypeEnum.DIR, MenuTypeEnum.MENU, MenuTypeEnum.INNERLINK, MenuTypeEnum.OUTLINK)
                 .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT)
-                .in(MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId));
+                .in(MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId));
         if (CollectionUtils.isEmpty(menus)) {
             return List.of();
         }
@@ -145,7 +145,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
         for (MenuInfoDO menu : menus) {
             if (map.containsKey(menu.getMenuName())) continue;
             BenefitItem bi = new BenefitItem();
-            bi.setBenefitKey(String.valueOf(menu.getMenuId()));
+            bi.setBenefitKey(String.valueOf(menu.getId()));
             bi.setTitle(menu.getMenuName());
             map.put(menu.getMenuName(), bi);
             if (map.size() >= 8) break;

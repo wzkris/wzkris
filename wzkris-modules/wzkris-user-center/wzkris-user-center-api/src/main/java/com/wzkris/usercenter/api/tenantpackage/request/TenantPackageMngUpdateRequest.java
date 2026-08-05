@@ -11,7 +11,7 @@ import lombok.Data;
 public class TenantPackageMngUpdateRequest {
 
     @NotNull(message = "{invalidParameter.id.invalid}")
-    private Long packageId;
+    private Long id;
 
     @Size(min = 2, max = 20, message = "{invalidParameter.packageName.invalid}")
     @Schema(description = "套餐名称")

@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MenuMngResponse {
 
-    private Long menuId;
+    private Long id;
 
     @Schema(description = "菜单名称")
     private String menuName;

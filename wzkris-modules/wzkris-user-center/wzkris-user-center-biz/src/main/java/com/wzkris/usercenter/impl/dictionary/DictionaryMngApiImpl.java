@@ -43,7 +43,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         return new LambdaQueryWrapper<DictionaryInfoDO>()
                 .like(StringUtil.isNotBlank(request.getDictName()), DictionaryInfoDO::getDictName, request.getDictName())
                 .like(StringUtil.isNotBlank(request.getDictKey()), DictionaryInfoDO::getDictKey, request.getDictKey())
-                .orderByDesc(DictionaryInfoDO::getDictId);
+                .orderByDesc(DictionaryInfoDO::getId);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
 
     @Override
     public Result<Void> save(DictionaryMngSaveRequest request) {
-        if (dictionaryInfoService.checkUsedByDictKey(request.getDictId(), request.getDictKey())) {
+        if (dictionaryInfoService.checkUsedByDictKey(request.getId(), request.getDictKey())) {
             return requestFail("新增字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictionaryInfoService.insertDict(toDictInfoDO(request)));
@@ -63,7 +63,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
 
     @Override
     public Result<Void> update(DictionaryMngUpdateRequest request) {
-        if (dictionaryInfoService.checkUsedByDictKey(request.getDictId(), request.getDictKey())) {
+        if (dictionaryInfoService.checkUsedByDictKey(request.getId(), request.getDictKey())) {
             return requestFail("修改字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
         return toRes(dictionaryInfoService.updateDict(toDictInfoDO(request)));

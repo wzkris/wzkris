@@ -1,6 +1,5 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.social.IdentifierTypeEnum;
@@ -18,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @TableName(schema = "biz", value = "customer_social_info")
 public class CustomerSocialInfoDO extends BaseEntity {
 
-    @TableId
+    @Schema(description = "客户ID")
     private Long customerId;
 
     @Schema(description = "第三方唯一标识")

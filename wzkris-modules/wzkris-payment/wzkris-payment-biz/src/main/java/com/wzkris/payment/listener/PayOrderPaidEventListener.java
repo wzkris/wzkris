@@ -46,7 +46,7 @@ public class PayOrderPaidEventListener {
 
         PayNotifyRequest req = new PayNotifyRequest();
         req.setNotifyType(NotifyTypeEnum.PAY);
-        req.setPayOrderId(order.getPayOrderId());
+        req.setPayOrderId(order.getId());
         req.setOrderNo(order.getOrderNo());
         req.setBizType(order.getBizType());
         req.setBizNo(order.getBizNo());
@@ -58,7 +58,7 @@ public class PayOrderPaidEventListener {
 
         PayNotifyTaskDO task = new PayNotifyTaskDO();
         task.setNotifyType(NotifyTypeEnum.PAY);
-        task.setPayOrderId(order.getPayOrderId());
+        task.setPayOrderId(order.getId());
         task.setBizType(order.getBizType());
         task.setTargetUrl(order.getNotifyUrl());
         task.setPayload(JsonUtil.toJsonString(req));

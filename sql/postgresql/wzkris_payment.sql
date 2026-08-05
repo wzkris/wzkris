@@ -2,38 +2,38 @@
 -- 支付网关 wzkris_payment
 -- 平台统一基础设施
 -- 审计字段对齐 BaseEntity：creator_id/create_at/updater_id/update_at/hint/deleted
--- 主键 bigint，应用层雪花生成
+-- 主键统一为 id（bigint，应用层雪花生成）
 -- ----------------------------
 
 -- ----------------------------
 -- 1、渠道商户配置（每渠道可有多商户，由调用方通过 configId 指定使用的配置）
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_channel_config (
-    config_id     bigint           NOT NULL,
-    channel       varchar(16)      NOT NULL,
-    name          varchar(64)      NOT NULL,
-    app_id        varchar(64),
-    mch_id        varchar(64),
-    sub_app_id    varchar(64),
-    sub_mch_id    varchar(64),
-    api_key       varchar(512),
-    private_key   text,
-    public_cert   text,
+    id             bigint           NOT NULL,
+    channel        varchar(16)      NOT NULL,
+    name           varchar(64)      NOT NULL,
+    app_id         varchar(64),
+    mch_id         varchar(64),
+    sub_app_id     varchar(64),
+    sub_mch_id     varchar(64),
+    api_key        varchar(512),
+    private_key    text,
+    public_cert    text,
     cert_serial_no varchar(128),
-    notify_url    varchar(256),
-    pay_modes     varchar(128),
-    status        varchar(16)      DEFAULT 'ENABLED' NOT NULL,
-    remark        varchar(256),
-    creator_id    bigint,
-    create_at     timestamptz      DEFAULT now() NOT NULL,
-    updater_id    bigint,
-    update_at     timestamptz      DEFAULT now() NOT NULL,
-    hint          varchar(64),
-    deleted       boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_channel_config_pkey PRIMARY KEY (config_id)
+    notify_url     varchar(256),
+    pay_modes      varchar(128),
+    status         varchar(16)      DEFAULT 'ENABLED' NOT NULL,
+    remark         varchar(256),
+    creator_id     bigint,
+    create_at      timestamptz      DEFAULT now() NOT NULL,
+    updater_id     bigint,
+    update_at      timestamptz      DEFAULT now() NOT NULL,
+    hint           varchar(64),
+    deleted        boolean          DEFAULT false NOT NULL,
+    CONSTRAINT pay_channel_config_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_channel_config IS '渠道商户配置';
-COMMENT ON COLUMN biz.pay_channel_config.config_id IS '配置ID';
+COMMENT ON COLUMN biz.pay_channel_config.id IS '配置ID';
 COMMENT ON COLUMN biz.pay_channel_config.channel IS '支付渠道 WXPAY/ALIPAY';
 COMMENT ON COLUMN biz.pay_channel_config.name IS '配置名称(人工识别)';
 COMMENT ON COLUMN biz.pay_channel_config.app_id IS '应用ID';
@@ -53,7 +53,7 @@ CREATE UNIQUE INDEX uk_pay_channel_config_channel_mch ON biz.pay_channel_config 
 -- 2、支付订单（网关统一订单，快照 config_id）
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_order (
-    pay_order_id     bigint           NOT NULL,
+    id               bigint           NOT NULL,
     order_no         varchar(32)      NOT NULL,
     biz_type         varchar(32)      NOT NULL,
     biz_no           varchar(64)      NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS biz.pay_order (
     update_at        timestamptz      DEFAULT now() NOT NULL,
     hint             varchar(64),
     deleted          boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_order_pkey PRIMARY KEY (pay_order_id)
+    CONSTRAINT pay_order_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_order IS '支付订单';
 COMMENT ON COLUMN biz.pay_order.order_no IS '业务可读订单号';
@@ -106,7 +106,7 @@ CREATE INDEX        idx_pay_order_chno    ON biz.pay_order (channel_order_no) WH
 -- 3、渠道交互留痕（一次下单/查单的请求响应留痕，重试可能换配置）
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_channel_log (
-    channel_log_id   bigint           NOT NULL,
+    id               bigint           NOT NULL,
     pay_order_id     bigint           NOT NULL,
     channel          varchar(16)      NOT NULL,
     config_id        bigint           NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS biz.pay_channel_log (
     update_at        timestamptz      DEFAULT now() NOT NULL,
     hint             varchar(64),
     deleted          boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_channel_log_pkey PRIMARY KEY (channel_log_id)
+    CONSTRAINT pay_channel_log_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_channel_log IS '渠道交互留痕';
 COMMENT ON COLUMN biz.pay_channel_log.pay_order_id IS '支付订单ID';
@@ -136,24 +136,24 @@ CREATE INDEX idx_pay_channel_log_order ON biz.pay_channel_log (pay_order_id) WHE
 -- 4、退款订单（快照 config_id）
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_refund_order (
-    refund_order_id   bigint           NOT NULL,
-    refund_no         varchar(32)      NOT NULL,
-    pay_order_id      bigint           NOT NULL,
-    channel           varchar(16)      NOT NULL,
-    config_id         bigint           NOT NULL,
-    refund_amount     numeric(18,2)    NOT NULL,
-    status            varchar(16)      NOT NULL,
-    reason            varchar(256),
+    id               bigint           NOT NULL,
+    refund_no        varchar(32)      NOT NULL,
+    pay_order_id     bigint           NOT NULL,
+    channel          varchar(16)      NOT NULL,
+    config_id        bigint           NOT NULL,
+    refund_amount    numeric(18,2)    NOT NULL,
+    status           varchar(16)      NOT NULL,
+    reason           varchar(256),
     channel_refund_no varchar(64),
-    refund_at         timestamptz,
-    fail_reason       varchar(256),
-    creator_id        bigint,
-    create_at         timestamptz      DEFAULT now() NOT NULL,
-    updater_id        bigint,
-    update_at         timestamptz      DEFAULT now() NOT NULL,
-    hint              varchar(64),
-    deleted           boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_refund_order_pkey PRIMARY KEY (refund_order_id)
+    refund_at        timestamptz,
+    fail_reason      varchar(256),
+    creator_id       bigint,
+    create_at        timestamptz      DEFAULT now() NOT NULL,
+    updater_id       bigint,
+    update_at        timestamptz      DEFAULT now() NOT NULL,
+    hint             varchar(64),
+    deleted          boolean          DEFAULT false NOT NULL,
+    CONSTRAINT pay_refund_order_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_refund_order IS '退款订单';
 COMMENT ON COLUMN biz.pay_refund_order.refund_no IS '退款单号';
@@ -171,23 +171,23 @@ CREATE INDEX        idx_pay_refund_payorder  ON biz.pay_refund_order (pay_order_
 --    命名 pay_channel_notify 以区分 网关->业务方 的 pay_notify_task
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_channel_notify (
-    notify_id        bigint           NOT NULL,
-    channel          varchar(16)      NOT NULL,
-    notify_type      varchar(8),
-    out_business_no  varchar(64),
-    channel_no       varchar(64),
-    notify_data      text             NOT NULL,
-    verify_result    boolean          NOT NULL,
-    processed        boolean          DEFAULT false NOT NULL,
-    processed_at     timestamptz,
-    error_msg        varchar(256),
-    creator_id       bigint,
-    create_at        timestamptz      DEFAULT now() NOT NULL,
-    updater_id       bigint,
-    update_at        timestamptz      DEFAULT now() NOT NULL,
-    hint             varchar(64),
-    deleted          boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_channel_notify_pkey PRIMARY KEY (notify_id)
+    id             bigint           NOT NULL,
+    channel        varchar(16)      NOT NULL,
+    notify_type    varchar(8),
+    out_business_no varchar(64),
+    channel_no     varchar(64),
+    notify_data    text             NOT NULL,
+    verify_result  boolean          NOT NULL,
+    processed      boolean          DEFAULT false NOT NULL,
+    processed_at   timestamptz,
+    error_msg      varchar(256),
+    creator_id     bigint,
+    create_at      timestamptz      DEFAULT now() NOT NULL,
+    updater_id     bigint,
+    update_at      timestamptz      DEFAULT now() NOT NULL,
+    hint           varchar(64),
+    deleted        boolean          DEFAULT false NOT NULL,
+    CONSTRAINT pay_channel_notify_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_channel_notify IS '渠道回调记录(渠道->网关)';
 COMMENT ON COLUMN biz.pay_channel_notify.notify_type IS '回调类型 PAY/REFUND(验签失败时可为空)';
@@ -204,26 +204,26 @@ CREATE UNIQUE INDEX uk_pay_channel_notify ON biz.pay_channel_notify (channel, no
 -- 6、业务方通知任务（网关->业务方，带重试，支持 PAY/REFUND）
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS biz.pay_notify_task (
-    task_id          bigint           NOT NULL,
-    notify_type      varchar(8)       NOT NULL,
-    pay_order_id     bigint           NOT NULL,
-    refund_order_id  bigint,
-    biz_type         varchar(32)      NOT NULL,
-    target_url       varchar(256),
-    payload          text             NOT NULL,
-    http_status      integer,
-    retry_count      integer          DEFAULT 0 NOT NULL,
-    max_retry        integer          DEFAULT 8 NOT NULL,
-    next_retry_at    timestamptz,
-    status           varchar(16)      NOT NULL,
-    error_msg        varchar(256),
-    creator_id       bigint,
-    create_at        timestamptz      DEFAULT now() NOT NULL,
-    updater_id       bigint,
-    update_at        timestamptz      DEFAULT now() NOT NULL,
-    hint             varchar(64),
-    deleted          boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_notify_task_pkey PRIMARY KEY (task_id)
+    id              bigint           NOT NULL,
+    notify_type     varchar(8)       NOT NULL,
+    pay_order_id    bigint           NOT NULL,
+    refund_order_id bigint,
+    biz_type        varchar(32)      NOT NULL,
+    target_url      varchar(256),
+    payload         text             NOT NULL,
+    http_status     integer,
+    retry_count     integer          DEFAULT 0 NOT NULL,
+    max_retry       integer          DEFAULT 8 NOT NULL,
+    next_retry_at   timestamptz,
+    status          varchar(16)      NOT NULL,
+    error_msg       varchar(256),
+    creator_id      bigint,
+    create_at       timestamptz      DEFAULT now() NOT NULL,
+    updater_id      bigint,
+    update_at       timestamptz      DEFAULT now() NOT NULL,
+    hint            varchar(64),
+    deleted         boolean          DEFAULT false NOT NULL,
+    CONSTRAINT pay_notify_task_pkey PRIMARY KEY (id)
 );
 COMMENT ON TABLE  biz.pay_notify_task IS '业务方通知任务';
 COMMENT ON COLUMN biz.pay_notify_task.notify_type IS '通知类型 PAY/REFUND';

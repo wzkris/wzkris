@@ -1,7 +1,6 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
@@ -22,9 +21,6 @@ import org.apache.ibatis.type.ArrayTypeHandler;
 @TableName(schema = "biz", value = "tenant_package_info", autoResultMap = true)
 public class TenantPackageInfoDO extends BaseEntity {
 
-    @TableId
-    private Long packageId;
-
     @Schema(description = "套餐名称")
     private String packageName;
 
@@ -44,8 +40,8 @@ public class TenantPackageInfoDO extends BaseEntity {
     @Schema(description = "备注")
     private String remark;
 
-    public TenantPackageInfoDO(Long packageId) {
-        this.packageId = packageId;
+    public TenantPackageInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

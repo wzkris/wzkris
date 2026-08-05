@@ -28,7 +28,7 @@ public class CustomerInfoServiceImpl
     @Transactional(rollbackFor = Exception.class)
     public void saveCustomer(CustomerInfoDO customer) {
         baseMapper.insert(customer);
-        CustomerWalletInfoDO wallet = new CustomerWalletInfoDO(customer.getCustomerId());
+        CustomerWalletInfoDO wallet = new CustomerWalletInfoDO(customer.getId());
         customerWalletInfoMapper.insert(wallet);
     }
 
@@ -37,10 +37,10 @@ public class CustomerInfoServiceImpl
     public Long registerBySocial(CustomerInfoDO customer, CustomerSocialInfoDO socialInfo) {
         this.saveCustomer(customer);
 
-        socialInfo.setCustomerId(customer.getCustomerId());
+        socialInfo.setCustomerId(customer.getId());
         customerSocialInfoMapper.insert(socialInfo);
 
-        return customer.getCustomerId();
+        return customer.getId();
     }
 
 }

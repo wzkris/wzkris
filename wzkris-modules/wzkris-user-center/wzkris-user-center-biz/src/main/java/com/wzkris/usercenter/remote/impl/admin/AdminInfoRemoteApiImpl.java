@@ -43,7 +43,7 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
     @Override
     public Result<AdminPermissionResponse> queryPermission(AdminPermsQueryRequest request) {
         return Result.ok(permissionService.getAdminPermission(
-                request.getAdminId(), request.getDeptId()));
+                request.getId(), request.getDeptId()));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AdminInfoRemoteApiImpl implements AdminInfoRemoteApi {
             return null;
         }
         AdminInfoResponse response = new AdminInfoResponse();
-        response.setAdminId(adminInfoDO.getAdminId());
+        response.setId(adminInfoDO.getId());
         response.setDeptId(adminInfoDO.getDeptId());
         response.setUsername(adminInfoDO.getUsername());
         response.setNickname(adminInfoDO.getNickname());

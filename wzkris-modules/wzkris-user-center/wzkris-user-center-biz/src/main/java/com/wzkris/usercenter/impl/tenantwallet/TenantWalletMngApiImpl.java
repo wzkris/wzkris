@@ -37,12 +37,12 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         TenantWalletRecordDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(TenantWalletRecordDO::getRecordId);
+                .orderByDesc(TenantWalletRecordDO::getId);
     }
 
     private TenantWalletRecordResponse toResponse(TenantWalletRecordDO recordDO) {
         TenantWalletRecordResponse response = new TenantWalletRecordResponse();
-        response.setRecordId(recordDO.getRecordId());
+        response.setId(recordDO.getId());
         response.setTenantId(recordDO.getTenantId());
         response.setAmount(recordDO.getAmount());
         response.setRecordType(recordDO.getRecordType());

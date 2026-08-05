@@ -45,7 +45,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
         return new LambdaQueryWrapper<PostInfoDO>()
                 .like(StringUtil.isNotEmpty(request.getPostName()), PostInfoDO::getPostName, request.getPostName())
                 .eq(request.getStatus() != null, PostInfoDO::getStatus, request.getStatus())
-                .orderByDesc(PostInfoDO::getPostSort, PostInfoDO::getPostId);
+                .orderByDesc(PostInfoDO::getPostSort, PostInfoDO::getId);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
 
     @Override
     public Result<Void> save(PostMngSaveRequest request) {
-        if (!tenantInfoService.checkPostLimit(SecurityUtil.getLoginUser().getTenantId())) {
+        if (!tenantInfoService.checkPostLimit(SecurityUtil.getTenantId())) {
             return requestFail("当前租户职位数量已达到上限");
         }
         PostInfoDO post = BeanCopierUtil.copy(request, PostInfoDO.class);

@@ -16,6 +16,7 @@ import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngUpdateRequest;
 import com.wzkris.usercenter.api.role.response.RoleMngResponse;
 import com.wzkris.usercenter.domain.RoleInfoDO;
+import com.wzkris.usercenter.domain.RoleInheritanceDO;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInheritanceMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
@@ -59,7 +60,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
                 .apply("r.deleted = false")
                 .like(StringUtil.isNotEmpty(request.getRoleName()), RoleInfoDO::getRoleName, request.getRoleName())
                 .eq(request.getStatus() != null, RoleInfoDO::getStatus, request.getStatus())
-                .orderByDesc(RoleInfoDO::getRoleSort, RoleInfoDO::getRoleId);
+                .orderByDesc(RoleInfoDO::getRoleSort, RoleInfoDO::getId);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
         checkedSelectResponse.setCheckedKeys(roleId == null
                 ? Collections.emptyList()
-                : roleInheritanceMapper.listChildIdsByRoleId(roleId));
+                : roleInheritanceMapper.selectObjsByObj(RoleInheritanceDO::getChildId, RoleInheritanceDO::getRoleId, roleId));
         List<SelectResponse> selectResponses = roleInfoService.listRoleSelect(null)
                 .stream().filter(role -> !Objects.equals(role.getId(), roleId)).toList();
         checkedSelectResponse.setSelects(selectResponses);
@@ -121,12 +122,12 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
 
     @Override
     public Result<Void> update(RoleMngUpdateRequest request) {
-        if (request.getChildIds() != null && request.getChildIds().contains(request.getRoleId())) {
+        if (request.getChildIds() != null && request.getChildIds().contains(request.getId())) {
             return requestFail("角色不能继承自身");
         }
         if (request.getChildIds() != null && roleInheritanceMapper
                 .listChildIdsRecursive(request.getChildIds())
-                .contains(request.getRoleId())) {
+                .contains(request.getId())) {
             return requestFail("角色继承关系存在循环");
         }
         RoleInfoDO role = BeanCopierUtil.copy(request, RoleInfoDO.class);

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @FieldNameConstants
 public class CustomerResponse implements Serializable {
 
-    private Long customerId;
+    private Long id;
 
     private String nickname;
 

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RoleMngResponse {
 
-    private Long roleId;
+    private Long id;
 
     @Schema(description = "数据范围")
     private DataScopeEnum dataScope;

@@ -19,7 +19,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class PayOrderResponse {
 
-    private Long payOrderId;
+    private Long id;
 
     private String orderNo;
 

@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PayChannelConfigResponse {
 
-    private Long configId;
+    private Long id;
 
     private PayChannelEnum channel;
 

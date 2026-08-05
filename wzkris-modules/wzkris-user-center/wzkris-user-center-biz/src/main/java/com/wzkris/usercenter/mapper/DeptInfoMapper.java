@@ -28,7 +28,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param parentId 父ID
      * @return 部门列表
      */
-    @Select("SELECT * FROM biz.dept_info WHERE deleted = false AND #{parentId} = ANY(ancestors) ORDER BY dept_sort, dept_id DESC")
+    @Select("SELECT * FROM biz.dept_info WHERE deleted = false AND #{parentId} = ANY(ancestors) ORDER BY dept_sort, id DESC")
     List<DeptInfoDO> listSubsByParentId(Long parentId);
 
     /**
@@ -37,7 +37,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptId 部门ID
      * @return 部门列表
      */
-    @Select("SELECT dept_id FROM biz.dept_info WHERE deleted = false AND (#{deptId} = ANY(ancestors) OR dept_id = #{deptId})")
+    @Select("SELECT id FROM biz.dept_info WHERE deleted = false AND (#{deptId} = ANY(ancestors) OR id = #{deptId})")
     List<Long> listSubDeptIdById(Long deptId);
 
     /**
@@ -52,7 +52,7 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
     /**
      * 带权限查询列表
      */
-    @DataScope(@DataPermission(column = "dept_id"))
+    @DataScope(@DataPermission(column = "id"))
     default List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper) {
         return this.selectList(queryWrapper);
     }
@@ -63,12 +63,12 @@ public interface DeptInfoMapper extends BaseMapperPlus<DeptInfoDO> {
      * @param deptIds 待操作的部门 id
      * @return 是否
      */
-    @DataScope(@DataPermission(column = "dept_id"))
+    @DataScope(@DataPermission(column = "id"))
     @Select("""
             <script>
-                SELECT CASE WHEN COUNT(DISTINCT dept_id) = ${deptIds.size()} THEN true ELSE false END
+                SELECT CASE WHEN COUNT(DISTINCT id) = ${deptIds.size()} THEN true ELSE false END
                 FROM biz.dept_info
-                WHERE deleted = false AND dept_id IN
+                WHERE deleted = false AND id IN
                 <foreach collection="collection" item="deptId" open="(" separator="," close=")">
                     #{deptId}
                 </foreach>

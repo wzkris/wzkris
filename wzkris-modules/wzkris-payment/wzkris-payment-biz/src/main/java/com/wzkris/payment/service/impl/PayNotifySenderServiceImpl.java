@@ -52,7 +52,7 @@ public class PayNotifySenderServiceImpl implements PayNotifySenderService {
             return;
         }
         // 原子认领，防止多实例 / 重试Job / 首次投递并发重复发送
-        if (!taskService.claimSending(task.getTaskId())) {
+        if (!taskService.claimSending(task.getId())) {
             return;
         }
         task.setStatus(NotifyTaskStatusEnum.SENDING);

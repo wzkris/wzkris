@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.DeptInfoDO;
+import com.wzkris.usercenter.domain.RoleToDeptDO;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
@@ -44,7 +45,7 @@ public class DeptInfoServiceImpl
      */
     private List<DeptInfoDO> buildDeptTree(List<DeptInfoDO> depts) {
         List<DeptInfoDO> returnList = new ArrayList<>();
-        List<Long> tempList = depts.stream().map(DeptInfoDO::getDeptId).toList();
+        List<Long> tempList = depts.stream().map(DeptInfoDO::getId).toList();
         for (DeptInfoDO dept : depts) {
             // 如果是顶级节点, 遍历该父节点的所有子节点
             if (!tempList.contains(dept.getParentId())) {
@@ -64,7 +65,7 @@ public class DeptInfoServiceImpl
         DeptInfoDO parent = baseMapper.selectByIdForUpdate(dept.getParentId());
         if (parent != null) {
             Long[] newAncestors = Arrays.copyOf(parent.getAncestors(), parent.getAncestors().length + 1);
-            newAncestors[newAncestors.length - 1] = parent.getDeptId();
+            newAncestors[newAncestors.length - 1] = parent.getId();
             dept.setAncestors(newAncestors);
         }
         dept.setParentId(parent == null ? null : dept.getParentId());
@@ -77,9 +78,9 @@ public class DeptInfoServiceImpl
         DeptInfoDO parent = baseMapper.selectByIdForUpdate(dept.getParentId());
         if (ObjectUtils.isNotEmpty(parent)) {
             Long[] newAncestors = Arrays.copyOf(parent.getAncestors(), parent.getAncestors().length + 1);
-            newAncestors[newAncestors.length - 1] = parent.getDeptId();
+            newAncestors[newAncestors.length - 1] = parent.getId();
             dept.setAncestors(newAncestors);
-            updateDeptChildren(dept.getDeptId(), newAncestors, dept.getAncestors());
+            updateDeptChildren(dept.getId(), newAncestors, dept.getAncestors());
         }
         return baseMapper.updateById(dept) > 0;
     }
@@ -89,7 +90,8 @@ public class DeptInfoServiceImpl
     public boolean removeDept(Long deptId) {
         boolean success = baseMapper.deleteById(deptId) > 0;
         if (success) {
-            roleToDeptMapper.deleteByDeptId(deptId);
+            roleToDeptMapper.delete(Wrappers.lambdaQuery(RoleToDeptDO.class)
+                    .eq(RoleToDeptDO::getDeptId, deptId));
         }
         return success;
     }
@@ -110,7 +112,7 @@ public class DeptInfoServiceImpl
                     Long[] updatedAncestors = replaceAncestors(child.getAncestors(), oldAncestors, newAncestors);
 
                     // 创建新的部门对象，设置更新后的祖先路径
-                    DeptInfoDO deptInfoDO = new DeptInfoDO(child.getDeptId());
+                    DeptInfoDO deptInfoDO = new DeptInfoDO(child.getId());
                     deptInfoDO.setAncestors(updatedAncestors);
                     return deptInfoDO;
                 })
@@ -150,7 +152,7 @@ public class DeptInfoServiceImpl
 
     private SelectTreeResponse convertToSelectTreeResp(DeptInfoDO dept) {
         SelectTreeResponse response = new SelectTreeResponse();
-        response.setId(dept.getDeptId());
+        response.setId(dept.getId());
         response.setLabel(dept.getDeptName());
         // 递归转换子节点
         if (dept.getChildren() != null && !dept.getChildren().isEmpty()) {
@@ -204,7 +206,7 @@ public class DeptInfoServiceImpl
         List<DeptInfoDO> tlist = new ArrayList<>();
         for (DeptInfoDO n : list) {
             if (ObjectUtils.isNotEmpty(n.getParentId())
-                    && n.getParentId().longValue() == t.getDeptId().longValue()) {
+                    && n.getParentId().longValue() == t.getId().longValue()) {
                 tlist.add(n);
             }
         }

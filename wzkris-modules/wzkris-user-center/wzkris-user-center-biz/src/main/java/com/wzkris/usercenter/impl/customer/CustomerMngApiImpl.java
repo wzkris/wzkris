@@ -41,7 +41,7 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         CustomerInfoDO::getCreateAt,
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc(CustomerInfoDO::getCustomerId);
+                .orderByDesc(CustomerInfoDO::getId);
     }
 
     @Override
