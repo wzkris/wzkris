@@ -7,7 +7,7 @@ import java.time.OffsetDateTime;
 
 @Data
 @Schema(description = "公告信息")
-public class AnnouncementInfoResponse {
+public class AnnouncementPublicResponse {
 
     private Long id;
 
@@ -21,4 +21,3 @@ public class AnnouncementInfoResponse {
     private OffsetDateTime createAt;
 
 }
-

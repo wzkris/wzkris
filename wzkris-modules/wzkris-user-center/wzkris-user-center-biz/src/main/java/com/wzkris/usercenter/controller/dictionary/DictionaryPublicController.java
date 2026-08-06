@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.controller.dictionary;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.api.dictionary.DictionaryInfoApi;
-import com.wzkris.usercenter.api.dictionary.request.DictionaryInfoListRequest;
+import com.wzkris.usercenter.api.dictionary.DictionaryPublicApi;
+import com.wzkris.usercenter.api.dictionary.request.DictionaryPublicListRequest;
 import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,16 +16,16 @@ import java.util.List;
 
 @Tag(name = "字典信息")
 @RestController
-@RequestMapping("/dictionary-info")
+@RequestMapping("/dictionary-public")
 @RequiredArgsConstructor
-public class DictionaryInfoController {
+public class DictionaryPublicController {
 
-    private final DictionaryInfoApi dictionaryInfoApi;
+    private final DictionaryPublicApi dictionaryPublicApi;
 
     @Operation(summary = "查询字典")
     @GetMapping("/{dictKey}")
-    public Result<List<DictionaryDataResponse>> queryValue(@ParameterObject DictionaryInfoListRequest request) {
-        return dictionaryInfoApi.queryValue(request);
+    public Result<List<DictionaryDataResponse>> queryValue(@ParameterObject DictionaryPublicListRequest request) {
+        return dictionaryPublicApi.queryValue(request);
     }
 
 }

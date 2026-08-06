@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -38,25 +40,46 @@ public class DeptInfoServiceImpl
     private final RoleToDeptMapper roleToDeptMapper;
 
     /**
-     * 构建树结构
+     * 由扁平部门列表直接构建 SelectTreeResponse 树（DO 不再持有 children 字段）
      *
      * @param depts 部门列表
      * @return 树结构列表
      */
-    private List<DeptInfoDO> buildDeptTree(List<DeptInfoDO> depts) {
-        List<DeptInfoDO> returnList = new ArrayList<>();
-        List<Long> tempList = depts.stream().map(DeptInfoDO::getId).toList();
-        for (DeptInfoDO dept : depts) {
-            // 如果是顶级节点, 遍历该父节点的所有子节点
-            if (!tempList.contains(dept.getParentId())) {
-                recursionFn(depts, dept);
-                returnList.add(dept);
-            }
+    private List<SelectTreeResponse> buildSelectTree(List<DeptInfoDO> depts) {
+        if (CollectionUtils.isEmpty(depts)) {
+            return new ArrayList<>();
         }
-        if (returnList.isEmpty()) {
-            returnList = depts;
+        Set<Long> ids = depts.stream().map(DeptInfoDO::getId).collect(Collectors.toSet());
+        // 顶级节点：parentId 为空或不在结果集内
+        List<DeptInfoDO> roots = depts.stream()
+                .filter(d -> d.getParentId() == null || !ids.contains(d.getParentId()))
+                .collect(Collectors.toList());
+        if (roots.isEmpty()) {
+            // 未找到顶级（如数据存在环），退化为扁平列表
+            return depts.stream().map(this::toSelectTreeResp).collect(Collectors.toList());
         }
-        return returnList;
+        Map<Long, List<DeptInfoDO>> childMap = depts.stream()
+                .filter(d -> d.getParentId() != null)
+                .collect(Collectors.groupingBy(DeptInfoDO::getParentId));
+        return roots.stream().map(d -> buildSelectTreeResp(d, childMap)).collect(Collectors.toList());
+    }
+
+    private SelectTreeResponse toSelectTreeResp(DeptInfoDO dept) {
+        SelectTreeResponse response = new SelectTreeResponse();
+        response.setId(dept.getId());
+        response.setLabel(dept.getDeptName());
+        return response;
+    }
+
+    private SelectTreeResponse buildSelectTreeResp(DeptInfoDO dept, Map<Long, List<DeptInfoDO>> childMap) {
+        SelectTreeResponse response = toSelectTreeResp(dept);
+        List<DeptInfoDO> children = childMap.get(dept.getId());
+        if (children != null && !children.isEmpty()) {
+            response.setChildren(children.stream()
+                    .map(c -> buildSelectTreeResp(c, childMap))
+                    .collect(Collectors.toList()));
+        }
+        return response;
     }
 
     @Override
@@ -130,9 +153,7 @@ public class DeptInfoServiceImpl
                 .like(StringUtil.isNotBlank(deptName), DeptInfoDO::getDeptName, deptName);
 
         List<DeptInfoDO> allDepts = baseMapper.selectLists(wrapper);
-
-        List<DeptInfoDO> deptTrees = this.buildDeptTree(allDepts);
-        return deptTrees.stream().map(this::convertToSelectTreeResp).collect(Collectors.toList());
+        return buildSelectTree(allDepts);
     }
 
     @Override
@@ -148,20 +169,6 @@ public class DeptInfoServiceImpl
     @Override
     public List<DeptInfoDO> selectLists(Wrapper<DeptInfoDO> queryWrapper) {
         return baseMapper.selectLists(queryWrapper);
-    }
-
-    private SelectTreeResponse convertToSelectTreeResp(DeptInfoDO dept) {
-        SelectTreeResponse response = new SelectTreeResponse();
-        response.setId(dept.getId());
-        response.setLabel(dept.getDeptName());
-        // 递归转换子节点
-        if (dept.getChildren() != null && !dept.getChildren().isEmpty()) {
-            List<SelectTreeResponse> children = dept.getChildren().stream()
-                    .map(this::convertToSelectTreeResp) // 递归调用
-                    .collect(Collectors.toList());
-            response.setChildren(children);
-        }
-        return response;
     }
 
     private Long[] replaceAncestors(Long[] childAncestors, Long[] oldAncestors, Long[] newAncestors) {
@@ -183,41 +190,6 @@ public class DeptInfoServiceImpl
 
         // 将列表转换回数组
         return childAncestorsList.toArray(new Long[0]);
-    }
-
-    /**
-     * 递归列表
-     */
-    private void recursionFn(List<DeptInfoDO> list, DeptInfoDO t) {
-        // 得到子节点列表
-        List<DeptInfoDO> childList = getChildList(list, t);
-        t.setChildren(childList);
-        for (DeptInfoDO tChild : childList) {
-            if (hasChild(list, tChild)) {
-                recursionFn(list, tChild);
-            }
-        }
-    }
-
-    /**
-     * 得到子节点列表
-     */
-    private List<DeptInfoDO> getChildList(List<DeptInfoDO> list, DeptInfoDO t) {
-        List<DeptInfoDO> tlist = new ArrayList<>();
-        for (DeptInfoDO n : list) {
-            if (ObjectUtils.isNotEmpty(n.getParentId())
-                    && n.getParentId().longValue() == t.getId().longValue()) {
-                tlist.add(n);
-            }
-        }
-        return tlist;
-    }
-
-    /**
-     * 判断是否有子节点
-     */
-    private boolean hasChild(List<DeptInfoDO> list, DeptInfoDO t) {
-        return !CollectionUtils.isEmpty(getChildList(list, t));
     }
 
 }

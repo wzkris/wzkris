@@ -71,7 +71,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "u.create_at",
                         request.getBeginTime(), request.getEndTime())
-                .orderByDesc("u.admin_id");
+                .orderByDesc("u.id");
     }
 
     @Override

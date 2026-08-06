@@ -1,6 +1,7 @@
 package com.wzkris.usercenter.controller.config;
 
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.config.ConfigInfoApi;
 import com.wzkris.usercenter.api.config.request.ConfigInfoQueryRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/config-info")
 @RequiredArgsConstructor
+@CheckPerms
 public class ConfigInfoController {
 
     private final ConfigInfoApi configInfoApi;

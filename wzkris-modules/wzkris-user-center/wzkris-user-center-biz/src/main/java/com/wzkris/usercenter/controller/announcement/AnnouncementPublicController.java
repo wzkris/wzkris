@@ -2,9 +2,9 @@ package com.wzkris.usercenter.controller.announcement;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.api.announcement.AnnouncementInfoApi;
-import com.wzkris.usercenter.api.announcement.request.AnnouncementInfoPageRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementInfoResponse;
+import com.wzkris.usercenter.api.announcement.AnnouncementPublicApi;
+import com.wzkris.usercenter.api.announcement.request.AnnouncementPublicPageRequest;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementPublicResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,17 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "公告信息")
 @RestController
-@RequestMapping("/announcement-info")
+@RequestMapping("/announcement-public")
 @RequiredArgsConstructor
-public class AnnouncementInfoController {
+public class AnnouncementPublicController {
 
-    private final AnnouncementInfoApi announcementInfoApi;
+    private final AnnouncementPublicApi announcementPublicApi;
 
     @Operation(summary = "公告分页")
     @GetMapping("/query-page")
-    public Result<Page<AnnouncementInfoResponse>> queryPage(@ParameterObject AnnouncementInfoPageRequest request) {
-        return announcementInfoApi.queryPage(request);
+    public Result<Page<AnnouncementPublicResponse>> queryPage(@ParameterObject AnnouncementPublicPageRequest request) {
+        return announcementPublicApi.queryPage(request);
     }
 
 }
-

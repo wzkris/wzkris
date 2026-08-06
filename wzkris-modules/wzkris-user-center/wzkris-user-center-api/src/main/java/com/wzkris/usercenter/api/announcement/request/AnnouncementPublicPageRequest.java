@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class AnnouncementInfoPageRequest extends PagingRequest {
+public class AnnouncementPublicPageRequest extends PagingRequest {
 
 }

@@ -3,8 +3,8 @@ package com.wzkris.usercenter.impl.dictionary;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.usercenter.api.dictionary.DictionaryInfoApi;
-import com.wzkris.usercenter.api.dictionary.request.DictionaryInfoListRequest;
+import com.wzkris.usercenter.api.dictionary.DictionaryPublicApi;
+import com.wzkris.usercenter.api.dictionary.request.DictionaryPublicListRequest;
 import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.service.DictionaryInfoService;
@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DictionaryInfoApiImpl extends AbstractApi implements DictionaryInfoApi {
+public class DictionaryPublicApiImpl extends AbstractApi implements DictionaryPublicApi {
 
     private final DictionaryInfoService dictService;
 
     @Override
-    public Result<List<DictionaryDataResponse>> queryValue(DictionaryInfoListRequest request) {
+    public Result<List<DictionaryDataResponse>> queryValue(DictionaryPublicListRequest request) {
         String dictKey = request.getDictKey();
         DictionaryInfoDO.DictData[] source = dictService.getValueByKey(dictKey);
         if (source == null) {

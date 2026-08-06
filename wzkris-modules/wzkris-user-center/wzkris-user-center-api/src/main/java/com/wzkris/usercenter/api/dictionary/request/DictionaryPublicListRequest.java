@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Schema(description = "筛选条件")
-public class DictionaryInfoListRequest {
+public class DictionaryPublicListRequest {
 
     @Parameter(in = ParameterIn.PATH, required = true, description = "字典键")
     private String dictKey;

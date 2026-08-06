@@ -9,9 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.ArrayTypeHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 部门表 dept_info
  *
@@ -43,10 +40,6 @@ public class DeptInfoDO extends BaseEntity {
 
     @Schema(description = "部门邮箱")
     private String email;
-
-    @TableField(exist = false)
-    @Schema(description = "子部门")
-    private List<DeptInfoDO> children = new ArrayList<>();
 
     public DeptInfoDO(Long id) {
         this.setId(id);

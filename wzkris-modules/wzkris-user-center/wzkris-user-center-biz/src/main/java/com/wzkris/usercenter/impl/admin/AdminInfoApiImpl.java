@@ -1,15 +1,14 @@
 package com.wzkris.usercenter.impl.admin;
 
-import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.UserRole;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
 import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
-import com.wzkris.usercenter.api.admin.response.ChatPersonResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,7 +43,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
         AdminInfoResponse adminInfoVO = new AdminInfoResponse();
-        adminInfoVO.setAdmin(SecurityUtil.getRoleContext().isSuperUser());
+        adminInfoVO.setAdmin(SecurityUtil.isSuperUser());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
@@ -59,12 +57,6 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setRoleGroup(SecurityUtil.getRoleContext().getRoles().stream()
                 .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(adminInfoVO);
-    }
-
-    private List<ChatPersonResponse> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
-        return adminInfoDOS.stream().map(userInfoDO ->
-                        new ChatPersonResponse(userInfoDO.getId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
-                .collect(Collectors.toList());
     }
 
     @Override
