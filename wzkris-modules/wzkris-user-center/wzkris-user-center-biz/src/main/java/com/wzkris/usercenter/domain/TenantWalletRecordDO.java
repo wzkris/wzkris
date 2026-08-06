@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.orm.model.BaseTenantEntity;
 import com.wzkris.usercenter.enums.wallet.WalletRecordTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -19,10 +19,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_wallet_record")
-public class TenantWalletRecordDO extends BaseEntity {
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
+public class TenantWalletRecordDO extends BaseTenantEntity {
 
     @Schema(description = "金额, 元")
     private BigDecimal amount;

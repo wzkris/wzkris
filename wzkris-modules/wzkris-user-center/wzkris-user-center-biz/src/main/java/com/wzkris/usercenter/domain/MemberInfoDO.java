@@ -2,7 +2,7 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.orm.model.BaseTenantEntity;
 import com.wzkris.usercenter.enums.member.MemberStatusEnum;
 import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,10 +19,7 @@ import java.time.OffsetDateTime;
 @Data
 @NoArgsConstructor
 @TableName(schema = "biz", value = "member_info")
-public class MemberInfoDO extends BaseEntity {
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
+public class MemberInfoDO extends BaseTenantEntity {
 
     @Schema(description = "用户名")
     private String username;

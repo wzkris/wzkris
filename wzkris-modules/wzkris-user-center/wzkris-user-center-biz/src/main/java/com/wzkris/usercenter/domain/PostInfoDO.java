@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.orm.model.BaseTenantEntity;
 import com.wzkris.usercenter.enums.post.PostStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @TableName(schema = "biz", value = "post_info")
-public class PostInfoDO extends BaseEntity {
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
+public class PostInfoDO extends BaseTenantEntity {
 
     @Schema(description = "职位名称")
     private String postName;

@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.orm.model.BaseTenantEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_operate_log")
-public class TenantOperateLogDO extends BaseEntity {
+public class TenantOperateLogDO extends BaseTenantEntity {
 
     @Schema(description = "操作模块")
     private String title;
@@ -65,9 +65,6 @@ public class TenantOperateLogDO extends BaseEntity {
 
     @Schema(description = "耗时（毫秒）")
     private Long costTime;
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
 
     @Schema(description = "链路追踪ID")
     private String traceId;

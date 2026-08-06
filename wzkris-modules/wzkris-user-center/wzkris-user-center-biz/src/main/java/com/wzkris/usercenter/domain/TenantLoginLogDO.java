@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.common.orm.model.BaseTenantEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +17,7 @@ import java.time.OffsetDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "tenant_login_log")
-public class TenantLoginLogDO extends BaseEntity {
+public class TenantLoginLogDO extends BaseTenantEntity {
 
     @Schema(description = "用户ID")
     private Long memberId;
@@ -48,8 +48,5 @@ public class TenantLoginLogDO extends BaseEntity {
 
     @Schema(description = "登录时间")
     private OffsetDateTime loginTime;
-
-    @Schema(description = "租户ID")
-    private Long tenantId;
 
 }
