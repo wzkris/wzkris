@@ -11,7 +11,8 @@ import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
-import com.wzkris.usercenter.api.menu.response.MenuMngResponse;
+import com.wzkris.usercenter.api.menu.response.MenuMngQueryResponse;
+import com.wzkris.usercenter.api.menu.response.MenuMngListResponse;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -30,9 +31,9 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<List<MenuMngResponse>> queryList(MenuMngTreeRequest request) {
+    public Result<List<MenuMngListResponse>> queryList(MenuMngTreeRequest request) {
         List<MenuInfoDO> menus = menuInfoService.list(this.buildQueryWrapper(request));
-        return ok(BeanCopierUtil.copyList(menus, MenuMngResponse.class));
+        return ok(BeanCopierUtil.copyList(menus, MenuMngListResponse.class));
     }
 
     private LambdaQueryWrapper<MenuInfoDO> buildQueryWrapper(MenuMngTreeRequest request) {
@@ -49,8 +50,8 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     }
 
     @Override
-    public Result<MenuMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanCopierUtil.copy(menuInfoService.getById(request.getId()), MenuMngResponse.class));
+    public Result<MenuMngQueryResponse> queryInfo(IdRequest request) {
+        return ok(BeanCopierUtil.copy(menuInfoService.getById(request.getId()), MenuMngQueryResponse.class));
     }
 
     @Override

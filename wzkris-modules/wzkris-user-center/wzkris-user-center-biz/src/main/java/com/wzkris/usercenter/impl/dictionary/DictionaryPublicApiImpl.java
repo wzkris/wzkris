@@ -5,7 +5,7 @@ import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.dictionary.DictionaryPublicApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryPublicListRequest;
-import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryPublicListResponse;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.service.DictionaryInfoService;
 import lombok.RequiredArgsConstructor;
@@ -21,15 +21,15 @@ public class DictionaryPublicApiImpl extends AbstractApi implements DictionaryPu
     private final DictionaryInfoService dictService;
 
     @Override
-    public Result<List<DictionaryDataResponse>> queryValue(DictionaryPublicListRequest request) {
+    public Result<List<DictionaryPublicListResponse>> queryValue(DictionaryPublicListRequest request) {
         String dictKey = request.getDictKey();
         DictionaryInfoDO.DictData[] source = dictService.getValueByKey(dictKey);
         if (source == null) {
             return ok(null);
         }
-        List<DictionaryDataResponse> result = new ArrayList<>();
+        List<DictionaryPublicListResponse> result = new ArrayList<>();
         for (DictionaryInfoDO.DictData dictData : source) {
-            result.add(BeanCopierUtil.copy(dictData, DictionaryDataResponse.class));
+            result.add(BeanCopierUtil.copy(dictData, DictionaryPublicListResponse.class));
         }
         return ok(result);
     }

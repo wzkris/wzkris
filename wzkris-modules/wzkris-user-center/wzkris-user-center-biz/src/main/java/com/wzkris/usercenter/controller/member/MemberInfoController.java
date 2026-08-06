@@ -7,7 +7,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.api.member.request.MemberInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.member.response.MemberInfoResponse;
+import com.wzkris.usercenter.api.member.response.MemberInfoQueryResponse;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +28,7 @@ public class MemberInfoController {
 
     @Operation(summary = "账户信息")
     @GetMapping("/query-info")
-    public Result<MemberInfoResponse> queryInfo() {
+    public Result<MemberInfoQueryResponse> queryInfo() {
         return memberInfoApi.queryInfo();
     }
 

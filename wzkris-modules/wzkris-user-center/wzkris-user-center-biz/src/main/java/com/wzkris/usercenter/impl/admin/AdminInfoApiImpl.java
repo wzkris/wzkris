@@ -8,7 +8,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
+import com.wzkris.usercenter.api.admin.response.AdminInfoQueryResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
@@ -39,10 +39,10 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<AdminInfoResponse> queryInfo() {
+    public Result<AdminInfoQueryResponse> queryInfo() {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
-        AdminInfoResponse adminInfoVO = new AdminInfoResponse();
+        AdminInfoQueryResponse adminInfoVO = new AdminInfoQueryResponse();
         adminInfoVO.setAdmin(SecurityUtil.isSuperUser());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());

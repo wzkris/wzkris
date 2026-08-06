@@ -12,7 +12,8 @@ import com.wzkris.usercenter.api.config.ConfigMngApi;
 import com.wzkris.usercenter.api.config.request.ConfigMngPageRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngSaveRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngUpdateRequest;
-import com.wzkris.usercenter.api.config.response.ConfigInfoResponse;
+import com.wzkris.usercenter.api.config.response.ConfigMngQueryResponse;
+import com.wzkris.usercenter.api.config.response.ConfigMngPageResponse;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
 import com.wzkris.usercenter.service.ConfigInfoService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,9 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     private final ConfigInfoService configInfoService;
 
     @Override
-    public Result<Page<ConfigInfoResponse>> queryPage(ConfigMngPageRequest request) {
+    public Result<Page<ConfigMngPageResponse>> queryPage(ConfigMngPageRequest request) {
         IPage<ConfigInfoDO> page = configInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), ConfigInfoResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), ConfigMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<ConfigInfoDO> buildQueryWrapper(ConfigMngPageRequest request) {
@@ -43,9 +44,9 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     }
 
     @Override
-    public Result<ConfigInfoResponse> queryInfo(IdRequest request) {
+    public Result<ConfigMngQueryResponse> queryInfo(IdRequest request) {
         Long configId = request.getId();
-        return ok(BeanCopierUtil.copy(configInfoService.getById(configId), ConfigInfoResponse.class));
+        return ok(BeanCopierUtil.copy(configInfoService.getById(configId), ConfigMngQueryResponse.class));
     }
 
     @Override

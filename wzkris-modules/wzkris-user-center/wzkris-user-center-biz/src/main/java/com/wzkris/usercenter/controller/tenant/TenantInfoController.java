@@ -7,7 +7,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantInfoQueryResponse;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,7 +27,7 @@ public class TenantInfoController {
 
     @Operation(summary = "获取信息")
     @GetMapping("/query-info")
-    public Result<TenantInfoResponse> queryInfo() {
+    public Result<TenantInfoQueryResponse> queryInfo() {
         return tenantInfoApi.queryInfo();
     }
 

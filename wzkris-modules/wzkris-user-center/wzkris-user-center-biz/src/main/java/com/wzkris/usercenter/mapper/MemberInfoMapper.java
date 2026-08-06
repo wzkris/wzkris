@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.usercenter.api.member.response.MemberMngResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngPageResponse;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -21,7 +21,7 @@ public interface MemberInfoMapper extends BaseMapperPlus<MemberInfoDO> {
              LEFT JOIN biz.post_info p ON sp.post_id = p.id AND p.status = '0'
             ${ew.customSqlSegment} GROUP BY s.id ORDER BY s.id DESC
             """)
-    IPage<MemberMngResponse> selectVOPage(IPage<MemberMngResponse> page, @Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
+    IPage<MemberMngPageResponse> selectVOPage(IPage<MemberMngPageResponse> page, @Param(Constants.WRAPPER) QueryWrapper<MemberInfoDO> queryWrapper);
 
 }
 

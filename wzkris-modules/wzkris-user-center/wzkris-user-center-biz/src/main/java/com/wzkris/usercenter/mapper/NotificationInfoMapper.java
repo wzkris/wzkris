@@ -2,7 +2,7 @@ package com.wzkris.usercenter.mapper;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.usercenter.api.notification.response.NotificationInfoResponse;
+import com.wzkris.usercenter.api.notification.response.NotificationInfoPageResponse;
 import com.wzkris.usercenter.domain.NotificationInfoDO;
 import jakarta.annotation.Nullable;
 import org.apache.ibatis.annotations.Mapper;
@@ -30,8 +30,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 ORDER BY s.read ASC, s.notification_id DESC
             </script>
             """)
-    IPage<NotificationInfoResponse> pageAdminNotice(
-            IPage<NotificationInfoResponse> page,
+    IPage<NotificationInfoPageResponse> pageAdminNotice(
+            IPage<NotificationInfoPageResponse> page,
             @Param("adminId") Long adminId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") Boolean read);
@@ -51,8 +51,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 ORDER BY s.read ASC, s.notification_id DESC
             </script>
             """)
-    IPage<NotificationInfoResponse> pageTenantNotice(
-            IPage<NotificationInfoResponse> page,
+    IPage<NotificationInfoPageResponse> pageTenantNotice(
+            IPage<NotificationInfoPageResponse> page,
             @Param("memberId") Long memberId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") Boolean read);

@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngUpdateRequest;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,14 +38,14 @@ public class TenantPackageMngController {
     @Operation(summary = "套餐分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<TenantPackageMngResponse>> queryPage(@ParameterObject TenantPackageMngPageRequest request) {
+    public Result<Page<TenantPackageMngPageResponse>> queryPage(@ParameterObject TenantPackageMngPageRequest request) {
         return tenantPackageMngApi.queryPage(request);
     }
 
     @Operation(summary = "套餐详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<TenantPackageMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantPackageMngApi.queryInfo(request);
     }
 

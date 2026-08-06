@@ -14,7 +14,8 @@ import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
 import com.wzkris.usercenter.api.post.request.PostMngSaveRequest;
 import com.wzkris.usercenter.api.post.request.PostMngUpdateRequest;
-import com.wzkris.usercenter.api.post.response.PostMngResponse;
+import com.wzkris.usercenter.api.post.response.PostMngQueryResponse;
+import com.wzkris.usercenter.api.post.response.PostMngPageResponse;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
@@ -36,9 +37,9 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request) {
+    public Result<Page<PostMngPageResponse>> queryPage(PostMngPageRequest request) {
         IPage<PostInfoDO> page = postInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), PostMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), PostMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<PostInfoDO> buildQueryWrapper(PostMngPageRequest request) {
@@ -49,8 +50,8 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     }
 
     @Override
-    public Result<PostMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanCopierUtil.copy(postInfoService.getById(request.getId()), PostMngResponse.class));
+    public Result<PostMngQueryResponse> queryInfo(IdRequest request) {
+        return ok(BeanCopierUtil.copy(postInfoService.getById(request.getId()), PostMngQueryResponse.class));
     }
 
     @Override

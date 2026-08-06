@@ -12,7 +12,8 @@ import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.api.tenant.request.TenantMngPageRequest;
 import com.wzkris.usercenter.api.tenant.request.TenantMngSaveRequest;
 import com.wzkris.usercenter.api.tenant.request.TenantMngUpdateRequest;
-import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngQueryResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngPageResponse;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngListRequest;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.SelectResponse;
@@ -40,14 +41,14 @@ public class TenantMngController {
     @Operation(summary = "租户分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<TenantMngResponse>> queryPage(@ParameterObject TenantMngPageRequest request) {
+    public Result<Page<TenantMngPageResponse>> queryPage(@ParameterObject TenantMngPageRequest request) {
         return tenantMngApi.queryPage(request);
     }
 
     @Operation(summary = "ID获取租户详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<TenantMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<TenantMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return tenantMngApi.queryInfo(request);
     }
 

@@ -9,8 +9,8 @@ import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoQueryResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordInfoPageResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
@@ -36,14 +36,14 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<TenantWalletInfoResponse> queryInfo() {
-        return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getTenantId(), TenantWalletInfoResponse.class));
+    public Result<TenantWalletInfoQueryResponse> queryInfo() {
+        return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getTenantId(), TenantWalletInfoQueryResponse.class));
     }
 
     @Override
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
+    public Result<Page<TenantWalletRecordInfoPageResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request) {
         IPage<TenantWalletRecordDO> page = tenantWalletRecordMapper.selectPage(request.buildPage(), this.buildWalletQueryWrapper(request));
-        List<TenantWalletRecordResponse> list = page.getRecords().stream().map(this::toResponse).toList();
+        List<TenantWalletRecordInfoPageResponse> list = page.getRecords().stream().map(this::toResponse).toList();
         return ok(Page.of(page, list));
     }
 
@@ -66,8 +66,8 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
                 .orderByDesc(TenantWalletRecordDO::getId);
     }
 
-    private TenantWalletRecordResponse toResponse(TenantWalletRecordDO recordDO) {
-        TenantWalletRecordResponse response = new TenantWalletRecordResponse();
+    private TenantWalletRecordInfoPageResponse toResponse(TenantWalletRecordDO recordDO) {
+        TenantWalletRecordInfoPageResponse response = new TenantWalletRecordInfoPageResponse();
         response.setId(recordDO.getId());
         response.setTenantId(recordDO.getTenantId());
         response.setAmount(recordDO.getAmount());

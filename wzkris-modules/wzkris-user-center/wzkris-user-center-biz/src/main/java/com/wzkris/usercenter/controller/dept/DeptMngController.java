@@ -10,7 +10,8 @@ import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
-import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngQueryResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,14 +35,14 @@ public class DeptMngController {
     @Operation(summary = "部门列表 (不带分页)")
     @GetMapping("/query-list")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
-    public Result<List<DeptMngResponse>> queryList(@ParameterObject DeptMngTreeRequest request) {
+    public Result<List<DeptMngListResponse>> queryList(@ParameterObject DeptMngTreeRequest request) {
         return deptMngApi.queryList(request);
     }
 
     @Operation(summary = "根据部门编号获取详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<DeptMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<DeptMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return deptMngApi.queryInfo(request);
     }
 

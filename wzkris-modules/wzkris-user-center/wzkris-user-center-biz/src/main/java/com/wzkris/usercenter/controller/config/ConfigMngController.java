@@ -11,7 +11,8 @@ import com.wzkris.usercenter.api.config.ConfigMngApi;
 import com.wzkris.usercenter.api.config.request.ConfigMngPageRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngSaveRequest;
 import com.wzkris.usercenter.api.config.request.ConfigMngUpdateRequest;
-import com.wzkris.usercenter.api.config.response.ConfigInfoResponse;
+import com.wzkris.usercenter.api.config.response.ConfigMngQueryResponse;
+import com.wzkris.usercenter.api.config.response.ConfigMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,14 +35,14 @@ public class ConfigMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<ConfigInfoResponse>> queryPage(@ParameterObject ConfigMngPageRequest request) {
+    public Result<Page<ConfigMngPageResponse>> queryPage(@ParameterObject ConfigMngPageRequest request) {
         return configMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<ConfigInfoResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<ConfigMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return configMngApi.queryInfo(request);
     }
 

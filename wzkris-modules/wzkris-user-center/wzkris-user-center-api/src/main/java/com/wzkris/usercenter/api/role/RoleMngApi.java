@@ -7,15 +7,16 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngUpdateRequest;
-import com.wzkris.usercenter.api.role.response.RoleMngResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngQueryResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 
 public interface RoleMngApi {
 
-    Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request);
+    Result<Page<RoleMngPageResponse>> queryPage(RoleMngPageRequest request);
 
-    Result<RoleMngResponse> queryInfo(IdRequest request);
+    Result<RoleMngQueryResponse> queryInfo(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 

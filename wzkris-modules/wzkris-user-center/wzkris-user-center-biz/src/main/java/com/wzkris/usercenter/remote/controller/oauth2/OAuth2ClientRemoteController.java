@@ -3,7 +3,7 @@ package com.wzkris.usercenter.remote.controller.oauth2;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
 import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryRequest;
-import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
+import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientListResponse;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class OAuth2ClientRemoteController {
     private final OAuth2ClientRemoteApi oAuth2ClientRemoteApi;
 
     @PostMapping("/query-list")
-    public Result<List<OAuth2ClientResponse>> queryList(@RequestBody @Valid OAuth2ClientQueryRequest request) {
+    public Result<List<OAuth2ClientListResponse>> queryList(@RequestBody @Valid OAuth2ClientQueryRequest request) {
         return oAuth2ClientRemoteApi.queryList(request);
     }
 

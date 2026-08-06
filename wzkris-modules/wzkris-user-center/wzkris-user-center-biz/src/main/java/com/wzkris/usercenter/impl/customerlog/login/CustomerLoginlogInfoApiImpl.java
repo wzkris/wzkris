@@ -10,7 +10,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.customerlog.login.CustomerLoginlogInfoApi;
 import com.wzkris.usercenter.api.customerlog.login.request.CustomerLoginLogInfoPageRequest;
-import com.wzkris.usercenter.api.customerlog.login.response.CustomerLoginLogInfoResponse;
+import com.wzkris.usercenter.api.customerlog.login.response.CustomerLoginLogInfoPageResponse;
 import com.wzkris.usercenter.domain.CustomerLoginLogDO;
 import com.wzkris.usercenter.service.CustomerLoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,9 @@ public class CustomerLoginlogInfoApiImpl
     private final CustomerLoginLogService customerLoginLogService;
 
     @Override
-    public Result<Page<CustomerLoginLogInfoResponse>> queryPage(CustomerLoginLogInfoPageRequest request) {
+    public Result<Page<CustomerLoginLogInfoPageResponse>> queryPage(CustomerLoginLogInfoPageRequest request) {
         IPage<CustomerLoginLogDO> page = customerLoginLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerLoginLogInfoResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerLoginLogInfoPageResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerLoginLogDO> buildQueryWrapper(CustomerLoginLogInfoPageRequest request) {

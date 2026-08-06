@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.tenantpackage.TenantPackageMngApi;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngUpdateRequest;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngPageResponse;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
@@ -35,9 +36,9 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     private final MenuInfoService menuInfoService;
 
     @Override
-    public Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request) {
+    public Result<Page<TenantPackageMngPageResponse>> queryPage(TenantPackageMngPageRequest request) {
         IPage<TenantPackageInfoDO> page = tenantPackageInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), TenantPackageMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), TenantPackageMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<TenantPackageInfoDO> buildQueryWrapper(TenantPackageMngPageRequest request) {
@@ -51,8 +52,8 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     }
 
     @Override
-    public Result<TenantPackageMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanCopierUtil.copy(tenantPackageInfoService.getById(request.getId()), TenantPackageMngResponse.class));
+    public Result<TenantPackageMngQueryResponse> queryInfo(IdRequest request) {
+        return ok(BeanCopierUtil.copy(tenantPackageInfoService.getById(request.getId()), TenantPackageMngQueryResponse.class));
     }
 
     @Override

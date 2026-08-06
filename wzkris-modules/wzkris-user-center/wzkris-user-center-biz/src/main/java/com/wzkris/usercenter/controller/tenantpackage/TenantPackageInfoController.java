@@ -4,7 +4,7 @@ import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class TenantPackageInfoController {
 
     @Operation(summary = "获取当前租户套餐概览")
     @GetMapping("/query-info")
-    public Result<TenantPackageInfoResponse> queryInfo() {
+    public Result<TenantPackageInfoQueryResponse> queryInfo() {
         return tenantPackageInfoApi.queryInfo();
     }
 

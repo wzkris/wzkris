@@ -14,7 +14,8 @@ import com.wzkris.usercenter.api.role.RoleMngApi;
 import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngUpdateRequest;
-import com.wzkris.usercenter.api.role.response.RoleMngResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngQueryResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngPageResponse;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.domain.RoleInheritanceDO;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
@@ -50,9 +51,9 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     private final RoleInheritanceMapper roleInheritanceMapper;
 
     @Override
-    public Result<Page<RoleMngResponse>> queryPage(RoleMngPageRequest request) {
+    public Result<Page<RoleMngPageResponse>> queryPage(RoleMngPageRequest request) {
         IPage<RoleInfoDO> page = roleInfoMapper.selectPageList(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), RoleMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), RoleMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<RoleInfoDO> buildQueryWrapper(RoleMngPageRequest request) {
@@ -64,12 +65,12 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<RoleMngResponse> queryInfo(IdRequest request) {
+    public Result<RoleMngQueryResponse> queryInfo(IdRequest request) {
         Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanCopierUtil.copy(roleInfoService.getById(roleId), RoleMngResponse.class));
+        return ok(BeanCopierUtil.copy(roleInfoService.getById(roleId), RoleMngQueryResponse.class));
     }
 
     @Override

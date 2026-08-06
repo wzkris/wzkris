@@ -10,7 +10,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.adminlog.operate.AdminOperateLogInfoApi;
 import com.wzkris.usercenter.api.adminlog.operate.request.AdminOperateLogInfoPageRequest;
-import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogInfoResponse;
+import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogInfoPageResponse;
 import com.wzkris.usercenter.domain.AdminOperateLogDO;
 import com.wzkris.usercenter.service.AdminOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +26,9 @@ public class AdminOperateLogInfoApiImpl
     private final AdminOperateLogService adminOperateLogService;
 
     @Override
-    public Result<Page<AdminOperateLogInfoResponse>> queryPage(AdminOperateLogInfoPageRequest request) {
+    public Result<Page<AdminOperateLogInfoPageResponse>> queryPage(AdminOperateLogInfoPageRequest request) {
         IPage<AdminOperateLogDO> page = adminOperateLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminOperateLogInfoResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminOperateLogInfoPageResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogInfoPageRequest request) {

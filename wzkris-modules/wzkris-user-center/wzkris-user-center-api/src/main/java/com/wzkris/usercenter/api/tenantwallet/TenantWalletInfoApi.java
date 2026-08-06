@@ -4,14 +4,14 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoQueryResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordInfoPageResponse;
 
 public interface TenantWalletInfoApi {
 
-    Result<TenantWalletInfoResponse> queryInfo();
+    Result<TenantWalletInfoQueryResponse> queryInfo();
 
-    Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request);
+    Result<Page<TenantWalletRecordInfoPageResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request);
 
     Result<Void> withdrawal(WalletWithdrawalRequest request);
 

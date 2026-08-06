@@ -1,7 +1,7 @@
 package com.wzkris.auth.remote.interfaces.oauth2;
 
 import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryRequest;
-import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
+import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientListResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
@@ -26,7 +26,7 @@ import java.util.List;
 public interface IOAuth2ClientRemote {
 
     @PostExchange("/query-list")
-    Result<List<OAuth2ClientResponse>> queryList(@RequestBody OAuth2ClientQueryRequest request);
+    Result<List<OAuth2ClientListResponse>> queryList(@RequestBody OAuth2ClientQueryRequest request);
 
 }
 

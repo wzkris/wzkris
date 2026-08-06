@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -35,7 +35,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
             FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.id
             ${ew.customSqlSegment}
             """)
-    List<AdminMngResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
+    List<AdminMngPageResponse> selectVOList(@Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
     /**
      * 带权限查询分页数据（分页）
@@ -46,7 +46,7 @@ public interface AdminInfoMapper extends BaseMapperPlus<AdminInfoDO> {
             FROM biz.admin_info u LEFT JOIN biz.dept_info d ON u.dept_id = d.id
             ${ew.customSqlSegment}
             """)
-    IPage<AdminMngResponse> selectVOPage(IPage<AdminMngResponse> page, @Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
+    IPage<AdminMngPageResponse> selectVOPage(IPage<AdminMngPageResponse> page, @Param(Constants.WRAPPER) Wrapper<AdminInfoDO> queryWrapper);
 
     /**
      * 检验权限

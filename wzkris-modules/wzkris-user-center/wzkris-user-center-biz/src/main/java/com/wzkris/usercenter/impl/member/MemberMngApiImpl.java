@@ -13,7 +13,8 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.member.MemberMngApi;
 import com.wzkris.usercenter.api.member.request.*;
-import com.wzkris.usercenter.api.member.response.MemberMngResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngQueryResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngPageResponse;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.domain.PostInfoDO;
 import com.wzkris.usercenter.event.CreateMemberEvent;
@@ -47,8 +48,8 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request) {
-        IPage<MemberMngResponse> page = memberInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
+    public Result<Page<MemberMngPageResponse>> queryPage(MemberMngPageRequest request) {
+        IPage<MemberMngPageResponse> page = memberInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
         return ok(Page.of(page));
     }
 
@@ -64,12 +65,12 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<MemberMngResponse> queryInfo(IdRequest request) {
+    public Result<MemberMngQueryResponse> queryInfo(IdRequest request) {
         Long memberId = request.getId();
         if (tenantInfoService.checkAdministrator(memberId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanCopierUtil.copy(memberInfoService.getById(memberId), MemberMngResponse.class));
+        return ok(BeanCopierUtil.copy(memberInfoService.getById(memberId), MemberMngQueryResponse.class));
     }
 
     @Override

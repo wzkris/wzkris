@@ -6,7 +6,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantlog.login.TenantLoginlogMngApi;
 import com.wzkris.usercenter.api.tenantlog.login.request.TenantLoginLogMngPageRequest;
-import com.wzkris.usercenter.api.tenantlog.login.response.TenantLoginLogMngResponse;
+import com.wzkris.usercenter.api.tenantlog.login.response.TenantLoginLogMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class TenantLoginlogMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "system-mod:tenant-loginlog-mng:page")
-    public Result<Page<TenantLoginLogMngResponse>> queryPage(@ParameterObject TenantLoginLogMngPageRequest request) {
+    public Result<Page<TenantLoginLogMngPageResponse>> queryPage(@ParameterObject TenantLoginLogMngPageRequest request) {
         return tenantLoginlogMngApi.queryPage(request);
     }
 

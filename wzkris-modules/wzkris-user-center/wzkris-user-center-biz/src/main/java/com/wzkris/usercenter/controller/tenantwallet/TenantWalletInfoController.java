@@ -9,8 +9,8 @@ import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletInfoApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordInfoPageRequest;
 import com.wzkris.usercenter.api.tenantwallet.request.WalletWithdrawalRequest;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoResponse;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletInfoQueryResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordInfoPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,13 +31,13 @@ public class TenantWalletInfoController {
 
     @Operation(summary = "余额信息")
     @GetMapping("/query-info")
-    public Result<TenantWalletInfoResponse> queryInfo() {
+    public Result<TenantWalletInfoQueryResponse> queryInfo() {
         return tenantWalletInfoApi.queryInfo();
     }
 
     @Operation(summary = "钱包记录分页")
     @GetMapping("/query-record-page")
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(@ParameterObject TenantWalletRecordInfoPageRequest request) {
+    public Result<Page<TenantWalletRecordInfoPageResponse>> queryRecordPage(@ParameterObject TenantWalletRecordInfoPageRequest request) {
         return tenantWalletInfoApi.queryRecordPage(request);
     }
 

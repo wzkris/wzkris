@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.oauth2.request.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngSaveRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngUpdateRequest;
-import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngResponse;
+import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngQueryResponse;
+import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngPageResponse;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.service.OAuth2ClientService;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +31,9 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<OAuth2ClientMngResponse>> queryPage(OAuth2ClientMngPageRequest request) {
+    public Result<Page<OAuth2ClientMngPageResponse>> queryPage(OAuth2ClientMngPageRequest request) {
         IPage<OAuth2ClientDO> page = oAuth2ClientService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), OAuth2ClientMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), OAuth2ClientMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<OAuth2ClientDO> buildQueryWrapper(OAuth2ClientMngPageRequest request) {
@@ -42,8 +43,8 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     }
 
     @Override
-    public Result<OAuth2ClientMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanCopierUtil.copy(oAuth2ClientService.getById(request.getId()), OAuth2ClientMngResponse.class));
+    public Result<OAuth2ClientMngQueryResponse> queryInfo(IdRequest request) {
+        return ok(BeanCopierUtil.copy(oAuth2ClientService.getById(request.getId()), OAuth2ClientMngQueryResponse.class));
     }
 
     @Override

@@ -5,7 +5,8 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.admin.request.*;
-import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngQueryResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -15,13 +16,13 @@ import java.util.List;
 
 public interface AdminMngApi {
 
-    Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request);
+    Result<Page<AdminMngPageResponse>> queryPage(AdminMngPageRequest request);
 
     Result<List<SelectTreeResponse>> queryDeptSelectTree(AdminMngDeptSelectRequest request);
 
     Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request);
 
-    Result<AdminMngResponse> queryInfo(IdRequest request);
+    Result<AdminMngQueryResponse> queryInfo(IdRequest request);
 
     Result<Void> save(AdminMngSaveRequest request);
 

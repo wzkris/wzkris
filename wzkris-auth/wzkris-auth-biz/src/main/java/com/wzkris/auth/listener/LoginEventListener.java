@@ -1,12 +1,12 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.interfaces.admin.IAdminRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
-import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
-import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
+import com.wzkris.auth.remote.interfaces.member.IMemberRemote;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -33,11 +33,11 @@ public class LoginEventListener {
 
     private final ILoginLogRemote loginLogRemote;
 
-    private final IAdminInfoRemote adminInfoRemote;
+    private final IAdminRemote adminRemote;
 
-    private final IMemberInfoRemote memberInfoRemote;
+    private final IMemberRemote memberRemote;
 
-    private final ICustomerInfoRemote customerInfoRemote;
+    private final ICustomerRemote customerRemote;
 
     @Async
     @EventListener
@@ -87,11 +87,11 @@ public class LoginEventListener {
         LoginInfoUpdateRequest.setLoginDate(loginDate);
         AuthTypeEnum authType = loginUser.getAuthType();
         if (authType == AuthTypeEnum.ADMIN) {
-            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(adminRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.TENANT) {
-            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(memberRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(customerRemote.updateLoginInfo(LoginInfoUpdateRequest));
         }
     }
 

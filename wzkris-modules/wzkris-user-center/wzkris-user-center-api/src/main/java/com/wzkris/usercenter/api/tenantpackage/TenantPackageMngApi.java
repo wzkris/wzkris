@@ -7,14 +7,15 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngPageRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngSaveRequest;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngUpdateRequest;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 
 public interface TenantPackageMngApi {
 
-    Result<Page<TenantPackageMngResponse>> queryPage(TenantPackageMngPageRequest request);
+    Result<Page<TenantPackageMngPageResponse>> queryPage(TenantPackageMngPageRequest request);
 
-    Result<TenantPackageMngResponse> queryInfo(IdRequest request);
+    Result<TenantPackageMngQueryResponse> queryInfo(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 

@@ -11,7 +11,8 @@ import com.wzkris.usercenter.api.dictionary.DictionaryMngApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngPageRequest;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngSaveRequest;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngUpdateRequest;
-import com.wzkris.usercenter.api.dictionary.response.DictionaryMngResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryMngQueryResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,14 +35,14 @@ public class DictionaryMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<DictionaryMngResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
+    public Result<Page<DictionaryMngPageResponse>> queryPage(@ParameterObject DictionaryMngPageRequest request) {
         return dictionaryMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<DictionaryMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<DictionaryMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return dictionaryMngApi.queryInfo(request);
     }
 

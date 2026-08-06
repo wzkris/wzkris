@@ -15,7 +15,8 @@ import com.wzkris.usercenter.api.tenant.TenantMngApi;
 import com.wzkris.usercenter.api.tenant.request.TenantMngPageRequest;
 import com.wzkris.usercenter.api.tenant.request.TenantMngSaveRequest;
 import com.wzkris.usercenter.api.tenant.request.TenantMngUpdateRequest;
-import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngQueryResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngPageResponse;
 import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngListRequest;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
@@ -52,8 +53,8 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<TenantMngResponse>> queryPage(TenantMngPageRequest request) {
-        IPage<TenantMngResponse> page = tenantInfoMapper.selectVOPage(request.buildPage(), this.buildQueryWrapper(request));
+    public Result<Page<TenantMngPageResponse>> queryPage(TenantMngPageRequest request) {
+        IPage<TenantMngPageResponse> page = tenantInfoMapper.selectVOPage(request.buildPage(), this.buildQueryWrapper(request));
         return ok(Page.of(page));
     }
 
@@ -66,7 +67,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     }
 
     @Override
-    public Result<TenantMngResponse> queryInfo(IdRequest request) {
+    public Result<TenantMngQueryResponse> queryInfo(IdRequest request) {
         return ok(tenantInfoMapper.selectMngVOById(request.getId()));
     }
 

@@ -8,8 +8,6 @@ import com.wzkris.usercenter.domain.*;
 import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.remote.api.admin.response.AdminPermissionResponse;
-import com.wzkris.usercenter.remote.api.member.response.MemberPermissionResponse;
 import com.wzkris.usercenter.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,20 +39,19 @@ public class PermissionServiceImpl implements PermissionService {
     private final TenantInfoService tenantInfoService;
 
     @Override
-    public AdminPermissionResponse getAdminPermission(Long adminId, Long deptId) {
+    public List<UserRole> getAdminPermission(Long adminId, Long deptId) {
         // 超管：加载全部真实权限码 + 虚拟 ALL 角色跳过数据权限
         if (AdminInfoDO.isSuperAdmin(adminId)) {
-            List<UserRole> roles = List.of(
+            return List.of(
                     new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, DataScopeEnum.ALL.getValue(),
                             Collections.emptyList(), menuInfoService.listPermsByMenuIds(null))
             );
-            return new AdminPermissionResponse(roles);
         }
 
         // 普通用户：查角色 -> 查菜单权限 -> 构建角色数据权限
         List<RoleInfoDO> roleList = roleInfoService.listByAdminId(adminId, true);
 
-        List<UserRole> roles = roleList.stream()
+        return roleList.stream()
                 .map(role -> new UserRole(
                         role.getId(),
                         role.getRoleName(),
@@ -63,12 +60,10 @@ public class PermissionServiceImpl implements PermissionService {
                         menuInfoService.listPermsByRoleIds(List.of(role.getId()))
                 ))
                 .collect(Collectors.toList());
-
-        return new AdminPermissionResponse(roles);
     }
 
     @Override
-    public MemberPermissionResponse getTenantPermission(Long memberId, Long tenantId) {
+    public List<UserRole> getTenantPermission(Long memberId, Long tenantId) {
         List<UserRole> roles;
         // 租户最高管理员特殊处理
         Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
@@ -83,7 +78,7 @@ public class PermissionServiceImpl implements PermissionService {
                             menuInfoService.listPermsByPostIds(List.of(post.getId()))))
                     .collect(Collectors.toList());
         }
-        return new MemberPermissionResponse(roles);
+        return roles;
     }
 
     /**

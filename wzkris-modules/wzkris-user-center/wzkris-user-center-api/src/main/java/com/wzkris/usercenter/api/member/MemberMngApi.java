@@ -5,15 +5,16 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdListRequest;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.member.request.*;
-import com.wzkris.usercenter.api.member.response.MemberMngResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngQueryResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngPageResponse;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 
 public interface MemberMngApi {
 
-    Result<Page<MemberMngResponse>> queryPage(MemberMngPageRequest request);
+    Result<Page<MemberMngPageResponse>> queryPage(MemberMngPageRequest request);
 
-    Result<MemberMngResponse> queryInfo(IdRequest request);
+    Result<MemberMngQueryResponse> queryInfo(IdRequest request);
 
     Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request);
 

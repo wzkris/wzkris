@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.role.RoleMngApi;
 import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
 import com.wzkris.usercenter.api.role.request.RoleMngUpdateRequest;
-import com.wzkris.usercenter.api.role.response.RoleMngResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngQueryResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,14 +39,14 @@ public class RoleMngController {
     @Operation(summary = "角色分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<RoleMngResponse>> queryPage(@ParameterObject RoleMngPageRequest request) {
+    public Result<Page<RoleMngPageResponse>> queryPage(@ParameterObject RoleMngPageRequest request) {
         return roleMngApi.queryPage(request);
     }
 
     @Operation(summary = "角色详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<RoleMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<RoleMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return roleMngApi.queryInfo(request);
     }
 

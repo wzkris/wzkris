@@ -7,7 +7,7 @@ import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
 import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.admin.response.AdminInfoResponse;
+import com.wzkris.usercenter.api.admin.response.AdminInfoQueryResponse;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,7 +33,7 @@ public class AdminInfoController {
     @Operation(summary = "账户信息")
     @GetMapping("/query-info")
     @Cacheable(value = info_prefix + "#600_000", key = "@uch.getLoginUser().getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
-    public Result<AdminInfoResponse> queryInfo() {
+    public Result<AdminInfoQueryResponse> queryInfo() {
         return adminInfoApi.queryInfo();
     }
 

@@ -9,7 +9,8 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.api.customer.request.CustomerMngPageRequest;
-import com.wzkris.usercenter.api.customer.response.CustomerMngResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngQueryResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,14 +35,14 @@ public class CustomerMngController {
     @Operation(summary = "客户分页列表")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<CustomerMngResponse>> queryPage(@ParameterObject CustomerMngPageRequest request) {
+    public Result<Page<CustomerMngPageResponse>> queryPage(@ParameterObject CustomerMngPageRequest request) {
         return customerMngApi.queryPage(request);
     }
 
     @Operation(summary = "客户详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<CustomerMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<CustomerMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return customerMngApi.queryInfo(request);
     }
 

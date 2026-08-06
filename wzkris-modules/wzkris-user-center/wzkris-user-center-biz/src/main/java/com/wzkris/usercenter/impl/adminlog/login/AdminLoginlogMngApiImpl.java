@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.adminlog.login.AdminLoginlogMngApi;
 import com.wzkris.usercenter.api.adminlog.login.request.AdminLoginLogMngPageRequest;
-import com.wzkris.usercenter.api.adminlog.login.response.AdminLoginLogMngResponse;
+import com.wzkris.usercenter.api.adminlog.login.response.AdminLoginLogMngPageResponse;
 import com.wzkris.usercenter.domain.AdminLoginLogDO;
 import com.wzkris.usercenter.service.AdminLoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class AdminLoginlogMngApiImpl
     private final AdminLoginLogService adminLoginLogService;
 
     @Override
-    public Result<Page<AdminLoginLogMngResponse>> queryPage(AdminLoginLogMngPageRequest request) {
+    public Result<Page<AdminLoginLogMngPageResponse>> queryPage(AdminLoginLogMngPageRequest request) {
         IPage<AdminLoginLogDO> page = adminLoginLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminLoginLogMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminLoginLogMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminLoginLogDO> buildQueryWrapper(AdminLoginLogMngPageRequest request) {

@@ -14,8 +14,9 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.api.admin.request.*;
-import com.wzkris.usercenter.api.admin.response.AdminInfoExportResponse;
-import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngExportResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngQueryResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.event.CreateAdminEvent;
@@ -54,8 +55,8 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<Page<AdminMngResponse>> queryPage(AdminMngPageRequest request) {
-        IPage<AdminMngResponse> page = adminInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
+    public Result<Page<AdminMngPageResponse>> queryPage(AdminMngPageRequest request) {
+        IPage<AdminMngPageResponse> page = adminInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
         return ok(Page.of(page));
     }
 
@@ -93,12 +94,12 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
     }
 
     @Override
-    public Result<AdminMngResponse> queryInfo(IdRequest request) {
+    public Result<AdminMngQueryResponse> queryInfo(IdRequest request) {
         Long adminId = request.getId();
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanCopierUtil.copy(adminInfoService.getById(adminId), AdminMngResponse.class));
+        return ok(BeanCopierUtil.copy(adminInfoService.getById(adminId), AdminMngQueryResponse.class));
     }
 
     @Override
@@ -169,9 +170,9 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public void export(HttpServletResponse response, AdminMngPageRequest request) {
-        List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        List<AdminInfoExportResponse> convert = BeanCopierUtil.copyList(list, AdminInfoExportResponse.class);
-        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExportResponse.class, false, response, null);
+        List<AdminMngPageResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
+        List<AdminMngExportResponse> convert = BeanCopierUtil.copyList(list, AdminMngExportResponse.class);
+        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminMngExportResponse.class, false, response, null);
     }
 
 }

@@ -5,9 +5,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenantpackage.TenantPackageInfoApi;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoResponse;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoResponse.BenefitItem;
-import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoResponse.QuotaItem;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoQueryResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoQueryResponse.BenefitItem;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoQueryResponse.QuotaItem;
 import com.wzkris.usercenter.domain.MenuInfoDO;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.domain.TenantPackageInfoDO;
@@ -77,13 +77,13 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
     }
 
     @Override
-    public Result<TenantPackageInfoResponse> queryInfo() {
+    public Result<TenantPackageInfoQueryResponse> queryInfo() {
         TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");
         }
 
-        TenantPackageInfoResponse resp = new TenantPackageInfoResponse();
+        TenantPackageInfoQueryResponse resp = new TenantPackageInfoQueryResponse();
         resp.setTenantName(tenant.getTenantName());
         resp.setExpireTime(tenant.getExpireTime());
 

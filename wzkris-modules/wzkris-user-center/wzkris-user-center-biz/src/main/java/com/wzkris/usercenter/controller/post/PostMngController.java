@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.post.PostMngApi;
 import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
 import com.wzkris.usercenter.api.post.request.PostMngSaveRequest;
 import com.wzkris.usercenter.api.post.request.PostMngUpdateRequest;
-import com.wzkris.usercenter.api.post.response.PostMngResponse;
+import com.wzkris.usercenter.api.post.response.PostMngQueryResponse;
+import com.wzkris.usercenter.api.post.response.PostMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,14 +38,14 @@ public class PostMngController {
     @Operation(summary = "职位分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<PostMngResponse>> queryPage(@ParameterObject PostMngPageRequest request) {
+    public Result<Page<PostMngPageResponse>> queryPage(@ParameterObject PostMngPageRequest request) {
         return postMngApi.queryPage(request);
     }
 
     @Operation(summary = "职位详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, prefix = PERM_PREFIX, value = "page")
-    public Result<PostMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<PostMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return postMngApi.queryInfo(request);
     }
 

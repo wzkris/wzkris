@@ -9,7 +9,7 @@ import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.notification.AdminNotificationInfoApi;
 import com.wzkris.usercenter.api.notification.request.NotificationInfoPageRequest;
 import com.wzkris.usercenter.api.notification.request.UnreadSizeQueryRequest;
-import com.wzkris.usercenter.api.notification.response.NotificationInfoResponse;
+import com.wzkris.usercenter.api.notification.response.NotificationInfoPageResponse;
 import com.wzkris.usercenter.mapper.NotificationInfoMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class AdminNotificationInfoApiImpl extends AbstractApi implements AdminNo
     private final NotificationInfoMapper notificationInfoMapper;
 
     @Override
-    public Result<Page<NotificationInfoResponse>> queryPage(NotificationInfoPageRequest request) {
-        IPage<NotificationInfoResponse> page = notificationInfoMapper.pageAdminNotice(
+    public Result<Page<NotificationInfoPageResponse>> queryPage(NotificationInfoPageRequest request) {
+        IPage<NotificationInfoPageResponse> page = notificationInfoMapper.pageAdminNotice(
                 request.buildPage(), SecurityUtil.getUid(), request.getNotificationType(), request.getRead());
         return ok(Page.of(page));
     }

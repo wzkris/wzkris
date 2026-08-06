@@ -8,7 +8,7 @@ import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.remote.api.oauth2.OAuth2ClientRemoteApi;
 import com.wzkris.usercenter.remote.api.oauth2.request.OAuth2ClientQueryRequest;
-import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientResponse;
+import com.wzkris.usercenter.remote.api.oauth2.response.OAuth2ClientListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,23 +22,23 @@ public class OAuth2ClientRemoteApiImpl implements OAuth2ClientRemoteApi {
     private final OAuth2ClientMapper oAuth2ClientMapper;
 
     @Override
-    public Result<List<OAuth2ClientResponse>> queryList(OAuth2ClientQueryRequest request) {
+    public Result<List<OAuth2ClientListResponse>> queryList(OAuth2ClientQueryRequest request) {
         LambdaQueryWrapper<OAuth2ClientDO> eq = Wrappers.lambdaQuery(OAuth2ClientDO.class)
                 .eq(StringUtil.isNotBlank(request.getId()), OAuth2ClientDO::getId, request.getId())
                 .eq(StringUtil.isNotBlank(request.getClientId()), OAuth2ClientDO::getClientId, request.getClientId());
         List<OAuth2ClientDO> list = oAuth2ClientMapper.selectList(eq);
-        List<OAuth2ClientResponse> responseList = new ArrayList<>();
+        List<OAuth2ClientListResponse> responseList = new ArrayList<>();
         for (OAuth2ClientDO oauth2ClientDO : list) {
-            responseList.add(this.toOAuth2ClientResponse(oauth2ClientDO));
+            responseList.add(this.toOAuth2ClientListResponse(oauth2ClientDO));
         }
         return Result.ok(responseList);
     }
 
-    private OAuth2ClientResponse toOAuth2ClientResponse(OAuth2ClientDO oauth2ClientDO) {
+    private OAuth2ClientListResponse toOAuth2ClientListResponse(OAuth2ClientDO oauth2ClientDO) {
         if (oauth2ClientDO == null) {
             return null;
         }
-        OAuth2ClientResponse response = new OAuth2ClientResponse();
+        OAuth2ClientListResponse response = new OAuth2ClientListResponse();
         response.setId(oauth2ClientDO.getId());
         response.setClientId(oauth2ClientDO.getClientId());
         response.setClientSecret(oauth2ClientDO.getClientSecret());

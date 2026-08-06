@@ -12,7 +12,8 @@ import com.wzkris.usercenter.api.announcement.AnnouncementMngApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngPageRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngUpdateRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementMngResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngQueryResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,14 +36,14 @@ public class AnnouncementMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<AnnouncementMngResponse>> queryPage(@ParameterObject AnnouncementMngPageRequest request) {
+    public Result<Page<AnnouncementMngPageResponse>> queryPage(@ParameterObject AnnouncementMngPageRequest request) {
         return announcementMngApi.queryPage(request);
     }
 
     @Operation(summary = "详情")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<AnnouncementMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<AnnouncementMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return announcementMngApi.queryInfo(request);
     }
 

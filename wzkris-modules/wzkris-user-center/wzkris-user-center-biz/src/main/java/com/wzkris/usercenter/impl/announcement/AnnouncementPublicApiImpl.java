@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.announcement.AnnouncementPublicApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementPublicPageRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementPublicResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementPublicPageResponse;
 import com.wzkris.usercenter.domain.AnnouncementInfoDO;
 import com.wzkris.usercenter.enums.announcement.AnnouncementStatusEnum;
 import com.wzkris.usercenter.service.AnnouncementInfoService;
@@ -23,12 +23,12 @@ public class AnnouncementPublicApiImpl extends AbstractApi implements Announceme
     private final AnnouncementInfoService announcementInfoService;
 
     @Override
-    public Result<Page<AnnouncementPublicResponse>> queryPage(AnnouncementPublicPageRequest request) {
+    public Result<Page<AnnouncementPublicPageResponse>> queryPage(AnnouncementPublicPageRequest request) {
         LambdaQueryWrapper<AnnouncementInfoDO> lqw = Wrappers.lambdaQuery(AnnouncementInfoDO.class)
                 .eq(AnnouncementInfoDO::getStatus, AnnouncementStatusEnum.PUBLISH)
                 .orderByDesc(AnnouncementInfoDO::getId);
         IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), lqw);
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementPublicResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementPublicPageResponse.class)));
     }
 
 }

@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
-import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
-import com.wzkris.usercenter.api.tenant.response.TenantMngResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantInfoQueryResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngQueryResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantMngPageResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,7 +27,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_wallet_info w ON t.id = w.tenant_id
             ${ew.customSqlSegment}
             """)
-    IPage<TenantMngResponse> selectVOPage(IPage<TenantMngResponse> page, @Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
+    IPage<TenantMngPageResponse> selectVOPage(IPage<TenantMngPageResponse> page, @Param(Constants.WRAPPER) Wrapper<TenantInfoDO> wrapper);
 
     @Select("""
             SELECT t.*, p.package_name, p.member_num_limit, p.post_num_limit, w.balance
@@ -35,7 +36,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_wallet_info w ON t.id = w.tenant_id
             WHERE t.deleted = false AND t.id = #{tenantId}
             """)
-    TenantMngResponse selectMngVOById(Long tenantId);
+    TenantMngQueryResponse selectMngVOById(Long tenantId);
 
     @Select("""
             SELECT t.*, p.package_name
@@ -43,7 +44,7 @@ public interface TenantInfoMapper extends BaseMapperPlus<TenantInfoDO> {
             LEFT JOIN biz.tenant_package_info p ON t.package_id = p.id
             WHERE t.deleted = false AND t.id = #{tenantId}
             """)
-    TenantInfoResponse selectVOById(Long tenantId);
+    TenantInfoQueryResponse selectVOById(Long tenantId);
 
 }
 

@@ -5,11 +5,11 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.notification.request.NotificationInfoPageRequest;
 import com.wzkris.usercenter.api.notification.request.UnreadSizeQueryRequest;
-import com.wzkris.usercenter.api.notification.response.NotificationInfoResponse;
+import com.wzkris.usercenter.api.notification.response.NotificationInfoPageResponse;
 
 public interface TenantNotificationInfoApi {
 
-    Result<Page<NotificationInfoResponse>> queryPage(NotificationInfoPageRequest request);
+    Result<Page<NotificationInfoPageResponse>> queryPage(NotificationInfoPageRequest request);
 
     Result<Void> markRead(IdRequest request);
 

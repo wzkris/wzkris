@@ -18,7 +18,7 @@ package com.wzkris.auth.security.redis.service;
 import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.remote.interfaces.oauth2.IOAuth2ClientRemote;
 import com.wzkris.auth.remote.interfaces.oauth2.request.OAuth2ClientQueryRequest;
-import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientResponse;
+import com.wzkris.auth.remote.interfaces.oauth2.response.OAuth2ClientListResponse;
 import com.wzkris.auth.security.redis.entity.OAuth2RegisteredClient;
 import com.wzkris.auth.security.redis.repository.OAuth2RegisteredClientRepository;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -74,7 +74,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
         OAuth2ClientQueryRequest request = new OAuth2ClientQueryRequest();
         request.setId(id);
-        Result<List<OAuth2ClientResponse>> oauth2Clients = oAuth2ClientRemote.queryList(request);
+        Result<List<OAuth2ClientListResponse>> oauth2Clients = oAuth2ClientRemote.queryList(request);
         return checkAndSave(oauth2Clients);
     }
 
@@ -91,18 +91,18 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
 
         OAuth2ClientQueryRequest request = new OAuth2ClientQueryRequest();
         request.setClientId(clientId);
-        Result<List<OAuth2ClientResponse>> oauth2Clients = oAuth2ClientRemote.queryList(request);
+        Result<List<OAuth2ClientListResponse>> oauth2Clients = oAuth2ClientRemote.queryList(request);
         return checkAndSave(oauth2Clients);
     }
 
-    private RegisteredClient checkAndSave(Result<List<OAuth2ClientResponse>> listResult) {
+    private RegisteredClient checkAndSave(Result<List<OAuth2ClientListResponse>> listResult) {
         if (!ResultUtil.check(listResult) || CollectionUtils.isEmpty(listResult.getData()) || listResult.getData().size() > 1) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(
                     new OAuth2Error(OAuth2ErrorCodes.INVALID_CLIENT, I18nUtil.message("oauth2.client.invalid"), null),
                     null);
         }
-        OAuth2ClientResponse oauth2Client = listResult.getData().getFirst();
+        OAuth2ClientListResponse oauth2Client = listResult.getData().getFirst();
         if (oauth2Client == null || !CommonConstants.STATUS_ENABLE.equals(oauth2Client.getStatus())) {
             // 兼容org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter#sendErrorResponse方法强转异常
             throw new OAuth2AuthorizationCodeRequestAuthenticationException(
@@ -117,7 +117,7 @@ public class RedisRegisteredClientRepository implements RegisteredClientReposito
         return registeredClient;
     }
 
-    private RegisteredClient buildRegisteredClient(OAuth2ClientResponse oauth2Client) {
+    private RegisteredClient buildRegisteredClient(OAuth2ClientListResponse oauth2Client) {
         RegisteredClient.Builder builder = RegisteredClient.withId(String.valueOf(oauth2Client.getId()))
                 .clientId(oauth2Client.getClientId())
                 .clientSecret(oauth2Client.getClientSecret())

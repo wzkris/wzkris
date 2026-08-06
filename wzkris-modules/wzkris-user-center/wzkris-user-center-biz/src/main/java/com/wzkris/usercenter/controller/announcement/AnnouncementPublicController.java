@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.announcement.AnnouncementPublicApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementPublicPageRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementPublicResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementPublicPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class AnnouncementPublicController {
 
     @Operation(summary = "公告分页")
     @GetMapping("/query-page")
-    public Result<Page<AnnouncementPublicResponse>> queryPage(@ParameterObject AnnouncementPublicPageRequest request) {
+    public Result<Page<AnnouncementPublicPageResponse>> queryPage(@ParameterObject AnnouncementPublicPageRequest request) {
         return announcementPublicApi.queryPage(request);
     }
 

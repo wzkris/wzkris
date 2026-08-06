@@ -4,7 +4,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.tenantlog.operate.TenantOperateLogInfoApi;
 import com.wzkris.usercenter.api.tenantlog.operate.request.TenantOperateLogInfoPageRequest;
-import com.wzkris.usercenter.api.tenantlog.operate.response.TenantOperateLogInfoResponse;
+import com.wzkris.usercenter.api.tenantlog.operate.response.TenantOperateLogInfoPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class TenantOperateLogInfoController {
 
     @Operation(summary = "分页")
     @GetMapping("/query-page")
-    public Result<Page<TenantOperateLogInfoResponse>> queryPage(@ParameterObject TenantOperateLogInfoPageRequest request) {
+    public Result<Page<TenantOperateLogInfoPageResponse>> queryPage(@ParameterObject TenantOperateLogInfoPageRequest request) {
         return tenantOperateLogInfoApi.queryPage(request);
     }
 

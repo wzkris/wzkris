@@ -9,8 +9,8 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
 import com.wzkris.usercenter.api.customerwallet.request.CustomerWalletRecordPageRequest;
-import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoResponse;
-import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordResponse;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoQueryResponse;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordInfoPageResponse;
 import com.wzkris.usercenter.domain.CustomerWalletRecordDO;
 import com.wzkris.usercenter.mapper.CustomerWalletRecordMapper;
 import com.wzkris.usercenter.service.CustomerWalletInfoService;
@@ -28,14 +28,14 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
     private final CustomerWalletRecordMapper customerWalletRecordMapper;
 
     @Override
-    public Result<CustomerWalletInfoResponse> queryInfo() {
-        return ok(customerWalletInfoService.getById2VO(SecurityUtil.getUid(), CustomerWalletInfoResponse.class));
+    public Result<CustomerWalletInfoQueryResponse> queryInfo() {
+        return ok(customerWalletInfoService.getById2VO(SecurityUtil.getUid(), CustomerWalletInfoQueryResponse.class));
     }
 
     @Override
-    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(CustomerWalletRecordPageRequest request) {
+    public Result<Page<CustomerWalletRecordInfoPageResponse>> queryRecordPage(CustomerWalletRecordPageRequest request) {
         IPage<CustomerWalletRecordDO> page = customerWalletRecordMapper.selectPage(request.buildPage(), this.buildWalletQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerWalletRecordResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerWalletRecordInfoPageResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerWalletRecordDO> buildWalletQueryWrapper(CustomerWalletRecordPageRequest request) {

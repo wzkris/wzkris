@@ -3,10 +3,11 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
 import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
 import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
-import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
+import com.wzkris.auth.remote.interfaces.customer.response.CustomerQueryResponse;
+import com.wzkris.auth.remote.interfaces.customer.response.CustomerListResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -34,14 +35,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoginCustomerUserServiceImpl implements LoginUserService {
 
-    private final ICustomerInfoRemote customerInfoRemote;
+    private final ICustomerRemote customerRemote;
 
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         CustomerQueryRequest request = new CustomerQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<List<CustomerResponse>> listResult = customerInfoRemote.queryList(request);
+        Result<List<CustomerListResponse>> listResult = customerRemote.queryList(request);
 
         if (!ResultUtil.check(listResult)) {
             return null;
@@ -51,12 +52,12 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        CustomerResponse CustomerResponse = listResult.getData().getFirst();
+        CustomerListResponse customerResponse = listResult.getData().getFirst();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse);
+            return this.buildAuthenticationToken(customerResponse);
         } catch (Exception e) {
-            this.recordFailedLog(CustomerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
+            this.recordFailedLog(customerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -67,17 +68,17 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         WexcxLoginRequest wexcxLoginRequest = new WexcxLoginRequest();
         wexcxLoginRequest.setWxCode(wxCode);
         wexcxLoginRequest.setPhoneCode(phoneCode);
-        Result<CustomerResponse> customerResult = customerInfoRemote.wexcxLogin(wexcxLoginRequest);
+        Result<CustomerQueryResponse> customerResult = customerRemote.wexcxLogin(wexcxLoginRequest);
 
         if (!ResultUtil.check(customerResult)) {
             return null;
         }
-        CustomerResponse CustomerResponse = customerResult.getData();
+        CustomerQueryResponse customerResponse = customerResult.getData();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse);
+            return this.buildAuthenticationToken(customerResponse);
         } catch (Exception e) {
-            this.recordFailedLog(CustomerResponse, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
+            this.recordFailedLog(customerResponse, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -90,7 +91,7 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private UsernamePasswordAuthenticationToken buildAuthenticationToken(CustomerResponse customerResponse) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(CustomerQueryResponse customerResponse) {
         // 校验用户状态
         this.checkAccount(customerResponse);
 
@@ -107,20 +108,20 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     /**
      * 校验用户账号
      */
-    private void checkAccount(CustomerResponse CustomerResponse) {
-        if (StringUtil.equals(CustomerResponse.getStatus(), CommonConstants.STATUS_DISABLE)) {
+    private void checkAccount(CustomerQueryResponse customerResponse) {
+        if (StringUtil.equals(customerResponse.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 
-    private void recordFailedLog(CustomerResponse CustomerResponse, String loginType, String errorMsg) {
+    private void recordFailedLog(CustomerQueryResponse customerResponse, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(CustomerResponse.getId());
+        loginUser.setUid(customerResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setName(String.valueOf(CustomerResponse.getId()));
+        loginUser.setName(String.valueOf(customerResponse.getId()));
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
@@ -134,4 +135,3 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     }
 
 }
-

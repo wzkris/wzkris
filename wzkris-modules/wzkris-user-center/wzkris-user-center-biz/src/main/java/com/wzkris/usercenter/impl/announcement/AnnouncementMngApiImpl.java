@@ -13,7 +13,8 @@ import com.wzkris.usercenter.api.announcement.AnnouncementMngApi;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngPageRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngUpdateRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementMngResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngQueryResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngPageResponse;
 import com.wzkris.usercenter.domain.AnnouncementInfoDO;
 import com.wzkris.usercenter.service.AnnouncementInfoService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,9 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     private final AnnouncementInfoService announcementInfoService;
 
     @Override
-    public Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request) {
+    public Result<Page<AnnouncementMngPageResponse>> queryPage(AnnouncementMngPageRequest request) {
         IPage<AnnouncementInfoDO> page = announcementInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AnnouncementMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<AnnouncementInfoDO> buildQueryWrapper(AnnouncementMngPageRequest request) {
@@ -39,9 +40,9 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     }
 
     @Override
-    public Result<AnnouncementMngResponse> queryInfo(IdRequest request) {
+    public Result<AnnouncementMngQueryResponse> queryInfo(IdRequest request) {
         Long announcementId = request.getId();
-        return ok(BeanCopierUtil.copy(announcementInfoService.getById(announcementId), AnnouncementMngResponse.class));
+        return ok(BeanCopierUtil.copy(announcementInfoService.getById(announcementId), AnnouncementMngQueryResponse.class));
     }
 
     @Override

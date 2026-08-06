@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.customer;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.api.customer.CustomerInfoApi;
 import com.wzkris.usercenter.api.customer.request.CustomerInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.customer.response.CustomerInfoResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerInfoQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class CustomerInfoController {
     @Operation(summary = "获取信息")
     @GetMapping("/query-info")
     @Cacheable(value = info_prefix + "#3_600_000", key = "@uch.getLoginUser().getUid()", sync = true)
-    public Result<CustomerInfoResponse> queryInfo() {
+    public Result<CustomerInfoQueryResponse> queryInfo() {
         return customerInfoApi.queryInfo();
     }
 

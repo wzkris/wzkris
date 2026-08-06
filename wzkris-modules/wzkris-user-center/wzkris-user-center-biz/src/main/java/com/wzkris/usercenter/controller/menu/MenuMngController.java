@@ -10,7 +10,8 @@ import com.wzkris.usercenter.api.menu.MenuMngApi;
 import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
 import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
-import com.wzkris.usercenter.api.menu.response.MenuMngResponse;
+import com.wzkris.usercenter.api.menu.response.MenuMngQueryResponse;
+import com.wzkris.usercenter.api.menu.response.MenuMngListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,14 +35,14 @@ public class MenuMngController {
     @Operation(summary = "菜单列表（无分页）")
     @GetMapping("/query-list")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
-    public Result<List<MenuMngResponse>> queryList(@ParameterObject MenuMngTreeRequest request) {
+    public Result<List<MenuMngListResponse>> queryList(@ParameterObject MenuMngTreeRequest request) {
         return menuMngApi.queryList(request);
     }
 
     @Operation(summary = "菜单详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
-    public Result<MenuMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<MenuMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return menuMngApi.queryInfo(request);
     }
 

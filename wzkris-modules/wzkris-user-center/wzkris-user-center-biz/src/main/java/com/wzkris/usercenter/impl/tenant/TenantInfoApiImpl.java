@@ -6,7 +6,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenant.TenantInfoApi;
 import com.wzkris.usercenter.api.tenant.request.TenantInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.tenant.response.TenantInfoResponse;
+import com.wzkris.usercenter.api.tenant.response.TenantInfoQueryResponse;
 import com.wzkris.usercenter.domain.TenantInfoDO;
 import com.wzkris.usercenter.mapper.TenantInfoMapper;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
@@ -26,7 +26,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<TenantInfoResponse> queryInfo() {
+    public Result<TenantInfoQueryResponse> queryInfo() {
         return ok(tenantInfoMapper.selectVOById(SecurityUtil.getTenantId()));
     }
 

@@ -6,7 +6,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.adminlog.login.AdminLoginlogMngApi;
 import com.wzkris.usercenter.api.adminlog.login.request.AdminLoginLogMngPageRequest;
-import com.wzkris.usercenter.api.adminlog.login.response.AdminLoginLogMngResponse;
+import com.wzkris.usercenter.api.adminlog.login.response.AdminLoginLogMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class AdminLoginlogMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "system-mod:admin-loginlog-mng:page")
-    public Result<Page<AdminLoginLogMngResponse>> queryPage(@ParameterObject AdminLoginLogMngPageRequest request) {
+    public Result<Page<AdminLoginLogMngPageResponse>> queryPage(@ParameterObject AdminLoginLogMngPageRequest request) {
         return adminLoginlogMngApi.queryPage(request);
     }
 

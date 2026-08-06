@@ -7,7 +7,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenantwallet.TenantWalletMngApi;
 import com.wzkris.usercenter.api.tenantwallet.request.TenantWalletRecordMngPageRequest;
-import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordResponse;
+import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordMngPageResponse;
 import com.wzkris.usercenter.domain.TenantWalletRecordDO;
 import com.wzkris.usercenter.mapper.TenantWalletRecordMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +24,9 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
     private final TenantWalletRecordMapper tenantWalletRecordMapper;
 
     @Override
-    public Result<Page<TenantWalletRecordResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
+    public Result<Page<TenantWalletRecordMngPageResponse>> queryRecordPage(TenantWalletRecordMngPageRequest request) {
         IPage<TenantWalletRecordDO> page = tenantWalletRecordMapper.selectPage(request.buildPage(), this.buildWalletQueryWrapper(request));
-        List<TenantWalletRecordResponse> list = page.getRecords().stream().map(this::toResponse).toList();
+        List<TenantWalletRecordMngPageResponse> list = page.getRecords().stream().map(this::toResponse).toList();
         return ok(Page.of(page, list));
     }
 
@@ -40,8 +40,8 @@ public class TenantWalletMngApiImpl extends AbstractApi implements TenantWalletM
                 .orderByDesc(TenantWalletRecordDO::getId);
     }
 
-    private TenantWalletRecordResponse toResponse(TenantWalletRecordDO recordDO) {
-        TenantWalletRecordResponse response = new TenantWalletRecordResponse();
+    private TenantWalletRecordMngPageResponse toResponse(TenantWalletRecordDO recordDO) {
+        TenantWalletRecordMngPageResponse response = new TenantWalletRecordMngPageResponse();
         response.setId(recordDO.getId());
         response.setTenantId(recordDO.getTenantId());
         response.setAmount(recordDO.getAmount());

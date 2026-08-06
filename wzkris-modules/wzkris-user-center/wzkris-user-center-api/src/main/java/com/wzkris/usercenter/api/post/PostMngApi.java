@@ -7,14 +7,15 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.post.request.PostMngPageRequest;
 import com.wzkris.usercenter.api.post.request.PostMngSaveRequest;
 import com.wzkris.usercenter.api.post.request.PostMngUpdateRequest;
-import com.wzkris.usercenter.api.post.response.PostMngResponse;
+import com.wzkris.usercenter.api.post.response.PostMngQueryResponse;
+import com.wzkris.usercenter.api.post.response.PostMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
 
 public interface PostMngApi {
 
-    Result<Page<PostMngResponse>> queryPage(PostMngPageRequest request);
+    Result<Page<PostMngPageResponse>> queryPage(PostMngPageRequest request);
 
-    Result<PostMngResponse> queryInfo(IdRequest request);
+    Result<PostMngQueryResponse> queryInfo(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 

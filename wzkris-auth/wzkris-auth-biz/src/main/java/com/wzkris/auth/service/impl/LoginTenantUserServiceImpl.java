@@ -3,11 +3,11 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
+import com.wzkris.auth.remote.interfaces.member.IMemberRemote;
 import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.member.request.MemberQueryRequest;
-import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
-import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
+import com.wzkris.auth.remote.interfaces.member.response.MemberListResponse;
+import com.wzkris.auth.remote.interfaces.member.response.MemberQueryResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -16,6 +16,7 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -39,7 +40,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoginTenantUserServiceImpl implements LoginUserService {
 
-    private final IMemberInfoRemote memberInfoRemote;
+    private final IMemberRemote memberRemote;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -48,7 +49,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         MemberQueryRequest request = new MemberQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<List<MemberInfoResponse>> memberResult = memberInfoRemote.queryList(request);
+        Result<List<MemberListResponse>> memberResult = memberRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -58,7 +59,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        MemberInfoResponse memberResp = memberResult.getData().getFirst();
+        MemberQueryResponse memberResp = memberResult.getData().getFirst();
 
         try {
             return this.buildAuthenticationToken(memberResp);
@@ -73,7 +74,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         MemberQueryRequest request = new MemberQueryRequest();
         request.setUsername(username);
-        Result<List<MemberInfoResponse>> memberResult = memberInfoRemote.queryList(request);
+        Result<List<MemberListResponse>> memberResult = memberRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
@@ -83,7 +84,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        MemberInfoResponse memberResp = memberResult.getData().getFirst();
+        MemberQueryResponse memberResp = memberResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, memberResp.getPassword())) {
@@ -106,31 +107,29 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private UsernamePasswordAuthenticationToken buildAuthenticationToken(MemberInfoResponse memberInfoResponse) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(MemberQueryResponse userResp) {
         // 校验用户状态
-        this.checkAccount(memberInfoResponse);
+        this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.queryPermission(
-                new MemberPermsQueryRequest(memberInfoResponse.getId(), memberInfoResponse.getTenantId()));
-        if (!ResultUtil.check(permissionsResult)) {
+        Result<List<UserRole>> userRoleR = memberRemote.queryPermission(
+                new MemberPermsQueryRequest(userResp.getId(), userResp.getTenantId()));
+        if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(
-                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
-                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+                    BizBaseCodeEnum.API_REQUEST_ERROR.value(), userRoleR.getMessage());
         }
-        MemberPermissionResponse permissions = permissionsResult.getData();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(memberInfoResponse.getId());
+        loginUser.setUid(userResp.getId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setName(memberInfoResponse.getUsername());
-        loginUser.setTenantId(memberInfoResponse.getTenantId());
+        loginUser.setName(userResp.getUsername());
+        loginUser.setTenantId(userResp.getTenantId());
 
         // 租户管理员通过角色名判断
-        boolean isSuperUser = permissions.getRoles() != null && permissions.getRoles().stream()
+        boolean isSuperUser = userRoleR.getData().stream()
                 .anyMatch(r -> SecurityConstants.SUPER_ADMIN_NAME.equals(r.getName()));
 
-        RoleContext roleContext = new RoleContext(permissions.getRoles(), isSuperUser);
+        RoleContext roleContext = new RoleContext(userRoleR.getData(), isSuperUser);
 
         return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
@@ -138,7 +137,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     /**
      * 校验用户账号
      */
-    private void checkAccount(MemberInfoResponse memberResp) {
+    private void checkAccount(MemberQueryResponse memberResp) {
         if (StringUtil.equals(memberResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
@@ -157,7 +156,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(MemberInfoResponse memberResp, String loginType, String errorMsg) {
+    private void recordFailedLog(MemberQueryResponse memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();

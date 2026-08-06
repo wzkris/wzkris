@@ -7,13 +7,14 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngPageRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngSaveRequest;
 import com.wzkris.usercenter.api.announcement.request.AnnouncementMngUpdateRequest;
-import com.wzkris.usercenter.api.announcement.response.AnnouncementMngResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngQueryResponse;
+import com.wzkris.usercenter.api.announcement.response.AnnouncementMngPageResponse;
 
 public interface AnnouncementMngApi {
 
-    Result<Page<AnnouncementMngResponse>> queryPage(AnnouncementMngPageRequest request);
+    Result<Page<AnnouncementMngPageResponse>> queryPage(AnnouncementMngPageRequest request);
 
-    Result<AnnouncementMngResponse> queryInfo(IdRequest request);
+    Result<AnnouncementMngQueryResponse> queryInfo(IdRequest request);
 
     Result<Void> save(AnnouncementMngSaveRequest request);
 

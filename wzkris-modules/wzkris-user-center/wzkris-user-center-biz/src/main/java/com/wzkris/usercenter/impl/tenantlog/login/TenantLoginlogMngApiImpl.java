@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.tenantlog.login.TenantLoginlogMngApi;
 import com.wzkris.usercenter.api.tenantlog.login.request.TenantLoginLogMngPageRequest;
-import com.wzkris.usercenter.api.tenantlog.login.response.TenantLoginLogMngResponse;
+import com.wzkris.usercenter.api.tenantlog.login.response.TenantLoginLogMngPageResponse;
 import com.wzkris.usercenter.domain.TenantLoginLogDO;
 import com.wzkris.usercenter.service.TenantLoginLogService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class TenantLoginlogMngApiImpl
     private final TenantLoginLogService tenantLoginLogService;
 
     @Override
-    public Result<Page<TenantLoginLogMngResponse>> queryPage(TenantLoginLogMngPageRequest request) {
+    public Result<Page<TenantLoginLogMngPageResponse>> queryPage(TenantLoginLogMngPageRequest request) {
         IPage<TenantLoginLogDO> page = tenantLoginLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), TenantLoginLogMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), TenantLoginLogMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogMngPageRequest request) {

@@ -8,7 +8,7 @@ import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.member.MemberInfoApi;
 import com.wzkris.usercenter.api.member.request.MemberInfoBasicUpdateRequest;
-import com.wzkris.usercenter.api.member.response.MemberInfoResponse;
+import com.wzkris.usercenter.api.member.response.MemberInfoQueryResponse;
 import com.wzkris.usercenter.domain.MemberInfoDO;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.usercenter.remote.interfaces.captcha.request.CaptchaCheckRequest;
@@ -35,10 +35,10 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<MemberInfoResponse> queryInfo() {
+    public Result<MemberInfoQueryResponse> queryInfo() {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         MemberInfoDO member = memberInfoService.getById(loginUser.getUid());
-        MemberInfoResponse memberInfoVO = new MemberInfoResponse();
+        MemberInfoQueryResponse memberInfoVO = new MemberInfoQueryResponse();
         memberInfoVO.setAdmin(SecurityUtil.isSuperUser());
         memberInfoVO.setUsername(member.getUsername());
         memberInfoVO.setAuthorities(SecurityUtil.getPermission());

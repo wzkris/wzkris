@@ -12,7 +12,8 @@ import com.wzkris.usercenter.api.oauth2.request.ClientSecretUpdateRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngPageRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngSaveRequest;
 import com.wzkris.usercenter.api.oauth2.request.OAuth2ClientMngUpdateRequest;
-import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngResponse;
+import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngQueryResponse;
+import com.wzkris.usercenter.api.oauth2.response.OAuth2ClientMngPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,14 +34,14 @@ public class OAuth2ClientMngController {
     @Operation(summary = "分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<OAuth2ClientMngResponse>> queryPage(@ParameterObject OAuth2ClientMngPageRequest request) {
+    public Result<Page<OAuth2ClientMngPageResponse>> queryPage(@ParameterObject OAuth2ClientMngPageRequest request) {
         return oAuth2ClientMngApi.queryPage(request);
     }
 
     @Operation(summary = "根据id查详情")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<OAuth2ClientMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<OAuth2ClientMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return oAuth2ClientMngApi.queryInfo(request);
     }
 

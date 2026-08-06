@@ -3,11 +3,10 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.interfaces.admin.IAdminRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
-import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
-import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
+import com.wzkris.auth.remote.interfaces.admin.response.AdminListResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
@@ -16,6 +15,7 @@ import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
@@ -38,7 +38,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LoginAdminUserServiceImpl implements LoginUserService {
 
-    private final IAdminInfoRemote adminInfoRemote;
+    private final IAdminRemote adminRemote;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -47,7 +47,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
         AdminQueryRequest request = new AdminQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<List<AdminInfoResponse>> userResult = adminInfoRemote.queryList(request);
+        Result<List<AdminListResponse>> userResult = adminRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -57,7 +57,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        AdminInfoResponse userResp = userResult.getData().getFirst();
+        AdminListResponse userResp = userResult.getData().getFirst();
 
         try {
             return this.buildAuthenticationToken(userResp);
@@ -72,7 +72,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
         AdminQueryRequest request = new AdminQueryRequest();
         request.setUsername(username);
-        Result<List<AdminInfoResponse>> userResult = adminInfoRemote.queryList(request);
+        Result<List<AdminListResponse>> userResult = adminRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
@@ -82,7 +82,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        AdminInfoResponse userResp = userResult.getData().getFirst();
+        AdminListResponse userResp = userResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
@@ -105,25 +105,24 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private UsernamePasswordAuthenticationToken buildAuthenticationToken(AdminInfoResponse adminInfoResponse) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(AdminListResponse userResp) {
         // 校验用户状态
-        this.checkAccount(adminInfoResponse);
+        this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.queryPermission(
-                new AdminPermsQueryRequest(adminInfoResponse.getId(), adminInfoResponse.getDeptId()));
-        if (!ResultUtil.check(permissionsResult)) {
+        Result<List<UserRole>> userRoleR = adminRemote.queryPermission(
+                new AdminPermsQueryRequest(userResp.getId(), userResp.getDeptId()));
+        if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }
-        AdminPermissionResponse permissions = permissionsResult.getData();
 
         DefaultLoginUser loginUser = new DefaultLoginUser();
-        loginUser.setUid(adminInfoResponse.getId());
+        loginUser.setUid(userResp.getId());
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setName(adminInfoResponse.getUsername());
+        loginUser.setName(userResp.getUsername());
 
-        RoleContext roleContext = new RoleContext(permissions.getRoles(),
-                SecurityConstants.SUPER_ADMIN_ID.equals(adminInfoResponse.getId()));
+        RoleContext roleContext = new RoleContext(userRoleR.getData(),
+                SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getId()));
 
         return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
@@ -131,7 +130,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     /**
      * 校验用户账号
      */
-    private void checkAccount(AdminInfoResponse userResp) {
+    private void checkAccount(AdminListResponse userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
@@ -141,7 +140,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
+    private void recordFailedLog(AdminListResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(userResp.getId());

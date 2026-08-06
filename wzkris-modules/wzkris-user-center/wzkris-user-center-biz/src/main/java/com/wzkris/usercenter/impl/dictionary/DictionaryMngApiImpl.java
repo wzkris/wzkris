@@ -14,7 +14,8 @@ import com.wzkris.usercenter.api.dictionary.request.DictionaryMngPageRequest;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngSaveRequest;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryMngUpdateRequest;
 import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
-import com.wzkris.usercenter.api.dictionary.response.DictionaryMngResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryMngQueryResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryMngPageResponse;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.mapper.DictionaryInfoMapper;
 import com.wzkris.usercenter.service.DictionaryInfoService;
@@ -32,10 +33,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     private final DictionaryInfoService dictionaryInfoService;
 
     @Override
-    public Result<Page<DictionaryMngResponse>> queryPage(DictionaryMngPageRequest request) {
+    public Result<Page<DictionaryMngPageResponse>> queryPage(DictionaryMngPageRequest request) {
         LambdaQueryWrapper<DictionaryInfoDO> lqw = this.buildQueryWrapper(request);
         IPage<DictionaryInfoDO> page = dictionaryInfoService.page(request.buildPage(), lqw);
-        List<DictionaryMngResponse> result = page.getRecords().stream().map(this::toMngResponse).toList();
+        List<DictionaryMngPageResponse> result = page.getRecords().stream().map(this::toPageResponse).toList();
         return ok(Page.of(page, result));
     }
 
@@ -47,10 +48,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     }
 
     @Override
-    public Result<DictionaryMngResponse> queryInfo(IdRequest request) {
+    public Result<DictionaryMngQueryResponse> queryInfo(IdRequest request) {
         Long dictId = request.getId();
         DictionaryInfoDO source = dictionaryInfoService.getById(dictId);
-        return ok(toMngResponse(source));
+        return ok(toQueryResponse(source));
     }
 
     @Override
@@ -81,22 +82,35 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
         return ok();
     }
 
-    private DictionaryMngResponse toMngResponse(DictionaryInfoDO source) {
+    private DictionaryMngPageResponse toPageResponse(DictionaryInfoDO source) {
         if (source == null) {
             return null;
         }
-        DictionaryMngResponse target = BeanCopierUtil.copy(source, DictionaryMngResponse.class);
+        DictionaryMngPageResponse target = BeanCopierUtil.copy(source, DictionaryMngPageResponse.class);
+        copyDictValue(source, target);
+        return target;
+    }
+
+    private DictionaryMngQueryResponse toQueryResponse(DictionaryInfoDO source) {
+        if (source == null) {
+            return null;
+        }
+        DictionaryMngQueryResponse target = BeanCopierUtil.copy(source, DictionaryMngQueryResponse.class);
+        copyDictValue(source, target);
+        return target;
+    }
+
+    private void copyDictValue(DictionaryInfoDO source, DictionaryMngQueryResponse target) {
         DictionaryInfoDO.DictData[] sourceArray = source.getDictValue();
         if (sourceArray == null) {
             target.setDictValue(null);
-            return target;
+            return;
         }
         DictionaryDataResponse[] targetArray = new DictionaryDataResponse[sourceArray.length];
         for (int i = 0; i < sourceArray.length; i++) {
             targetArray[i] = BeanCopierUtil.copy(sourceArray[i], DictionaryDataResponse.class);
         }
         target.setDictValue(targetArray);
-        return target;
     }
 
     private DictionaryInfoDO toDictInfoDO(DictionaryMngSaveRequest source) {

@@ -3,7 +3,7 @@ package com.wzkris.usercenter.controller.dictionary;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.api.dictionary.DictionaryPublicApi;
 import com.wzkris.usercenter.api.dictionary.request.DictionaryPublicListRequest;
-import com.wzkris.usercenter.api.dictionary.response.DictionaryDataResponse;
+import com.wzkris.usercenter.api.dictionary.response.DictionaryPublicListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class DictionaryPublicController {
 
     @Operation(summary = "查询字典")
     @GetMapping("/{dictKey}")
-    public Result<List<DictionaryDataResponse>> queryValue(@ParameterObject DictionaryPublicListRequest request) {
+    public Result<List<DictionaryPublicListResponse>> queryValue(@ParameterObject DictionaryPublicListRequest request) {
         return dictionaryPublicApi.queryValue(request);
     }
 

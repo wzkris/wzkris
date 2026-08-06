@@ -5,15 +5,16 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
-import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngQueryResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngListResponse;
 
 import java.util.List;
 
 public interface DeptMngApi {
 
-    Result<List<DeptMngResponse>> queryList(DeptMngTreeRequest request);
+    Result<List<DeptMngListResponse>> queryList(DeptMngTreeRequest request);
 
-    Result<DeptMngResponse> queryInfo(IdRequest request);
+    Result<DeptMngQueryResponse> queryInfo(IdRequest request);
 
     Result<?> save(DeptMngSaveRequest request);
 

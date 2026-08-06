@@ -9,7 +9,7 @@ import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.adminlog.operate.AdminOperateLogMngApi;
 import com.wzkris.usercenter.api.adminlog.operate.request.AdminOperateLogMngPageRequest;
-import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogMngResponse;
+import com.wzkris.usercenter.api.adminlog.operate.response.AdminOperateLogMngPageResponse;
 import com.wzkris.usercenter.domain.AdminOperateLogDO;
 import com.wzkris.usercenter.service.AdminOperateLogService;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class AdminOperateLogMngApiImpl
     private final AdminOperateLogService adminOperateLogService;
 
     @Override
-    public Result<Page<AdminOperateLogMngResponse>> queryPage(AdminOperateLogMngPageRequest request) {
+    public Result<Page<AdminOperateLogMngPageResponse>> queryPage(AdminOperateLogMngPageRequest request) {
         IPage<AdminOperateLogDO> page = adminOperateLogService.page(request.buildPage(), buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminOperateLogMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), AdminOperateLogMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<AdminOperateLogDO> buildQueryWrapper(AdminOperateLogMngPageRequest request) {

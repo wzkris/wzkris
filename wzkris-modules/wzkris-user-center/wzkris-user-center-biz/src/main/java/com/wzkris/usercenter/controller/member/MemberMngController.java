@@ -11,7 +11,8 @@ import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.member.MemberMngApi;
 import com.wzkris.usercenter.api.member.request.*;
-import com.wzkris.usercenter.api.member.response.MemberMngResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngQueryResponse;
+import com.wzkris.usercenter.api.member.response.MemberMngPageResponse;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,14 +35,14 @@ public class MemberMngController {
     @Operation(summary = "分页列表")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:member-mng:page")
-    public Result<Page<MemberMngResponse>> queryPage(@ParameterObject MemberMngPageRequest request) {
+    public Result<Page<MemberMngPageResponse>> queryPage(@ParameterObject MemberMngPageRequest request) {
         return memberMngApi.queryPage(request);
     }
 
     @Operation(summary = "成员详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:member-mng:page")
-    public Result<MemberMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<MemberMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return memberMngApi.queryInfo(request);
     }
 

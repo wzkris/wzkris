@@ -11,7 +11,8 @@ import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.common.security.enums.CheckMode;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
 import com.wzkris.usercenter.api.admin.request.*;
-import com.wzkris.usercenter.api.admin.response.AdminMngResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngQueryResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
 import com.wzkris.usercenter.request.PwdResetRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
@@ -40,7 +41,7 @@ public class AdminMngController {
     @Operation(summary = "管理员分页列表")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<AdminMngResponse>> queryPage(@ParameterObject AdminMngPageRequest request) {
+    public Result<Page<AdminMngPageResponse>> queryPage(@ParameterObject AdminMngPageRequest request) {
         return adminMngApi.queryPage(request);
     }
 
@@ -65,7 +66,7 @@ public class AdminMngController {
     @Operation(summary = "管理员详细信息")
     @GetMapping("/query-info/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<AdminMngResponse> queryInfo(@ParameterObject IdRequest request) {
+    public Result<AdminMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
         return adminMngApi.queryInfo(request);
     }
 

@@ -6,7 +6,7 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.usercenter.api.notification.TenantNotificationInfoApi;
 import com.wzkris.usercenter.api.notification.request.NotificationInfoPageRequest;
 import com.wzkris.usercenter.api.notification.request.UnreadSizeQueryRequest;
-import com.wzkris.usercenter.api.notification.response.NotificationInfoResponse;
+import com.wzkris.usercenter.api.notification.response.NotificationInfoPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,7 +24,7 @@ public class TenantNotificationInfoController {
 
     @Operation(summary = "通知分页")
     @GetMapping("/query-page")
-    public Result<Page<NotificationInfoResponse>> queryPage(@ParameterObject NotificationInfoPageRequest request) {
+    public Result<Page<NotificationInfoPageResponse>> queryPage(@ParameterObject NotificationInfoPageRequest request) {
         return tenantNotificationInfoApi.queryPage(request);
     }
 

@@ -11,7 +11,8 @@ import com.wzkris.usercenter.api.dept.DeptMngApi;
 import com.wzkris.usercenter.api.dept.request.DeptMngSaveRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngTreeRequest;
 import com.wzkris.usercenter.api.dept.request.DeptMngUpdateRequest;
-import com.wzkris.usercenter.api.dept.response.DeptMngResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngQueryResponse;
+import com.wzkris.usercenter.api.dept.response.DeptMngListResponse;
 import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.enums.dept.DeptStatusEnum;
 import com.wzkris.usercenter.service.DeptInfoService;
@@ -29,9 +30,9 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     private final DeptInfoService deptInfoService;
 
     @Override
-    public Result<List<DeptMngResponse>> queryList(DeptMngTreeRequest request) {
+    public Result<List<DeptMngListResponse>> queryList(DeptMngTreeRequest request) {
         List<DeptInfoDO> depts = deptInfoService.selectLists(buildQueryWrapper(request));
-        return ok(BeanCopierUtil.copyList(depts, DeptMngResponse.class));
+        return ok(BeanCopierUtil.copyList(depts, DeptMngListResponse.class));
     }
 
     private LambdaQueryWrapper<DeptInfoDO> buildQueryWrapper(DeptMngTreeRequest request) {
@@ -49,12 +50,12 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     }
 
     @Override
-    public Result<DeptMngResponse> queryInfo(IdRequest request) {
+    public Result<DeptMngQueryResponse> queryInfo(IdRequest request) {
         Long deptId = request.getId();
         if (!deptInfoService.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanCopierUtil.copy(deptInfoService.getById(deptId), DeptMngResponse.class));
+        return ok(BeanCopierUtil.copy(deptInfoService.getById(deptId), DeptMngQueryResponse.class));
     }
 
     @Override

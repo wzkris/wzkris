@@ -11,8 +11,9 @@ import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
 import com.wzkris.usercenter.api.customer.request.CustomerMngPageRequest;
-import com.wzkris.usercenter.api.customer.response.CustomerInfoExportResponse;
-import com.wzkris.usercenter.api.customer.response.CustomerMngResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngExportResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngQueryResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngPageResponse;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,9 +29,9 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     private final CustomerInfoService customerInfoService;
 
     @Override
-    public Result<Page<CustomerMngResponse>> queryPage(CustomerMngPageRequest request) {
+    public Result<Page<CustomerMngPageResponse>> queryPage(CustomerMngPageRequest request) {
         IPage<CustomerInfoDO> page = customerInfoService.page(request.buildPage(), this.buildQueryWrapper(request));
-        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerMngResponse.class)));
+        return ok(Page.of(page, BeanCopierUtil.copyList(page.getRecords(), CustomerMngPageResponse.class)));
     }
 
     private LambdaQueryWrapper<CustomerInfoDO> buildQueryWrapper(CustomerMngPageRequest request) {
@@ -45,15 +46,15 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     }
 
     @Override
-    public Result<CustomerMngResponse> queryInfo(IdRequest request) {
-        return ok(BeanCopierUtil.copy(customerInfoService.getById(request.getId()), CustomerMngResponse.class));
+    public Result<CustomerMngQueryResponse> queryInfo(IdRequest request) {
+        return ok(BeanCopierUtil.copy(customerInfoService.getById(request.getId()), CustomerMngQueryResponse.class));
     }
 
     @Override
     public void export(HttpServletResponse response, CustomerMngPageRequest request) {
         List<CustomerInfoDO> list = customerInfoService.list(this.buildQueryWrapper(request));
-        List<CustomerInfoExportResponse> convert = BeanCopierUtil.copyList(list, CustomerInfoExportResponse.class);
-        ExcelUtil.exportExcel(convert, "客户数据", CustomerInfoExportResponse.class, false, response, null);
+        List<CustomerMngExportResponse> convert = BeanCopierUtil.copyList(list, CustomerMngExportResponse.class);
+        ExcelUtil.exportExcel(convert, "客户数据", CustomerMngExportResponse.class, false, response, null);
     }
 
 }

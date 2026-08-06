@@ -4,8 +4,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.usercenter.api.customerwallet.CustomerWalletInfoApi;
 import com.wzkris.usercenter.api.customerwallet.request.CustomerWalletRecordPageRequest;
-import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoResponse;
-import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordResponse;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletInfoQueryResponse;
+import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordInfoPageResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +26,13 @@ public class CustomerWalletInfoController {
 
     @Operation(summary = "余额信息")
     @GetMapping("/query-info")
-    public Result<CustomerWalletInfoResponse> queryInfo() {
+    public Result<CustomerWalletInfoQueryResponse> queryInfo() {
         return customerWalletInfoApi.queryInfo();
     }
 
     @Operation(summary = "钱包记录")
     @GetMapping("/query-record-page")
-    public Result<Page<CustomerWalletRecordResponse>> queryRecordPage(@ParameterObject CustomerWalletRecordPageRequest request) {
+    public Result<Page<CustomerWalletRecordInfoPageResponse>> queryRecordPage(@ParameterObject CustomerWalletRecordPageRequest request) {
         return customerWalletInfoApi.queryRecordPage(request);
     }
 
