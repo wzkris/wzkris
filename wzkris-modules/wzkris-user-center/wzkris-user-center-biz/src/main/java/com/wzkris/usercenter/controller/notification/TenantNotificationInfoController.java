@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "租户通知信息")
 @RestController
-@RequestMapping("/notification-infot")
+@RequestMapping("/tenant-notification-info")
 @RequiredArgsConstructor
 public class TenantNotificationInfoController {
 
