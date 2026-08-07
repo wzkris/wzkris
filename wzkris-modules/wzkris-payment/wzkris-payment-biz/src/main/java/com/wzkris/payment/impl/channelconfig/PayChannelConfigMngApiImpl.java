@@ -48,7 +48,7 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
     }
 
     @Override
-    public Result<PayChannelConfigResponse> queryInfo(IdRequest request) {
+    public Result<PayChannelConfigResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(configService.getById(request.getId()), PayChannelConfigResponse.class));
     }
 
@@ -84,4 +84,5 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
         }
         return toRes(ok);
     }
+
 }

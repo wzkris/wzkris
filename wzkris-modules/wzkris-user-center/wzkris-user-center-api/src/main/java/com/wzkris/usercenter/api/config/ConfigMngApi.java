@@ -13,7 +13,7 @@ public interface ConfigMngApi {
 
     Result<Page<ConfigMngPageResponse>> queryPage(ConfigMngPageRequest request);
 
-    Result<ConfigMngQueryResponse> queryInfo(IdRequest request);
+    Result<ConfigMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(ConfigMngSaveRequest request);
 

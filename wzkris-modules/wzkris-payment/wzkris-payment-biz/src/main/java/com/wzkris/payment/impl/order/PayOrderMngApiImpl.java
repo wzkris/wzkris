@@ -49,7 +49,7 @@ public class PayOrderMngApiImpl extends AbstractApi implements PayOrderMngApi {
     }
 
     @Override
-    public Result<PayOrderResponse> queryInfo(IdRequest request) {
+    public Result<PayOrderResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(payOrderService.getById(request.getId()), PayOrderResponse.class));
     }
 
@@ -64,7 +64,8 @@ public class PayOrderMngApiImpl extends AbstractApi implements PayOrderMngApi {
         }
         // 关单沿用原成交配置
         ProviderContext ctx = router.resolve(order.getChannel(), order.getConfigId());
-        ctx.getProvider().close(order, ctx.getConfig());
+        ctx.provider().close(order, ctx.config());
         return toRes(payOrderService.updateToClosed(order.getId()));
     }
+
 }

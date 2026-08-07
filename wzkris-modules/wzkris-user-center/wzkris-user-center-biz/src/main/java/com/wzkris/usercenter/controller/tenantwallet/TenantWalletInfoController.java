@@ -30,9 +30,9 @@ public class TenantWalletInfoController {
     private final TenantWalletInfoApi tenantWalletInfoApi;
 
     @Operation(summary = "余额信息")
-    @GetMapping("/query-info")
-    public Result<TenantWalletInfoQueryResponse> queryInfo() {
-        return tenantWalletInfoApi.queryInfo();
+    @GetMapping("/query")
+    public Result<TenantWalletInfoQueryResponse> query() {
+        return tenantWalletInfoApi.query();
     }
 
     @Operation(summary = "钱包记录分页")

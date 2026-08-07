@@ -18,11 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 渠道配置管理（后台）
@@ -48,10 +44,10 @@ public class PayChannelConfigMngController {
     }
 
     @Operation(summary = "渠道配置详情")
-    @GetMapping("/query-info")
+    @GetMapping("/query-id")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<PayChannelConfigResponse> queryInfo(@ParameterObject IdRequest request) {
-        return configMngApi.queryInfo(request);
+    public Result<PayChannelConfigResponse> queryById(@ParameterObject IdRequest request) {
+        return configMngApi.queryById(request);
     }
 
     @Operation(summary = "新增渠道配置")
@@ -77,4 +73,5 @@ public class PayChannelConfigMngController {
     public Result<Void> remove(@RequestBody IdListRequest request) {
         return configMngApi.remove(request);
     }
+
 }

@@ -16,7 +16,9 @@ public class PayNotifyTaskServiceImpl
         extends ServiceImplPlus<PayNotifyTaskMapper, PayNotifyTaskDO>
         implements PayNotifyTaskService {
 
-    /** SENDING 超过该分钟数视为卡死（实例崩溃 mid-send），可被重新认领 */
+    /**
+     * SENDING 超过该分钟数视为卡死（实例崩溃 mid-send），可被重新认领
+     */
     private static final long STALE_SENDING_MINUTES = 5L;
 
     @Override
@@ -35,4 +37,5 @@ public class PayNotifyTaskServiceImpl
     public boolean claimSending(Long taskId) {
         return baseMapper.claimSending(taskId, OffsetDateTime.now().minusMinutes(STALE_SENDING_MINUTES)) > 0;
     }
+
 }

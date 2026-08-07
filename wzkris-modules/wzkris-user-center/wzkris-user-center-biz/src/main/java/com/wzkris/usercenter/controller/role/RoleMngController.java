@@ -44,10 +44,10 @@ public class RoleMngController {
     }
 
     @Operation(summary = "角色详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<RoleMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return roleMngApi.queryInfo(request);
+    public Result<RoleMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return roleMngApi.queryById(request);
     }
 
     @Operation(summary = "角色 - 菜单选择树")

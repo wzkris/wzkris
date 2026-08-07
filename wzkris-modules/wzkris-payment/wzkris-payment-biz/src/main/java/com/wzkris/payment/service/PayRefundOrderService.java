@@ -21,4 +21,5 @@ public interface PayRefundOrderService extends IServicePlus<PayRefundOrderDO> {
      * 状态机：REFUNDING -> FAILED（并发安全，仅退款中可流转），并回退原订单预留的退款额度
      */
     boolean updateToFailed(Long refundOrderId, String reason);
+
 }

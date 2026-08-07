@@ -25,9 +25,9 @@ public class CustomerWalletInfoController {
     private final CustomerWalletInfoApi customerWalletInfoApi;
 
     @Operation(summary = "余额信息")
-    @GetMapping("/query-info")
-    public Result<CustomerWalletInfoQueryResponse> queryInfo() {
-        return customerWalletInfoApi.queryInfo();
+    @GetMapping("/query")
+    public Result<CustomerWalletInfoQueryResponse> query() {
+        return customerWalletInfoApi.query();
     }
 
     @Operation(summary = "钱包记录")

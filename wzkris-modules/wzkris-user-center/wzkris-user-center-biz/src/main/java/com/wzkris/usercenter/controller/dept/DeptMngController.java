@@ -40,10 +40,10 @@ public class DeptMngController {
     }
 
     @Operation(summary = "根据部门编号获取详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<DeptMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return deptMngApi.queryInfo(request);
+    public Result<DeptMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return deptMngApi.queryById(request);
     }
 
     @Operation(summary = "新增部门")

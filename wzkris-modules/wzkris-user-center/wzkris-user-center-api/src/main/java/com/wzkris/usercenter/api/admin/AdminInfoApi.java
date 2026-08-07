@@ -8,7 +8,7 @@ import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
 
 public interface AdminInfoApi {
 
-    Result<AdminInfoQueryResponse> queryInfo();
+    Result<AdminInfoQueryResponse> query();
 
     Result<Void> updateBasicInfo(AdminInfoBasicUpdateRequest request);
 

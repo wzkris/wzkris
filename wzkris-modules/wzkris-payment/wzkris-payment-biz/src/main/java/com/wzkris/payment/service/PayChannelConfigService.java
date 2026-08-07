@@ -9,4 +9,5 @@ import com.wzkris.payment.domain.PayChannelConfigDO;
  * @author wzkris
  */
 public interface PayChannelConfigService extends IServicePlus<PayChannelConfigDO> {
+
 }

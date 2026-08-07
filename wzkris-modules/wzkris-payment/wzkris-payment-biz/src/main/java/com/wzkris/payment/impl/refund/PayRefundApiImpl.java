@@ -82,7 +82,7 @@ public class PayRefundApiImpl extends AbstractApi implements PayRefundApi {
         // 渠道退款置于事务外：避免外部 HTTP 调用嵌在 DB 事务内，导致渠道已退而本地回滚的不一致
         try {
             ProviderContext ctx = router.resolve(order.getChannel(), order.getConfigId());
-            RefundResult result = ctx.getProvider().refund(refund, ctx.getConfig());
+            RefundResult result = ctx.provider().refund(refund, ctx.config());
             switch (result.getStatus()) {
                 case SUCCESS -> {
                     boolean updated = refundOrderService.updateToSuccess(
@@ -111,8 +111,9 @@ public class PayRefundApiImpl extends AbstractApi implements PayRefundApi {
     }
 
     @Override
-    public Result<RefundOrderResponse> queryRefund(IdRequest request) {
+    public Result<RefundOrderResponse> queryById(IdRequest request) {
         PayRefundOrderDO refund = refundOrderService.getById(request.getId());
         return ok(BeanCopierUtil.copy(refund, RefundOrderResponse.class));
     }
+
 }

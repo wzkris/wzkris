@@ -65,7 +65,7 @@ public class MemberMngApiImpl extends AbstractApi implements MemberMngApi {
     }
 
     @Override
-    public Result<MemberMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<MemberMngQueryResponse> queryById(IdRequest request) {
         Long memberId = request.getId();
         if (tenantInfoService.checkAdministrator(memberId)) {
             return accessDenied("数据权限不足");

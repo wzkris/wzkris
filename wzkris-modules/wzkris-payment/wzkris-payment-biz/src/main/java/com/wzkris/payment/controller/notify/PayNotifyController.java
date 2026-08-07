@@ -1,16 +1,11 @@
 package com.wzkris.payment.controller.notify;
 
+import com.wzkris.payment.api.notify.PayNotifyApi;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
-import com.wzkris.payment.service.PayNotifyService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -27,7 +22,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PayNotifyController {
 
-    private final PayNotifyService notifyService;
+    private final PayNotifyApi notifyApi;
 
     @Operation(summary = "渠道异步回调")
     @PostMapping("/{channel}/{configId}")
@@ -35,10 +30,12 @@ public class PayNotifyController {
                          @PathVariable Long configId,
                          @RequestBody String body,
                          @RequestHeader Map<String, String> headers) {
-        PayChannelEnum ch = PayChannelEnum.fromValue(channel.toUpperCase());
+        // 无效渠道路径无对应 provider，无法由渠道决定 ACK，回通用 NACK 促使渠道重试
+        PayChannelEnum ch = PayChannelEnum.fromValue(channel);
         if (ch == null) {
             return "fail";
         }
-        return notifyService.handleNotify(ch, configId, body, headers);
+        return notifyApi.handleNotify(ch, configId, body, headers);
     }
+
 }

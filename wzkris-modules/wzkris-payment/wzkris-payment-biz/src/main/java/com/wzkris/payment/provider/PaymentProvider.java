@@ -20,27 +20,44 @@ import java.util.Map;
  */
 public interface PaymentProvider {
 
-    /** 渠道身份 */
+    /**
+     * 渠道身份
+     */
     PayChannelEnum channel();
 
-    /** 预下单，返回渠道侧支付参数 */
+    /**
+     * 预下单，返回渠道侧支付参数
+     */
     PrepayResponse prepay(PayOrderDO order, PayChannelConfigDO config);
 
-    /** 主动查单 */
+    /**
+     * 主动查单
+     */
     PayQueryResult query(PayOrderDO order, PayChannelConfigDO config);
 
-    /** 关单 */
+    /**
+     * 关单
+     */
     void close(PayOrderDO order, PayChannelConfigDO config);
 
-    /** 退款 */
+    /**
+     * 退款
+     */
     RefundResult refund(PayRefundOrderDO refund, PayChannelConfigDO config);
 
-    /** 查询退款 */
+    /**
+     * 查询退款
+     */
     RefundResult queryRefund(PayRefundOrderDO refund, PayChannelConfigDO config);
 
-    /** 解析并验签异步回调 */
+    /**
+     * 解析并验签异步回调
+     */
     NotifyParseResult parseNotify(String body, Map<String, String> headers, PayChannelConfigDO config);
 
-    /** 构造回渠道的应答（微信 SUCCESS XML / 支付宝 success） */
+    /**
+     * 构造回渠道的应答（微信 SUCCESS XML / 支付宝 success）
+     */
     String buildNotifyAck(boolean success);
+
 }

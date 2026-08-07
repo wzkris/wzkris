@@ -12,7 +12,7 @@ public interface CustomerMngApi {
 
     Result<Page<CustomerMngPageResponse>> queryPage(CustomerMngPageRequest request);
 
-    Result<CustomerMngQueryResponse> queryInfo(IdRequest request);
+    Result<CustomerMngQueryResponse> queryById(IdRequest request);
 
     void export(HttpServletResponse response, CustomerMngPageRequest request);
 

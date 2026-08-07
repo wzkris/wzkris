@@ -17,7 +17,9 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class PayQueryResult {
 
-    /** 渠道侧是否已支付 */
+    /**
+     * 渠道侧是否已支付
+     */
     private boolean paid;
 
     private String channelOrderNo;
@@ -27,4 +29,5 @@ public class PayQueryResult {
     private OffsetDateTime payAt;
 
     private String rawResponse;
+
 }

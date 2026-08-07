@@ -21,7 +21,7 @@ public interface PayOrderApi {
     /**
      * 按支付订单ID查询
      */
-    Result<PayOrderResponse> queryByPayOrderId(IdRequest request);
+    Result<PayOrderResponse> queryById(IdRequest request);
 
     /**
      * 按业务类型 + 业务订单号查询

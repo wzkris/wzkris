@@ -48,7 +48,7 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     }
 
     @Override
-    public Result<DictionaryMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<DictionaryMngQueryResponse> queryById(IdRequest request) {
         Long dictId = request.getId();
         DictionaryInfoDO source = dictionaryInfoService.getById(dictId);
         return ok(toQueryResponse(source));

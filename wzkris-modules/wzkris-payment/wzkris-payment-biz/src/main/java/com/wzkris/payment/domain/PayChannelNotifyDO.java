@@ -46,4 +46,5 @@ public class PayChannelNotifyDO extends BaseEntity {
 
     @Schema(description = "处理错误信息")
     private String errorMsg;
+
 }

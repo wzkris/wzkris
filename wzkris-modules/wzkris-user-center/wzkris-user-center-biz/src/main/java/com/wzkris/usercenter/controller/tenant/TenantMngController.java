@@ -46,10 +46,10 @@ public class TenantMngController {
     }
 
     @Operation(summary = "ID获取租户详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<TenantMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return tenantMngApi.queryInfo(request);
+    public Result<TenantMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return tenantMngApi.queryById(request);
     }
 
     @Operation(summary = "租户选择列表(带分页)")

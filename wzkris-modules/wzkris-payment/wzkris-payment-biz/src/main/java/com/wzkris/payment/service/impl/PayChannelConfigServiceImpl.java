@@ -10,4 +10,5 @@ import org.springframework.stereotype.Service;
 public class PayChannelConfigServiceImpl
         extends ServiceImplPlus<PayChannelConfigMapper, PayChannelConfigDO>
         implements PayChannelConfigService {
+
 }

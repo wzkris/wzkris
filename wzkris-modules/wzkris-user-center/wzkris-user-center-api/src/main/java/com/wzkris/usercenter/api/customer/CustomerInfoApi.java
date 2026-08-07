@@ -6,7 +6,7 @@ import com.wzkris.usercenter.api.customer.response.CustomerInfoQueryResponse;
 
 public interface CustomerInfoApi {
 
-    Result<CustomerInfoQueryResponse> queryInfo();
+    Result<CustomerInfoQueryResponse> query();
 
     Result<?> updateBasicInfo(CustomerInfoBasicUpdateRequest request);
 

@@ -41,9 +41,10 @@ public class PayRefundMngController {
     }
 
     @Operation(summary = "退款订单详情")
-    @GetMapping("/query-info")
+    @GetMapping("/query-id")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<RefundOrderResponse> queryInfo(@ParameterObject IdRequest request) {
-        return refundMngApi.queryInfo(request);
+    public Result<RefundOrderResponse> queryById(@ParameterObject IdRequest request) {
+        return refundMngApi.queryById(request);
     }
+
 }

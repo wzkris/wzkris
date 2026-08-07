@@ -15,8 +15,8 @@ import org.springframework.lang.Nullable;
 @Getter
 @AllArgsConstructor
 public enum PayChannelEnum {
-    WXPAY("WXPAY", "微信支付"),
-    ALIPAY("ALIPAY", "支付宝");
+    WXPAY("wxpay", "微信支付"),
+    ALIPAY("alipay", "支付宝");
 
     @EnumValue
     @JsonValue

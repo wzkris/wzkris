@@ -44,10 +44,10 @@ public class PayOrderMngController {
     }
 
     @Operation(summary = "支付订单详情")
-    @GetMapping("/query-info")
+    @GetMapping("/query-id")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<PayOrderResponse> queryInfo(@ParameterObject IdRequest request) {
-        return orderMngApi.queryInfo(request);
+    public Result<PayOrderResponse> queryById(@ParameterObject IdRequest request) {
+        return orderMngApi.queryById(request);
     }
 
     @Operation(summary = "主动关单")
@@ -57,4 +57,5 @@ public class PayOrderMngController {
     public Result<Void> close(@ParameterObject IdRequest request) {
         return orderMngApi.close(request);
     }
+
 }

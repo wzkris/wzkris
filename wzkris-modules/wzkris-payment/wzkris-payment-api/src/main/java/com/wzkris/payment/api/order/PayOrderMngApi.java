@@ -15,7 +15,7 @@ public interface PayOrderMngApi {
 
     Result<Page<PayOrderResponse>> queryPage(PayOrderMngPageRequest request);
 
-    Result<PayOrderResponse> queryInfo(IdRequest request);
+    Result<PayOrderResponse> queryById(IdRequest request);
 
     /**
      * 主动关单（仅 PENDING 可关）

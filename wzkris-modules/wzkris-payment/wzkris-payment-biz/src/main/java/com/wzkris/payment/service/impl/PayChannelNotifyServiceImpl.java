@@ -22,4 +22,5 @@ public class PayChannelNotifyServiceImpl
                 .eq(PayChannelNotifyDO::getNotifyType, notifyType)
                 .eq(PayChannelNotifyDO::getOutBusinessNo, outBusinessNo));
     }
+
 }

@@ -43,10 +43,10 @@ public class TenantPackageMngController {
     }
 
     @Operation(summary = "套餐详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, value = "user-mod:tenantpackage-mng:page")
-    public Result<TenantPackageMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return tenantPackageMngApi.queryInfo(request);
+    public Result<TenantPackageMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return tenantPackageMngApi.queryById(request);
     }
 
     @Operation(summary = "套餐菜单选择树")

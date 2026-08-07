@@ -23,17 +23,22 @@ public class OrderNoGenerator {
 
     private final PaymentProperties properties;
 
-    /** 生成支付订单号 */
+    /**
+     * 生成支付订单号
+     */
     public String nextOrderNo() {
         return properties.getOrderNoPrefix()
                 + FORMATTER.format(LocalDateTime.now())
                 + String.format("%08d", Math.abs(IdWorker.getId() % 100_000_000L));
     }
 
-    /** 生成退款单号 */
+    /**
+     * 生成退款单号
+     */
     public String nextRefundNo() {
         return properties.getRefundNoPrefix()
                 + FORMATTER.format(LocalDateTime.now())
                 + String.format("%08d", Math.abs(IdWorker.getId() % 100_000_000L));
     }
+
 }

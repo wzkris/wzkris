@@ -15,7 +15,7 @@ public interface TenantPackageMngApi {
 
     Result<Page<TenantPackageMngPageResponse>> queryPage(TenantPackageMngPageRequest request);
 
-    Result<TenantPackageMngQueryResponse> queryInfo(IdRequest request);
+    Result<TenantPackageMngQueryResponse> queryById(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 

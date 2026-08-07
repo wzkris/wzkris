@@ -14,7 +14,7 @@ public interface MenuMngApi {
 
     Result<List<MenuMngListResponse>> queryList(MenuMngTreeRequest request);
 
-    Result<MenuMngQueryResponse> queryInfo(IdRequest request);
+    Result<MenuMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(MenuMngSaveRequest request);
 

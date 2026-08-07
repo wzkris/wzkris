@@ -39,7 +39,7 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<AdminInfoQueryResponse> queryInfo() {
+    public Result<AdminInfoQueryResponse> query() {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
         AdminInfoQueryResponse adminInfoVO = new AdminInfoQueryResponse();

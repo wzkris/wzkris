@@ -67,4 +67,5 @@ public class WxPayServiceFactory {
     public void onConfigChanged(PayChannelConfigChangedEvent event) {
         evict(event.getConfigId());
     }
+
 }

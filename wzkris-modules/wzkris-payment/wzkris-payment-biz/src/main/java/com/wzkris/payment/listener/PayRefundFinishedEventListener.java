@@ -2,6 +2,7 @@ package com.wzkris.payment.listener;
 
 import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.payment.api.notify.PayNotifyRequest;
 import com.wzkris.payment.config.PaymentProperties;
 import com.wzkris.payment.domain.PayNotifyTaskDO;
 import com.wzkris.payment.domain.PayOrderDO;
@@ -9,11 +10,10 @@ import com.wzkris.payment.domain.PayRefundOrderDO;
 import com.wzkris.payment.enums.notify.NotifyTaskStatusEnum;
 import com.wzkris.payment.enums.notify.NotifyTypeEnum;
 import com.wzkris.payment.event.PayRefundFinishedEvent;
-import com.wzkris.payment.api.notify.PayNotifyRequest;
+import com.wzkris.payment.service.PayNotifySenderService;
 import com.wzkris.payment.service.PayNotifyTaskService;
 import com.wzkris.payment.service.PayOrderService;
 import com.wzkris.payment.service.PayRefundOrderService;
-import com.wzkris.payment.service.PayNotifySenderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -81,4 +81,5 @@ public class PayRefundFinishedEventListener {
 
         sender.send(task);
     }
+
 }

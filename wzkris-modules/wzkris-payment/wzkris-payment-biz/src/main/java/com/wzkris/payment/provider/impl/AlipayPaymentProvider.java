@@ -62,4 +62,5 @@ public class AlipayPaymentProvider implements PaymentProvider {
         // 支付宝要求返回 "success"
         return success ? "success" : "fail";
     }
+
 }

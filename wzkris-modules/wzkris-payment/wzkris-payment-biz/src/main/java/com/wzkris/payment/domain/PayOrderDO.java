@@ -79,4 +79,5 @@ public class PayOrderDO extends BaseEntity {
     public PayOrderDO(Long id) {
         this.setId(id);
     }
+
 }

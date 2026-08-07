@@ -14,7 +14,7 @@ public interface OAuth2ClientMngApi {
 
     Result<Page<OAuth2ClientMngPageResponse>> queryPage(OAuth2ClientMngPageRequest request);
 
-    Result<OAuth2ClientMngQueryResponse> queryInfo(IdRequest request);
+    Result<OAuth2ClientMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> update(OAuth2ClientMngUpdateRequest request);
 

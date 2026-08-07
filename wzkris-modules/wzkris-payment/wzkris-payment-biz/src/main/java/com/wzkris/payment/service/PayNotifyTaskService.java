@@ -21,4 +21,5 @@ public interface PayNotifyTaskService extends IServicePlus<PayNotifyTaskDO> {
      * 原子认领通知任务（PENDING/卡死SENDING -> SENDING），返回是否认领成功
      */
     boolean claimSending(Long taskId);
+
 }

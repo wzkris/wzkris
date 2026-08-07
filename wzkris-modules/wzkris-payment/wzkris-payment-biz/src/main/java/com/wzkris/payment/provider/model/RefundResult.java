@@ -25,4 +25,5 @@ public class RefundResult {
     private String rawResponse;
 
     private String errorMsg;
+
 }

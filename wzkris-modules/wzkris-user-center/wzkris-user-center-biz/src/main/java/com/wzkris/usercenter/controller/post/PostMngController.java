@@ -43,10 +43,10 @@ public class PostMngController {
     }
 
     @Operation(summary = "职位详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, prefix = PERM_PREFIX, value = "page")
-    public Result<PostMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return postMngApi.queryInfo(request);
+    public Result<PostMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return postMngApi.queryById(request);
     }
 
     @Operation(summary = "职位-菜单选择树")

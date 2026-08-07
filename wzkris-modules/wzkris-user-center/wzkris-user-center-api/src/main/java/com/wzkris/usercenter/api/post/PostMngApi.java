@@ -15,7 +15,7 @@ public interface PostMngApi {
 
     Result<Page<PostMngPageResponse>> queryPage(PostMngPageRequest request);
 
-    Result<PostMngQueryResponse> queryInfo(IdRequest request);
+    Result<PostMngQueryResponse> queryById(IdRequest request);
 
     Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 

@@ -7,7 +7,7 @@ import com.wzkris.usercenter.request.PasswordUpdateRequest;
 
 public interface TenantInfoApi {
 
-    Result<TenantInfoQueryResponse> queryInfo();
+    Result<TenantInfoQueryResponse> query();
 
     Result<Void> updateBasicInfo(TenantInfoBasicUpdateRequest request);
 

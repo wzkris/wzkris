@@ -40,10 +40,10 @@ public class CustomerMngController {
     }
 
     @Operation(summary = "客户详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<CustomerMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return customerMngApi.queryInfo(request);
+    public Result<CustomerMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return customerMngApi.queryById(request);
     }
 
     @Operation(summary = "导出")

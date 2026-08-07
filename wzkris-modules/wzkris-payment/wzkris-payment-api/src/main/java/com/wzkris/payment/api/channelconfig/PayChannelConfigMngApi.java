@@ -18,7 +18,7 @@ public interface PayChannelConfigMngApi {
 
     Result<Page<PayChannelConfigResponse>> queryPage(PayChannelConfigMngPageRequest request);
 
-    Result<PayChannelConfigResponse> queryInfo(IdRequest request);
+    Result<PayChannelConfigResponse> queryById(IdRequest request);
 
     Result<Void> save(PayChannelConfigSaveRequest request);
 

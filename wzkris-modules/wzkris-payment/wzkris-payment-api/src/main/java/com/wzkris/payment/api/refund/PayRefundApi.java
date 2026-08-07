@@ -20,5 +20,5 @@ public interface PayRefundApi {
     /**
      * 查询退款状态
      */
-    Result<RefundOrderResponse> queryRefund(IdRequest request);
+    Result<RefundOrderResponse> queryById(IdRequest request);
 }

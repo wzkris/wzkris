@@ -24,9 +24,9 @@ public class TenantPackageInfoController {
     private final TenantPackageInfoApi tenantPackageInfoApi;
 
     @Operation(summary = "获取当前租户套餐概览")
-    @GetMapping("/query-info")
-    public Result<TenantPackageInfoQueryResponse> queryInfo() {
-        return tenantPackageInfoApi.queryInfo();
+    @GetMapping("/query")
+    public Result<TenantPackageInfoQueryResponse> query() {
+        return tenantPackageInfoApi.query();
     }
 
 }

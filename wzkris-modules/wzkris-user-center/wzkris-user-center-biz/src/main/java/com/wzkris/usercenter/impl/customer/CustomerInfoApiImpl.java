@@ -18,7 +18,7 @@ public class CustomerInfoApiImpl extends AbstractApi implements CustomerInfoApi 
     private final CustomerInfoService customerInfoService;
 
     @Override
-    public Result<CustomerInfoQueryResponse> queryInfo() {
+    public Result<CustomerInfoQueryResponse> query() {
         CustomerInfoDO customerInfoDO = customerInfoService.getById(SecurityUtil.getUid());
         CustomerInfoQueryResponse customerInfoVO = new CustomerInfoQueryResponse();
         customerInfoVO.setNickname(customerInfoDO.getNickname());

@@ -50,7 +50,7 @@ public class PostMngApiImpl extends AbstractApi implements PostMngApi {
     }
 
     @Override
-    public Result<PostMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<PostMngQueryResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(postInfoService.getById(request.getId()), PostMngQueryResponse.class));
     }
 

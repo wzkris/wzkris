@@ -35,7 +35,7 @@ public class MemberInfoApiImpl extends AbstractApi implements MemberInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<MemberInfoQueryResponse> queryInfo() {
+    public Result<MemberInfoQueryResponse> query() {
         LoginUser loginUser = SecurityUtil.getLoginUser();
         MemberInfoDO member = memberInfoService.getById(loginUser.getUid());
         MemberInfoQueryResponse memberInfoVO = new MemberInfoQueryResponse();

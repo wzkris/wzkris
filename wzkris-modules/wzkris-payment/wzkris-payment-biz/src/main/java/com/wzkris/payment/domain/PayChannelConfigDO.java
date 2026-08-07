@@ -59,4 +59,5 @@ public class PayChannelConfigDO extends BaseEntity {
 
     @Schema(description = "备注")
     private String remark;
+
 }

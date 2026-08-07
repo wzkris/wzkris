@@ -40,10 +40,10 @@ public class ConfigMngController {
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<ConfigMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return configMngApi.queryInfo(request);
+    public Result<ConfigMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return configMngApi.queryById(request);
     }
 
     @Operation(summary = "添加参数")

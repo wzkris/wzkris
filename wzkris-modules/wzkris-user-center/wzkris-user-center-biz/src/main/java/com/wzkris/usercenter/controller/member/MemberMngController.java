@@ -40,10 +40,10 @@ public class MemberMngController {
     }
 
     @Operation(summary = "成员详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.TENANT, value = "user-mod:member-mng:page")
-    public Result<MemberMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return memberMngApi.queryInfo(request);
+    public Result<MemberMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return memberMngApi.queryById(request);
     }
 
     @Operation(summary = "成员-职位选择列表")

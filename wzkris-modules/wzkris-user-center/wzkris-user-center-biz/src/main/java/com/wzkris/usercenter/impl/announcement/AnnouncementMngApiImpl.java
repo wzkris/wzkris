@@ -40,7 +40,7 @@ public class AnnouncementMngApiImpl extends AbstractApi implements AnnouncementM
     }
 
     @Override
-    public Result<AnnouncementMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<AnnouncementMngQueryResponse> queryById(IdRequest request) {
         Long announcementId = request.getId();
         return ok(BeanCopierUtil.copy(announcementInfoService.getById(announcementId), AnnouncementMngQueryResponse.class));
     }

@@ -11,12 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 支付订单（业务方调用）：统一下单 + 订单查询
@@ -41,9 +36,9 @@ public class PayOrderController {
     }
 
     @Operation(summary = "按订单ID查询")
-    @GetMapping("/query")
+    @GetMapping("/query-id")
     public Result<PayOrderResponse> queryById(@ParameterObject IdRequest request) {
-        return orderApi.queryByPayOrderId(request);
+        return orderApi.queryById(request);
     }
 
     @Operation(summary = "按业务查询")
@@ -51,4 +46,5 @@ public class PayOrderController {
     public Result<PayOrderResponse> queryByBiz(@RequestParam String bizType, @RequestParam String bizNo) {
         return orderApi.queryByBiz(bizType, bizNo);
     }
+
 }

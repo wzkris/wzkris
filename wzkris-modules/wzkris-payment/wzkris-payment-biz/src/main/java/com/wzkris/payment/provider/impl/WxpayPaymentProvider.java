@@ -300,12 +300,16 @@ public class WxpayPaymentProvider implements PaymentProvider {
         }
     }
 
-    /** 元 -> 分 */
+    /**
+     * 元 -> 分
+     */
     private int toFen(BigDecimal yuan) {
         return yuan.movePointRight(2).intValueExact();
     }
 
-    /** 分 -> 元 */
+    /**
+     * 分 -> 元
+     */
     private BigDecimal toYuan(Integer fen) {
         return fen == null ? null : new BigDecimal(fen).movePointLeft(2);
     }
@@ -329,4 +333,5 @@ public class WxpayPaymentProvider implements PaymentProvider {
         }
         return null;
     }
+
 }

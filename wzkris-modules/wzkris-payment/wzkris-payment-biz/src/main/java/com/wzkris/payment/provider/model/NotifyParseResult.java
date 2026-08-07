@@ -20,24 +20,36 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class NotifyParseResult {
 
-    /** 验签是否通过 */
+    /**
+     * 验签是否通过
+     */
     private boolean verifySuccess;
 
-    /** 回调类型 */
+    /**
+     * 回调类型
+     */
     private NotifyTypeEnum notifyType;
 
-    /** 我方订单号（PAY：即 order_no） */
+    /**
+     * 我方订单号（PAY：即 order_no）
+     */
     private String outTradeNo;
 
-    /** 我方退款号（REFUND：即 refund_no） */
+    /**
+     * 我方退款号（REFUND：即 refund_no）
+     */
     private String outRefundNo;
 
-    /** 渠道侧号（transaction_id / refund_id / trade_no，存档用） */
+    /**
+     * 渠道侧号（transaction_id / refund_id / trade_no，存档用）
+     */
     private String channelNo;
 
     // ---- PAY 上下文 ----
 
-    /** 渠道侧是否支付成功 */
+    /**
+     * 渠道侧是否支付成功
+     */
     private boolean paid;
 
     private BigDecimal amount;
@@ -46,15 +58,20 @@ public class NotifyParseResult {
 
     // ---- REFUND 上下文 ----
 
-    /** 渠道侧是否退款成功 */
+    /**
+     * 渠道侧是否退款成功
+     */
     private boolean refundSuccess;
 
     private BigDecimal refundAmount;
 
     private OffsetDateTime refundAt;
 
-    /** 解析/处理错误信息（退款失败原因等） */
+    /**
+     * 解析/处理错误信息（退款失败原因等）
+     */
     private String errorMsg;
 
     private String rawBody;
+
 }

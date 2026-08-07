@@ -43,7 +43,8 @@ public class PayRefundMngApiImpl extends AbstractApi implements PayRefundMngApi 
     }
 
     @Override
-    public Result<RefundOrderResponse> queryInfo(IdRequest request) {
+    public Result<RefundOrderResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(refundOrderService.getById(request.getId()), RefundOrderResponse.class));
     }
+
 }

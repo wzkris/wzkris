@@ -15,9 +15,9 @@ import com.wzkris.payment.provider.PaymentProviderRouter;
 import com.wzkris.payment.provider.ProviderContext;
 import com.wzkris.payment.provider.model.NotifyParseResult;
 import com.wzkris.payment.service.PayChannelNotifyService;
+import com.wzkris.payment.service.PayNotifyService;
 import com.wzkris.payment.service.PayOrderService;
 import com.wzkris.payment.service.PayRefundOrderService;
-import com.wzkris.payment.service.PayNotifyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DuplicateKeyException;
@@ -28,9 +28,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * 渠道回调编排：验签 -> 幂等 -> 锁内状态机 -> 发布事件
+ * 渠道回调编排：先落库 -> 验签 -> 幂等 -> 锁内状态机 -> 发布事件
  *
- * <p>按 notifyType 分流支付/退款回调。
+ * <p>原始报文在验签/解析前即落库，确保回调不丢失；按 notifyType 分流支付/退款回调。
  *
  * @author wzkris
  */
@@ -51,39 +51,76 @@ public class PayNotifyServiceImpl implements PayNotifyService {
     @Override
     public String handleNotify(PayChannelEnum channel, Long configId, String body, Map<String, String> headers) {
         ProviderContext ctx = router.resolve(channel, configId);
-        NotifyParseResult parsed = ctx.getProvider().parseNotify(body, headers, ctx.getConfig());
 
-        // 验签失败：落审计记录（notify_type/out_business_no 可为空）后回 NACK
+        // 1. 先落库：原始回调报文立即持久化（验签/解析前），确保回调不丢失
+        //    notify_type/out_business_no 待验签解密后回填，验签失败/解析异常时留空
+        PayChannelNotifyDO record = new PayChannelNotifyDO();
+        record.setChannel(channel);
+        record.setNotifyData(body);
+        record.setVerifyResult(false);
+        record.setProcessed(false);
+        channelNotifyService.save(record);
+
+        // 2. 验签 + 解密 + 解析（渠道未接入等可能抛异常，此时原始报文已落库不丢失）
+        NotifyParseResult parsed;
+        try {
+            parsed = ctx.provider().parseNotify(body, headers, ctx.config());
+        } catch (Exception e) {
+            record.setErrorMsg("回调解析异常:" + e.getMessage());
+            channelNotifyService.updateById(record);
+            return ctx.provider().buildNotifyAck(false);
+        }
+
+        // 3. 验签失败：更新记录后回 NACK
         if (!parsed.isVerifySuccess()) {
-            saveRecord(channel, parsed, body, false, "验签失败");
-            return ctx.getProvider().buildNotifyAck(false);
+            record.setErrorMsg("验签失败");
+            channelNotifyService.updateById(record);
+            return ctx.provider().buildNotifyAck(false);
         }
 
-        // 幂等：已处理过的回调直接 ACK
         String outNo = outBusinessNo(parsed);
+        NotifyTypeEnum notifyType = parsed.getNotifyType();
+
+        // 4. 幂等：同 key 是否已有记录
+        //    已处理 -> 重复 ACK；未处理 -> 复用前序记录锁内重试。本笔原始记录标记为重复（保持空 key 不碰唯一索引）
         PayChannelNotifyDO exist = channelNotifyService.findByChannelAndTypeAndOutBusinessNo(
-                channel, parsed.getNotifyType(), outNo);
-        if (exist != null && Boolean.TRUE.equals(exist.getProcessed())) {
-            return ctx.getProvider().buildNotifyAck(true);
-        }
-
-        // 落回调记录（验签通过）；并发重复回调命中唯一索引时按已接收 ACK，不再抛 500
-        PayChannelNotifyDO record;
-        if (exist == null) {
-            try {
-                record = saveRecord(channel, parsed, body, true, null);
-            } catch (DuplicateKeyException e) {
-                // 另一线程已落记录并在处理，直接 ACK
-                return ctx.getProvider().buildNotifyAck(true);
+                channel, notifyType, outNo);
+        if (exist != null) {
+            record.setVerifyResult(true);
+            record.setProcessed(true);
+            record.setProcessedAt(OffsetDateTime.now());
+            record.setErrorMsg(Boolean.TRUE.equals(exist.getProcessed())
+                    ? "重复回调(已处理)" : "重复回调(复用前序记录)");
+            channelNotifyService.updateById(record);
+            if (Boolean.TRUE.equals(exist.getProcessed())) {
+                return ctx.provider().buildNotifyAck(true);
             }
-        } else {
-            // 已有记录但未处理（如上次处理失败渠道重试）：复用记录，锁内重试
+            // 前序记录未处理（上次失败渠道重试）：复用前序记录锁内重试
             record = exist;
+        } else {
+            // 5. 无前序记录：回填正式 key 落库（并发重复命中唯一索引按已接收 ACK）
+            record.setNotifyType(notifyType);
+            record.setOutBusinessNo(outNo);
+            record.setChannelNo(parsed.getChannelNo());
+            record.setVerifyResult(true);
+            try {
+                channelNotifyService.updateById(record);
+            } catch (DuplicateKeyException e) {
+                // 并发：另一线程已落同 key 记录，本笔标记重复（清空 key 不碰撞）后 ACK
+                record.setNotifyType(null);
+                record.setOutBusinessNo(null);
+                record.setChannelNo(null);
+                record.setProcessed(true);
+                record.setProcessedAt(OffsetDateTime.now());
+                record.setErrorMsg("重复回调(并发)");
+                channelNotifyService.updateById(record);
+                return ctx.provider().buildNotifyAck(true);
+            }
         }
 
-        // 锁内处理：关联订单/退款单 + 金额校验 + 状态机流转
+        // 6. 锁内处理：关联订单/退款单 + 金额校验 + 状态机流转
         Boolean ok = DistLockTemplate.lockAndExecute(
-                "pay:notify:" + channel.getValue() + ":" + parsed.getNotifyType().getValue() + ":" + outNo,
+                "pay:notify:" + channel.getValue() + ":" + notifyType.getValue() + ":" + outNo,
                 (Supplier<Boolean>) () -> process(parsed));
         boolean success = Boolean.TRUE.equals(ok);
 
@@ -93,7 +130,7 @@ public class PayNotifyServiceImpl implements PayNotifyService {
             record.setErrorMsg("业务处理失败:订单/退款单不存在或状态不符");
         }
         channelNotifyService.updateById(record);
-        return ctx.getProvider().buildNotifyAck(success);
+        return ctx.provider().buildNotifyAck(success);
     }
 
     private String outBusinessNo(NotifyParseResult parsed) {
@@ -148,18 +185,4 @@ public class PayNotifyServiceImpl implements PayNotifyService {
         return refundOrderService.updateToFailed(refund.getId(), parsed.getErrorMsg());
     }
 
-    private PayChannelNotifyDO saveRecord(PayChannelEnum channel, NotifyParseResult parsed,
-                                          String body, boolean verify, String err) {
-        PayChannelNotifyDO record = new PayChannelNotifyDO();
-        record.setChannel(channel);
-        record.setNotifyType(parsed.getNotifyType());
-        record.setOutBusinessNo(outBusinessNo(parsed));
-        record.setChannelNo(parsed.getChannelNo());
-        record.setNotifyData(body);
-        record.setVerifyResult(verify);
-        record.setProcessed(false);
-        record.setErrorMsg(err);
-        channelNotifyService.save(record);
-        return record;
-    }
 }

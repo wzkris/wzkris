@@ -63,7 +63,7 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
         PayOrderDO order = BeanCopierUtil.copy(request, PayOrderDO.class);
         order.setOrderNo(orderNoGenerator.nextOrderNo());
         order.setChannel(request.getChannel());
-        order.setConfigId(ctx.getConfig().getId());
+        order.setConfigId(ctx.config().getId());
         order.setPayMode(request.getPayMode());
         order.setAmount(request.getAmount());
         order.setStatus(PayStatusEnum.PENDING);
@@ -85,11 +85,11 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
         PayChannelLogDO channelLog = new PayChannelLogDO();
         channelLog.setPayOrderId(order.getId());
         channelLog.setChannel(order.getChannel());
-        channelLog.setConfigId(ctx.getConfig().getId());
+        channelLog.setConfigId(ctx.config().getId());
         channelLog.setPayMode(order.getPayMode());
         channelLog.setRequestParams(JsonUtil.toJsonString(order));
         try {
-            PrepayResponse resp = ctx.getProvider().prepay(order, ctx.getConfig());
+            PrepayResponse resp = ctx.provider().prepay(order, ctx.config());
             resp.setId(order.getId());
             resp.setOrderNo(order.getOrderNo());
             resp.setChannel(order.getChannel());
@@ -107,7 +107,7 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
     }
 
     @Override
-    public Result<PayOrderResponse> queryByPayOrderId(IdRequest request) {
+    public Result<PayOrderResponse> queryById(IdRequest request) {
         PayOrderDO order = payOrderService.getById(request.getId());
         return ok(BeanCopierUtil.copy(order, PayOrderResponse.class));
     }
@@ -117,4 +117,5 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
         PayOrderDO order = payOrderService.getByBizTypeAndBizNo(bizType, bizNo);
         return ok(BeanCopierUtil.copy(order, PayOrderResponse.class));
     }
+
 }

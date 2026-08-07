@@ -14,4 +14,5 @@ public interface PayChannelNotifyService extends IServicePlus<PayChannelNotifyDO
 
     PayChannelNotifyDO findByChannelAndTypeAndOutBusinessNo(
             PayChannelEnum channel, NotifyTypeEnum notifyType, String outBusinessNo);
+
 }

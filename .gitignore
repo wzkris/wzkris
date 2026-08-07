@@ -30,6 +30,7 @@ target/
 .vscode
 .github
 .trae
+.claude
 
 ### JRebel ###
 rebel.xml

@@ -64,10 +64,10 @@ public class AdminMngController {
     }
 
     @Operation(summary = "管理员详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<AdminMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return adminMngApi.queryInfo(request);
+    public Result<AdminMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return adminMngApi.queryById(request);
     }
 
     @Operation(summary = "新增管理员")

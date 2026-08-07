@@ -10,4 +10,5 @@ import org.springframework.stereotype.Service;
 public class PayChannelLogServiceImpl
         extends ServiceImplPlus<PayChannelLogMapper, PayChannelLogDO>
         implements PayChannelLogService {
+
 }

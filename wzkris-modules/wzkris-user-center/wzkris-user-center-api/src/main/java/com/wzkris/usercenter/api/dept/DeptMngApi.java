@@ -14,7 +14,7 @@ public interface DeptMngApi {
 
     Result<List<DeptMngListResponse>> queryList(DeptMngTreeRequest request);
 
-    Result<DeptMngQueryResponse> queryInfo(IdRequest request);
+    Result<DeptMngQueryResponse> queryById(IdRequest request);
 
     Result<?> save(DeptMngSaveRequest request);
 

@@ -44,7 +44,7 @@ public class ConfigMngApiImpl extends AbstractApi implements ConfigMngApi {
     }
 
     @Override
-    public Result<ConfigMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<ConfigMngQueryResponse> queryById(IdRequest request) {
         Long configId = request.getId();
         return ok(BeanCopierUtil.copy(configInfoService.getById(configId), ConfigMngQueryResponse.class));
     }

@@ -27,9 +27,9 @@ public class MemberInfoController {
     private final MemberInfoApi memberInfoApi;
 
     @Operation(summary = "账户信息")
-    @GetMapping("/query-info")
-    public Result<MemberInfoQueryResponse> queryInfo() {
-        return memberInfoApi.queryInfo();
+    @GetMapping("/query")
+    public Result<MemberInfoQueryResponse> query() {
+        return memberInfoApi.query();
     }
 
     @Operation(summary = "修改基本信息")

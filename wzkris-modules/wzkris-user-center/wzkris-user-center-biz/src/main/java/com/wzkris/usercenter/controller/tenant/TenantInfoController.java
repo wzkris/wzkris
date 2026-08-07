@@ -26,9 +26,9 @@ public class TenantInfoController {
     private final TenantInfoApi tenantInfoApi;
 
     @Operation(summary = "获取信息")
-    @GetMapping("/query-info")
-    public Result<TenantInfoQueryResponse> queryInfo() {
-        return tenantInfoApi.queryInfo();
+    @GetMapping("/query")
+    public Result<TenantInfoQueryResponse> query() {
+        return tenantInfoApi.query();
     }
 
     @Operation(summary = "修改信息")

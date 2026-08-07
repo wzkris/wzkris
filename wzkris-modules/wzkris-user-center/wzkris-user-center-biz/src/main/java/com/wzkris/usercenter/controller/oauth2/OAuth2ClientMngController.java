@@ -39,10 +39,10 @@ public class OAuth2ClientMngController {
     }
 
     @Operation(summary = "根据id查详情")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
-    public Result<OAuth2ClientMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return oAuth2ClientMngApi.queryInfo(request);
+    public Result<OAuth2ClientMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return oAuth2ClientMngApi.queryById(request);
     }
 
     @Operation(summary = "根据id修改客户端")

@@ -67,7 +67,7 @@ public class TenantMngApiImpl extends AbstractApi implements TenantMngApi {
     }
 
     @Override
-    public Result<TenantMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<TenantMngQueryResponse> queryById(IdRequest request) {
         return ok(tenantInfoMapper.selectMngVOById(request.getId()));
     }
 

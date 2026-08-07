@@ -31,10 +31,10 @@ public class AdminInfoController {
     private final AdminInfoApi adminInfoApi;
 
     @Operation(summary = "账户信息")
-    @GetMapping("/query-info")
+    @GetMapping("/query")
     @Cacheable(value = info_prefix + "#600_000", key = "@uch.getLoginUser().getUid()", sync = true) // TODO 这里缓存的需要在退出时移除
-    public Result<AdminInfoQueryResponse> queryInfo() {
-        return adminInfoApi.queryInfo();
+    public Result<AdminInfoQueryResponse> query() {
+        return adminInfoApi.query();
     }
 
     @Operation(summary = "修改基本信息")

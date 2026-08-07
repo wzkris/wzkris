@@ -46,7 +46,7 @@ public class CustomerMngApiImpl extends AbstractApi implements CustomerMngApi {
     }
 
     @Override
-    public Result<CustomerMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<CustomerMngQueryResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(customerInfoService.getById(request.getId()), CustomerMngQueryResponse.class));
     }
 

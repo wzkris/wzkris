@@ -18,7 +18,7 @@ public interface TenantMngApi {
 
     Result<Page<TenantMngPageResponse>> queryPage(TenantMngPageRequest request);
 
-    Result<TenantMngQueryResponse> queryInfo(IdRequest request);
+    Result<TenantMngQueryResponse> queryById(IdRequest request);
 
     Result<Page<SelectResponse>> querySelectPage(TenantMngPageRequest request);
 

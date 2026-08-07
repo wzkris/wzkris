@@ -40,10 +40,10 @@ public class MenuMngController {
     }
 
     @Operation(summary = "菜单详细信息")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "list")
-    public Result<MenuMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return menuMngApi.queryInfo(request);
+    public Result<MenuMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return menuMngApi.queryById(request);
     }
 
     @Operation(summary = "新增菜单")

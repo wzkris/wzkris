@@ -42,4 +42,5 @@ public class PayChannelLogDO extends BaseEntity {
 
     @Schema(description = "交互状态")
     private PayStatusEnum status;
+
 }

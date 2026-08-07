@@ -39,7 +39,7 @@ public class PayOrderExpireJob {
         for (PayOrderDO order : orders) {
             try {
                 ProviderContext ctx = router.resolve(order.getChannel(), order.getConfigId());
-                ctx.getProvider().close(order, ctx.getConfig());
+                ctx.provider().close(order, ctx.config());
                 payOrderService.updateToClosed(order.getId());
             } catch (Exception e) {
                 // 关单失败（含渠道侧已支付）：保持 PENDING，由回调推进或下轮重试，不中断其他订单
@@ -47,4 +47,5 @@ public class PayOrderExpireJob {
             }
         }
     }
+
 }

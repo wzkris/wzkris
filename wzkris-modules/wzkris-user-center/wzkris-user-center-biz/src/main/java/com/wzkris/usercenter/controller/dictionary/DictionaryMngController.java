@@ -40,10 +40,10 @@ public class DictionaryMngController {
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<DictionaryMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return dictionaryMngApi.queryInfo(request);
+    public Result<DictionaryMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return dictionaryMngApi.queryById(request);
     }
 
     @Operation(summary = "新增")

@@ -9,7 +9,7 @@ import com.wzkris.usercenter.api.tenantwallet.response.TenantWalletRecordInfoPag
 
 public interface TenantWalletInfoApi {
 
-    Result<TenantWalletInfoQueryResponse> queryInfo();
+    Result<TenantWalletInfoQueryResponse> query();
 
     Result<Page<TenantWalletRecordInfoPageResponse>> queryRecordPage(TenantWalletRecordInfoPageRequest request);
 

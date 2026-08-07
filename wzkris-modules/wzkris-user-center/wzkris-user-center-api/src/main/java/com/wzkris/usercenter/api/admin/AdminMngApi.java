@@ -22,7 +22,7 @@ public interface AdminMngApi {
 
     Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request);
 
-    Result<AdminMngQueryResponse> queryInfo(IdRequest request);
+    Result<AdminMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(AdminMngSaveRequest request);
 

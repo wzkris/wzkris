@@ -36,7 +36,7 @@ public class TenantWalletInfoApiImpl extends AbstractApi implements TenantWallet
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<TenantWalletInfoQueryResponse> queryInfo() {
+    public Result<TenantWalletInfoQueryResponse> query() {
         return ok(tenantWalletInfoService.getById2VO(SecurityUtil.getTenantId(), TenantWalletInfoQueryResponse.class));
     }
 

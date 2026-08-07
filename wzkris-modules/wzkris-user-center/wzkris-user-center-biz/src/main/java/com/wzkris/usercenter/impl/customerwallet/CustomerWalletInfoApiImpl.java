@@ -28,7 +28,7 @@ public class CustomerWalletInfoApiImpl extends AbstractApi implements CustomerWa
     private final CustomerWalletRecordMapper customerWalletRecordMapper;
 
     @Override
-    public Result<CustomerWalletInfoQueryResponse> queryInfo() {
+    public Result<CustomerWalletInfoQueryResponse> query() {
         return ok(customerWalletInfoService.getById2VO(SecurityUtil.getUid(), CustomerWalletInfoQueryResponse.class));
     }
 

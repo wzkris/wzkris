@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 /**
  * 租户详情响应（Mng 轨单对象 -> {域}MngQueryResponse）
  *
- * <p>queryInfo 走 {@code selectMngVOById} 跨表 SQL，已包含套餐/钱包展示字段。
+ * <p>queryById 走 {@code selectMngVOById} 跨表 SQL，已包含套餐/钱包展示字段。
  *
  * @author wzkris
  */

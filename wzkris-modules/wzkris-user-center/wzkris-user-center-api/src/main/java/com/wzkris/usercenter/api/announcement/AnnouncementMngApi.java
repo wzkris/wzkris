@@ -14,7 +14,7 @@ public interface AnnouncementMngApi {
 
     Result<Page<AnnouncementMngPageResponse>> queryPage(AnnouncementMngPageRequest request);
 
-    Result<AnnouncementMngQueryResponse> queryInfo(IdRequest request);
+    Result<AnnouncementMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(AnnouncementMngSaveRequest request);
 

@@ -50,7 +50,7 @@ public class DeptMngApiImpl extends AbstractApi implements DeptMngApi {
     }
 
     @Override
-    public Result<DeptMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<DeptMngQueryResponse> queryById(IdRequest request) {
         Long deptId = request.getId();
         if (!deptInfoService.checkDataScopes(deptId)) {
             return accessDenied("数据权限不足");

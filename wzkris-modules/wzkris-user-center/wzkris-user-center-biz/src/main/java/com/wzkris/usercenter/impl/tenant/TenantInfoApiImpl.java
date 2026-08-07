@@ -26,7 +26,7 @@ public class TenantInfoApiImpl extends AbstractApi implements TenantInfoApi {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<TenantInfoQueryResponse> queryInfo() {
+    public Result<TenantInfoQueryResponse> query() {
         return ok(tenantInfoMapper.selectVOById(SecurityUtil.getTenantId()));
     }
 

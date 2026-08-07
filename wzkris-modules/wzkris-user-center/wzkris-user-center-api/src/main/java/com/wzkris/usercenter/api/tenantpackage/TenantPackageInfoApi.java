@@ -5,6 +5,6 @@ import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageInfoQueryRe
 
 public interface TenantPackageInfoApi {
 
-    Result<TenantPackageInfoQueryResponse> queryInfo();
+    Result<TenantPackageInfoQueryResponse> query();
 
 }

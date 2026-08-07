@@ -4,8 +4,8 @@ import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.payment.config.PaymentProperties;
 import com.wzkris.payment.domain.PayNotifyTaskDO;
 import com.wzkris.payment.enums.notify.NotifyTaskStatusEnum;
-import com.wzkris.payment.service.PayNotifyTaskService;
 import com.wzkris.payment.service.PayNotifySenderService;
+import com.wzkris.payment.service.PayNotifyTaskService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -92,4 +92,5 @@ public class PayNotifySenderServiceImpl implements PayNotifySenderService {
             task.setNextRetryAt(OffsetDateTime.now().plusSeconds(interval * next));
         }
     }
+
 }

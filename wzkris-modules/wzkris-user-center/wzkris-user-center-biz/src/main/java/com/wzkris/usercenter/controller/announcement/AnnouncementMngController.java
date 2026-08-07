@@ -41,10 +41,10 @@ public class AnnouncementMngController {
     }
 
     @Operation(summary = "详情")
-    @GetMapping("/query-info/{id}")
+    @GetMapping("/query-id/{id}")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<AnnouncementMngQueryResponse> queryInfo(@ParameterObject IdRequest request) {
-        return announcementMngApi.queryInfo(request);
+    public Result<AnnouncementMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return announcementMngApi.queryById(request);
     }
 
     @Operation(summary = "添加草稿")

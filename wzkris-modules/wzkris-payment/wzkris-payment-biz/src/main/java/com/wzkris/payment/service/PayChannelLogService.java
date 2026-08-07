@@ -9,4 +9,5 @@ import com.wzkris.payment.domain.PayChannelLogDO;
  * @author wzkris
  */
 public interface PayChannelLogService extends IServicePlus<PayChannelLogDO> {
+
 }

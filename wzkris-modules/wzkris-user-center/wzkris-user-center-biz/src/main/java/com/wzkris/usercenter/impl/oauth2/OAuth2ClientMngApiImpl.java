@@ -43,7 +43,7 @@ public class OAuth2ClientMngApiImpl extends AbstractApi implements OAuth2ClientM
     }
 
     @Override
-    public Result<OAuth2ClientMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<OAuth2ClientMngQueryResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(oAuth2ClientService.getById(request.getId()), OAuth2ClientMngQueryResponse.class));
     }
 

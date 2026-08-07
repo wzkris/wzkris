@@ -26,10 +26,10 @@ public class CustomerInfoController {
     private final CustomerInfoApi customerInfoApi;
 
     @Operation(summary = "获取信息")
-    @GetMapping("/query-info")
+    @GetMapping("/query")
     @Cacheable(value = info_prefix + "#3_600_000", key = "@uch.getLoginUser().getUid()", sync = true)
-    public Result<CustomerInfoQueryResponse> queryInfo() {
-        return customerInfoApi.queryInfo();
+    public Result<CustomerInfoQueryResponse> query() {
+        return customerInfoApi.query();
     }
 
     @Operation(summary = "修改信息")

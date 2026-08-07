@@ -77,7 +77,7 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
     }
 
     @Override
-    public Result<TenantPackageInfoQueryResponse> queryInfo() {
+    public Result<TenantPackageInfoQueryResponse> query() {
         TenantInfoDO tenant = tenantInfoService.getById(SecurityUtil.getTenantId());
         if (tenant == null) {
             return requestFail("租户不存在");

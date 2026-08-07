@@ -14,7 +14,7 @@ public interface MemberMngApi {
 
     Result<Page<MemberMngPageResponse>> queryPage(MemberMngPageRequest request);
 
-    Result<MemberMngQueryResponse> queryInfo(IdRequest request);
+    Result<MemberMngQueryResponse> queryById(IdRequest request);
 
     Result<CheckedSelectResponse> queryPostSelect(MemberMngPostSelectRequest request);
 

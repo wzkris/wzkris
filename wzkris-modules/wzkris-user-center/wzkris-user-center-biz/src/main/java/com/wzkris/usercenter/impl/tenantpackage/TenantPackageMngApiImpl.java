@@ -52,7 +52,7 @@ public class TenantPackageMngApiImpl extends AbstractApi implements TenantPackag
     }
 
     @Override
-    public Result<TenantPackageMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<TenantPackageMngQueryResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(tenantPackageInfoService.getById(request.getId()), TenantPackageMngQueryResponse.class));
     }
 

@@ -8,7 +8,7 @@ import com.wzkris.usercenter.api.customerwallet.response.CustomerWalletRecordInf
 
 public interface CustomerWalletInfoApi {
 
-    Result<CustomerWalletInfoQueryResponse> queryInfo();
+    Result<CustomerWalletInfoQueryResponse> query();
 
     Result<Page<CustomerWalletRecordInfoPageResponse>> queryRecordPage(CustomerWalletRecordPageRequest request);
 

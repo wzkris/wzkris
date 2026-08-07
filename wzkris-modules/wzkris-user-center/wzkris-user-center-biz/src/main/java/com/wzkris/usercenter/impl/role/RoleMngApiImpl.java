@@ -65,7 +65,7 @@ public class RoleMngApiImpl extends AbstractApi implements RoleMngApi {
     }
 
     @Override
-    public Result<RoleMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<RoleMngQueryResponse> queryById(IdRequest request) {
         Long roleId = request.getId();
         if (!roleInfoMapper.checkDataScopes(roleId)) {
             return accessDenied("数据权限不足");

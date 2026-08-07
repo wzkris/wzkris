@@ -50,4 +50,5 @@ public class PayRefundOrderDO extends BaseEntity {
 
     @Schema(description = "失败原因")
     private String failReason;
+
 }

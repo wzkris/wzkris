@@ -49,4 +49,5 @@ public interface PayOrderService extends IServicePlus<PayOrderDO> {
      * 供关单巡检任务使用。
      */
     List<PayOrderDO> findExpiredPending(int limit);
+
 }

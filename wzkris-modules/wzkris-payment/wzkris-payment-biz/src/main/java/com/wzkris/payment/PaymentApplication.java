@@ -20,7 +20,7 @@ public class PaymentApplication {
         springApplication.run(args);
         System.out.println(
                 """
-
+                        
                           (♥◠‿◠)ﾉﾞ  支付网关启动成功   ლ(´ڡ`ლ)ﾞ
                         """);
     }

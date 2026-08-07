@@ -94,7 +94,7 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
     }
 
     @Override
-    public Result<AdminMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<AdminMngQueryResponse> queryById(IdRequest request) {
         Long adminId = request.getId();
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");

@@ -50,7 +50,7 @@ public class MenuMngApiImpl extends AbstractApi implements MenuMngApi {
     }
 
     @Override
-    public Result<MenuMngQueryResponse> queryInfo(IdRequest request) {
+    public Result<MenuMngQueryResponse> queryById(IdRequest request) {
         return ok(BeanCopierUtil.copy(menuInfoService.getById(request.getId()), MenuMngQueryResponse.class));
     }
 

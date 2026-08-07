@@ -13,4 +13,5 @@ public interface PayNotifySenderService {
      * 同步发送一次通知，按结果更新任务状态与重试计划
      */
     void send(PayNotifyTaskDO task);
+
 }

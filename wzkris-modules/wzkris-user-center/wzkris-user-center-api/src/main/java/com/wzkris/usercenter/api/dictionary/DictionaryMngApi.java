@@ -13,7 +13,7 @@ public interface DictionaryMngApi {
 
     Result<Page<DictionaryMngPageResponse>> queryPage(DictionaryMngPageRequest request);
 
-    Result<DictionaryMngQueryResponse> queryInfo(IdRequest request);
+    Result<DictionaryMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(DictionaryMngSaveRequest request);
 

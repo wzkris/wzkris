@@ -55,4 +55,5 @@ public class PayNotifyTaskDO extends BaseEntity {
 
     @Schema(description = "错误信息")
     private String errorMsg;
+
 }
