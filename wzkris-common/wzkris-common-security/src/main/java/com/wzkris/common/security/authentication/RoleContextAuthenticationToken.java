@@ -20,13 +20,29 @@ public class RoleContextAuthenticationToken extends UsernamePasswordAuthenticati
 
     private final RoleContext roleContext;
 
-    protected RoleContextAuthenticationToken(Object principal, Object credentials, RoleContext roleContext) {
+    /**
+     * 已认证构造：经由父类 3 参构造，authenticated 被置为 true。
+     */
+    private RoleContextAuthenticationToken(Object principal, Object credentials, RoleContext roleContext) {
         super(principal, credentials, roleContext != null ? AuthorityUtils.createAuthorityList(roleContext.getGrantedAuthority()) : Collections.emptyList());
         this.roleContext = roleContext;
     }
 
+    /**
+     * 未认证构造：必须走父类 2 参构造以置 authenticated=false。
+     * <p>
+     * 父类 {@link UsernamePasswordAuthenticationToken} 的 3 参构造会调用 setAuthenticated(true)，
+     * 仅 2 参构造才会置 false。原先 unauthenticated() 复用 3 参构造，导致「未认证」token 实际
+     * authenticated=true，配合 null principal 使 isLogin() 误判为已登录、getLoginUser() 返回 null，
+     * 调用方取值即触发 NPE。
+     */
+    private RoleContextAuthenticationToken() {
+        super(null, null);
+        this.roleContext = null;
+    }
+
     public static RoleContextAuthenticationToken unauthenticated() {
-        return new RoleContextAuthenticationToken(null, null, null);
+        return new RoleContextAuthenticationToken();
     }
 
     public static RoleContextAuthenticationToken authenticated(Object principal, Object credentials, RoleContext roleContext) {

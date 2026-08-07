@@ -18,6 +18,11 @@ public class SwaggerProperties {
     private String apiGroup = "default";
 
     /**
+     * 远程调用接口分组名（服务间内部调用），文档地址为 {@code /v3/api-docs/{remoteGroup}}
+     */
+    private String remoteGroup = "remote";
+
+    /**
      * 标题
      **/
     private String title = "";

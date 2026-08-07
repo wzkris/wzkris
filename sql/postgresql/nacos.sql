@@ -1967,13 +1967,23 @@ route-decision:
     defaultHintValue: ""
 
 knife4j:
-  # 聚合swagger文档
   gateway:
     enabled: true
     strategy: discover
     discover:
       version: openapi3
       enabled: true
+      oas3:
+        url: /v3/api-docs/default
+    routes:
+      - name: 认证服务-远程接口
+        url: /wzkris-auth-api/v3/api-docs/remote
+        context-path: /wzkris-auth-api
+        order: 2
+      - name: 用户中心-远程接口
+        url: /wzkris-user-center-api/v3/api-docs/remote
+        context-path: /wzkris-user-center-api
+        order: 4
     tags-sorter: order
     operations-sorter: order
 
@@ -1981,7 +1991,7 @@ security:
   risk-captcha:
     enabled: true
     enforcedPaths:
-      - /wzkris-auth-api/login', '4a9b510cb08bb09971110bc3d1d9e4da', '2023-06-19 02:28:00', '2026-07-31 18:19:59.870425', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+      - /wzkris-auth-api/login', 'eaa692ac2d9c9ac50f7cade55c6bd0a3', '2023-06-19 02:28:00', '2026-08-07 10:44:52.583763', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 
 
 --
@@ -2103,7 +2113,7 @@ SELECT pg_catalog.setval('nacos.group_capacity_id_seq', 1, false);
 -- Name: his_config_info_nid_seq; Type: SEQUENCE SET; Schema: nacos; Owner: root
 --
 
-SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 1, true);
+SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 22, true);
 
 
 --

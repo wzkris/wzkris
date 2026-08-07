@@ -11,7 +11,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * Knife4j / SpringDoc 公共装配：单分组、仅收录带 {@code io.swagger.v3.oas.annotations.tags.Tag} 的接口。
+ * Knife4j / SpringDoc 公共装配：双分组——默认分组仅收录带
+ * {@code io.swagger.v3.oas.annotations.tags.Tag} 的业务接口，remote 分组收录服务间远程调用接口。
  */
 @EnableConfigurationProperties(SwaggerProperties.class)
 @ConditionalOnProperty(name = "springdoc.enabled", matchIfMissing = true)
@@ -28,7 +29,15 @@ public class SwaggerAutoConfiguration {
     public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
                 .group(swaggerProperties.getApiGroup())
-                .addOpenApiMethodFilter(OpenApiMethodPredicates::hasTag)
+                .addOpenApiMethodFilter(OpenApiMethodPredicates::isBusiness)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi remoteGroupedOpenApi() {
+        return GroupedOpenApi.builder()
+                .group(swaggerProperties.getRemoteGroup())
+                .addOpenApiMethodFilter(OpenApiMethodPredicates::isRemoteController)
                 .build();
     }
 
