@@ -49,14 +49,14 @@ Requires running **Nacos** (8848, dev namespace `application-dev`, groups `APPLI
 ```
 wzkris (root pom, packaging=pom)
 ├── wzkris-bom              # dependencyManagement only (all com.wzkris versions)
-├── wzkris-common           # 15 reusable libs (core/orm/redis/security/web/log/remote/...)
+├── wzkris-common           # 24 reusable libs (core/orm/redis/security/web/log/remote/statemachine/stream/notifier/oss/...)
 ├── wzkris-auth             # OAuth2.1 server (api + biz)
 ├── wzkris-gateway          # API gateway (api + biz)
 ├── wzkris-captcha          # captcha service
 ├── wzkris-modules          # business domains aggregator
 │   ├── wzkris-user-center  # api + biz (system mgmt: user/role/menu/dept/dict/config/log)
 │   └── wzkris-payment      # api + biz (payment gateway)
-├── wzkris-extends          # monitor-admin etc.
+├── wzkris-extends          # monitor-admin (9100) / mqtt-server / track (9102)
 └── wzkris-demo             # examples (oauth2-client, mq, pg-bus)
 ```
 
@@ -104,7 +104,7 @@ Controllers depend on the `Api` interface, **not** directly on Service/Mapper. E
 - **`@OperateLog(title, subTitle, type = OperateTypeEnum.INSERT)`** (`wzkris-common-log`) — audit logging on mutating endpoints.
 - **`@Idempotent(key = "SpEL", ttlSeconds = 15)`** (`wzkris-common-redis`) — Redis `setIfAbsent` idempotency.
 - **`DistLockTemplate.lockAndExecute(lockKey, Supplier<T>)`** — static Redisson distributed lock. Has `Runnable`/`Supplier`/`ThrowableSupplier` overloads; a bare lambda is ambiguous → cast to `(Supplier<T>) () -> ...`.
-- **`@RemoteInterface(serviceId = "...", path = "...")`** (`wzkris-common-remote`) — declarative HTTP clients via Spring 6 `HttpServiceProxyFactory` + `RestClient`. **NOT OpenFeign.** Enable with `@EnableRemoteInterfaces`.
+- **`@RemoteInterface(serviceId = "...", path = "...")`** (`wzkris-common-remote`) — declarative HTTP clients via Spring 6 `HttpServiceProxyFactory` + `RestClient`. **NOT OpenFeign.** Enable with `@EnableRemoteInterfaces`. (`wzkris-common-openfeign` exists as a module but is unused - no `@FeignClient` anywhere in the codebase; do not reach for Feign.)
 
 ### Response & enums
 - **`Result<T>`**: `ok(data)` / `requestFail(msg)` / `accessDenied(msg)` / `toRes(rows|boolean)`. `AbstractApi` base class provides `ok`/`requestFail`/`accessDenied`/`toRes` to ApiImpls.

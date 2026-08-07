@@ -16,12 +16,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS config_db;
+DROP DATABASE IF EXISTS config_db WITH (FORCE);
 --
 -- Name: config_db; Type: DATABASE; Schema: -; Owner: root
 --
 
-CREATE DATABASE config_db WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Chinese (Simplified)_China.936';
+CREATE DATABASE config_db WITH ENCODING = 'UTF8';
 
 
 ALTER DATABASE config_db OWNER TO root;

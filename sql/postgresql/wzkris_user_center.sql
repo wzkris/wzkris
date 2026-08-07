@@ -7,6 +7,17 @@
 
 -- Started on 2026-04-14 14:09:27
 
+DROP DATABASE IF EXISTS wzkris_user_center WITH (FORCE);
+--
+-- Name: wzkris_user_center; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE wzkris_user_center WITH ENCODING = 'UTF8';
+
+ALTER DATABASE wzkris_user_center OWNER TO postgres;
+
+\connect wzkris_user_center
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -1279,7 +1290,7 @@ COMMENT ON COLUMN biz.oauth2_client.hint IS '标签';
 
 --
 -- TOC entry 227 (class 1259 OID 26014)
--- Name: post_info; Type: TABLE; Schema: biz; Owner: root
+-- Name: post_info; Type: TABLE; Schema: biz; Owner: postgres
 --
 
 CREATE TABLE biz.post_info (
@@ -1297,12 +1308,12 @@ CREATE TABLE biz.post_info (
 );
 
 
-ALTER TABLE biz.post_info OWNER TO root;
+ALTER TABLE biz.post_info OWNER TO postgres;
 
 --
 -- TOC entry 3624 (class 0 OID 0)
 -- Dependencies: 227
--- Name: TABLE post_info; Type: COMMENT; Schema: biz; Owner: root
+-- Name: TABLE post_info; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON TABLE biz.post_info IS '租户职位信息';
@@ -1311,7 +1322,7 @@ COMMENT ON TABLE biz.post_info IS '租户职位信息';
 --
 -- TOC entry 3625 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.id; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.id IS '职位ID';
@@ -1320,7 +1331,7 @@ COMMENT ON COLUMN biz.post_info.id IS '职位ID';
 --
 -- TOC entry 3626 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.tenant_id; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.tenant_id IS '租户ID';
@@ -1329,7 +1340,7 @@ COMMENT ON COLUMN biz.post_info.tenant_id IS '租户ID';
 --
 -- TOC entry 3627 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.post_name; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.post_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.post_name IS '职位名称';
@@ -1338,7 +1349,7 @@ COMMENT ON COLUMN biz.post_info.post_name IS '职位名称';
 --
 -- TOC entry 3628 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.status; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.status IS '状态（0代表正常 1代表停用）';
@@ -1347,7 +1358,7 @@ COMMENT ON COLUMN biz.post_info.status IS '状态（0代表正常 1代表停用�
 --
 -- TOC entry 3629 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.post_sort; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.post_sort; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.post_sort IS '排序';
@@ -1356,7 +1367,7 @@ COMMENT ON COLUMN biz.post_info.post_sort IS '排序';
 --
 -- TOC entry 3630 (class 0 OID 0)
 -- Dependencies: 227
--- Name: COLUMN post_info.hint; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN post_info.hint; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.post_info.hint IS '标签';
@@ -1413,7 +1424,7 @@ COMMENT ON COLUMN biz.post_to_menu.menu_id IS '菜单ID';
 
 --
 -- TOC entry 229 (class 1259 OID 26021)
--- Name: role_info; Type: TABLE; Schema: biz; Owner: root
+-- Name: role_info; Type: TABLE; Schema: biz; Owner: postgres
 --
 
 CREATE TABLE biz.role_info (
@@ -1431,12 +1442,12 @@ CREATE TABLE biz.role_info (
 );
 
 
-ALTER TABLE biz.role_info OWNER TO root;
+ALTER TABLE biz.role_info OWNER TO postgres;
 
 --
 -- TOC entry 3634 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.id; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.id IS '角色ID';
@@ -1445,7 +1456,7 @@ COMMENT ON COLUMN biz.role_info.id IS '角色ID';
 --
 -- TOC entry 3635 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.data_scope; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.data_scope; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.data_scope IS '数据范围（1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限,5=仅本人数据权限）';
@@ -1454,7 +1465,7 @@ COMMENT ON COLUMN biz.role_info.data_scope IS '数据范围（1=所有数据权�
 --
 -- TOC entry 3636 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.role_name; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.role_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.role_name IS '角色名称';
@@ -1463,7 +1474,7 @@ COMMENT ON COLUMN biz.role_info.role_name IS '角色名称';
 --
 -- TOC entry 3637 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.status; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.status IS '状态（0代表正常 1代表停用）';
@@ -1472,7 +1483,7 @@ COMMENT ON COLUMN biz.role_info.status IS '状态（0代表正常 1代表停用�
 --
 -- TOC entry 3638 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.role_sort; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.role_sort; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.role_sort IS '排序';
@@ -1481,7 +1492,7 @@ COMMENT ON COLUMN biz.role_info.role_sort IS '排序';
 --
 -- TOC entry 3639 (class 0 OID 0)
 -- Dependencies: 229
--- Name: COLUMN role_info.hint; Type: COMMENT; Schema: biz; Owner: root
+-- Name: COLUMN role_info.hint; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
 COMMENT ON COLUMN biz.role_info.hint IS '标签';
@@ -2463,7 +2474,7 @@ COPY biz.oauth2_client (id, client_name, client_id, client_secret, scopes, autho
 --
 -- TOC entry 3503 (class 0 OID 26014)
 -- Dependencies: 227
--- Data for Name: post_info; Type: TABLE DATA; Schema: biz; Owner: root
+-- Data for Name: post_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 COPY biz.post_info (id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
@@ -2495,7 +2506,7 @@ COPY biz.post_to_menu (id, post_id, menu_id, creator_id, create_at) FROM stdin;
 --
 -- TOC entry 3505 (class 0 OID 26021)
 -- Dependencies: 229
--- Data for Name: role_info; Type: TABLE DATA; Schema: biz; Owner: root
+-- Data for Name: role_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 COPY biz.role_info (id, data_scope, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) FROM stdin;
@@ -2695,7 +2706,7 @@ ALTER TABLE ONLY biz.oauth2_client
 
 --
 -- TOC entry 3325 (class 2606 OID 26082)
--- Name: post_info post_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
+-- Name: post_info post_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.post_info
@@ -2713,7 +2724,7 @@ ALTER TABLE ONLY biz.post_to_menu
 
 --
 -- TOC entry 3329 (class 2606 OID 26086)
--- Name: role_info role_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: root
+-- Name: role_info role_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
 ALTER TABLE ONLY biz.role_info
@@ -4186,16 +4197,6 @@ COPY biz.announcement_info (id, title, content, status, creator_id, updater_id, 
 
 
 --
--- TOC entry 3398 (class 0 OID 26170)
--- Dependencies: 225
--- Data for Name: chat_persist_info; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-COPY biz.chat_persist_info (id, receiver_id, sender_id, send_time, receive_time, read, resource_type, content, media_format, creator_id, updater_id, create_at, update_at, hint, deleted) FROM stdin;
-\.
-
-
---
 -- TOC entry 3391 (class 0 OID 26136)
 -- Dependencies: 218
 -- Data for Name: config_info; Type: TABLE DATA; Schema: biz; Owner: postgres
@@ -4337,15 +4338,6 @@ ALTER TABLE ONLY biz.customer_login_log
 
 ALTER TABLE ONLY biz.announcement_info
     ADD CONSTRAINT announcement_info_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3245 (class 2606 OID 26346)
--- Name: chat_persist_info chat_persist_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.chat_persist_info
-    ADD CONSTRAINT chat_persist_info_pkey PRIMARY KEY (id);
 
 
 --
