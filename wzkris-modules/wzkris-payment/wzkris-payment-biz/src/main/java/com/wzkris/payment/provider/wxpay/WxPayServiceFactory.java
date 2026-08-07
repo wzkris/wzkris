@@ -3,6 +3,7 @@ package com.wzkris.payment.provider.wxpay;
 import com.github.binarywang.wxpay.config.WxPayConfig;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.service.impl.WxPayServiceImpl;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.payment.domain.PayChannelConfigDO;
 import com.wzkris.payment.event.PayChannelConfigChangedEvent;
@@ -34,7 +35,7 @@ public class WxPayServiceFactory {
                 || config.getApiKey() == null
                 || config.getPrivateKey() == null
                 || config.getCertSerialNo() == null) {
-            throw new BusinessException(99902, "微信支付配置不完整(appId/mchId/apiKey/privateKey/certSerialNo)");
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信支付配置不完整(appId/mchId/apiKey/privateKey/certSerialNo)");
         }
         WxPayConfig payConfig = new WxPayConfig();
         payConfig.setAppId(config.getAppId());

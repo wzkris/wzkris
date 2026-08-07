@@ -2,7 +2,7 @@ package com.wzkris.payment.controller.refund;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.request.IdRequest;
-import com.wzkris.payment.api.refund.PayRefundApi;
+import com.wzkris.payment.api.refund.RefundApi;
 import com.wzkris.payment.api.refund.request.RefundApplyRequest;
 import com.wzkris.payment.api.refund.response.RefundOrderResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/refund")
 @RequiredArgsConstructor
-public class PayRefundController {
+public class RefundController {
 
-    private final PayRefundApi refundApi;
+    private final RefundApi refundApi;
 
     @Operation(summary = "申请退款")
     @PostMapping("/apply")

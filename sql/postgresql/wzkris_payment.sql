@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS biz.pay_channel_config (
     public_cert    text,
     cert_serial_no varchar(128),
     notify_url     varchar(256),
+    refund_notify_url varchar(256),
     pay_modes      varchar(128),
     status         varchar(16)      DEFAULT 'ENABLED' NOT NULL,
     remark         varchar(256),
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS biz.pay_channel_config (
 );
 COMMENT ON TABLE  biz.pay_channel_config IS '渠道商户配置';
 COMMENT ON COLUMN biz.pay_channel_config.id IS '配置ID';
-COMMENT ON COLUMN biz.pay_channel_config.channel IS '支付渠道 WXPAY/ALIPAY';
+COMMENT ON COLUMN biz.pay_channel_config.channel IS '支付渠道 wxpay/alipay';
 COMMENT ON COLUMN biz.pay_channel_config.name IS '配置名称(人工识别)';
 COMMENT ON COLUMN biz.pay_channel_config.app_id IS '应用ID';
 COMMENT ON COLUMN biz.pay_channel_config.mch_id IS '商户号';
@@ -44,7 +45,8 @@ COMMENT ON COLUMN biz.pay_channel_config.api_key IS 'API密钥(微信APIv3密钥
 COMMENT ON COLUMN biz.pay_channel_config.private_key IS '商户私钥PEM(微信apiclient_key.pem)';
 COMMENT ON COLUMN biz.pay_channel_config.public_cert IS '平台证书/公钥(微信v3平台证书可由SDK自动下载,可留空)';
 COMMENT ON COLUMN biz.pay_channel_config.cert_serial_no IS '商户证书序列号(微信v3签名必需)';
-COMMENT ON COLUMN biz.pay_channel_config.notify_url IS '渠道回调地址(需含configId路由商户,如 /pay/notify/WXPAY/{config_id})';
+COMMENT ON COLUMN biz.pay_channel_config.notify_url IS '渠道支付回调地址(需含configId路由商户,如 /pay/notify/wxpay/{config_id})';
+COMMENT ON COLUMN biz.pay_channel_config.refund_notify_url IS '渠道退款回调地址(需含configId路由商户,如 /refund/notify/wxpay/{config_id};为空则不接收退款回调,需主动查单)';
 COMMENT ON COLUMN biz.pay_channel_config.pay_modes IS '支持的支付方式,逗号分隔 JSAPI,NATIVE,APP,H5';
 COMMENT ON COLUMN biz.pay_channel_config.status IS '状态 ENABLED/DISABLED';
 CREATE UNIQUE INDEX uk_pay_channel_config_channel_mch ON biz.pay_channel_config (channel, mch_id) WHERE deleted = false;
@@ -135,7 +137,7 @@ CREATE INDEX idx_pay_channel_log_order ON biz.pay_channel_log (pay_order_id) WHE
 -- ----------------------------
 -- 4、退款订单（快照 config_id）
 -- ----------------------------
-CREATE TABLE IF NOT EXISTS biz.pay_refund_order (
+CREATE TABLE IF NOT EXISTS biz.refund_order (
     id               bigint           NOT NULL,
     refund_no        varchar(32)      NOT NULL,
     pay_order_id     bigint           NOT NULL,
@@ -153,18 +155,18 @@ CREATE TABLE IF NOT EXISTS biz.pay_refund_order (
     update_at        timestamptz      DEFAULT now() NOT NULL,
     hint             varchar(64),
     deleted          boolean          DEFAULT false NOT NULL,
-    CONSTRAINT pay_refund_order_pkey PRIMARY KEY (id)
+    CONSTRAINT refund_order_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE  biz.pay_refund_order IS '退款订单';
-COMMENT ON COLUMN biz.pay_refund_order.refund_no IS '退款单号';
-COMMENT ON COLUMN biz.pay_refund_order.pay_order_id IS '原支付订单ID';
-COMMENT ON COLUMN biz.pay_refund_order.config_id IS '退款所用配置ID快照';
-COMMENT ON COLUMN biz.pay_refund_order.refund_amount IS '退款金额(元)';
-COMMENT ON COLUMN biz.pay_refund_order.status IS '退款状态 REFUNDING/SUCCESS/FAILED';
-COMMENT ON COLUMN biz.pay_refund_order.channel_refund_no IS '渠道侧退款单号';
-COMMENT ON COLUMN biz.pay_refund_order.refund_at IS '退款成功时间';
-CREATE UNIQUE INDEX uk_pay_refund_no        ON biz.pay_refund_order (refund_no) WHERE deleted = false;
-CREATE INDEX        idx_pay_refund_payorder  ON biz.pay_refund_order (pay_order_id) WHERE deleted = false;
+COMMENT ON TABLE  biz.refund_order IS '退款订单';
+COMMENT ON COLUMN biz.refund_order.refund_no IS '退款单号';
+COMMENT ON COLUMN biz.refund_order.pay_order_id IS '原支付订单ID';
+COMMENT ON COLUMN biz.refund_order.config_id IS '退款所用配置ID快照';
+COMMENT ON COLUMN biz.refund_order.refund_amount IS '退款金额(元)';
+COMMENT ON COLUMN biz.refund_order.status IS '退款状态 REFUNDING/SUCCESS/FAILED';
+COMMENT ON COLUMN biz.refund_order.channel_refund_no IS '渠道侧退款单号';
+COMMENT ON COLUMN biz.refund_order.refund_at IS '退款成功时间';
+CREATE UNIQUE INDEX IF NOT EXISTS uk_refund_no ON biz.refund_order (refund_no) WHERE deleted = false;
+CREATE INDEX        IF NOT EXISTS idx_refund_payorder ON biz.refund_order (pay_order_id) WHERE deleted = false;
 
 -- ----------------------------
 -- 5、渠道回调记录（渠道->网关，验签+幂等，notify_type 区分支付/退款，我方业务号做幂等键）

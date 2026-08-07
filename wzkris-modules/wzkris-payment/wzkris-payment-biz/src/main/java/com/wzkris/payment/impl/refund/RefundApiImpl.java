@@ -4,19 +4,19 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.web.model.AbstractApi;
-import com.wzkris.payment.api.refund.PayRefundApi;
+import com.wzkris.payment.api.refund.RefundApi;
 import com.wzkris.payment.api.refund.request.RefundApplyRequest;
 import com.wzkris.payment.api.refund.response.RefundOrderResponse;
 import com.wzkris.payment.domain.PayOrderDO;
-import com.wzkris.payment.domain.PayRefundOrderDO;
+import com.wzkris.payment.domain.RefundOrderDO;
 import com.wzkris.payment.enums.pay.PayStatusEnum;
 import com.wzkris.payment.enums.refund.RefundStatusEnum;
-import com.wzkris.payment.event.PayRefundFinishedEvent;
+import com.wzkris.payment.event.RefundFinishedEvent;
 import com.wzkris.payment.provider.PaymentProviderRouter;
 import com.wzkris.payment.provider.ProviderContext;
 import com.wzkris.payment.provider.model.RefundResult;
 import com.wzkris.payment.service.PayOrderService;
-import com.wzkris.payment.service.PayRefundOrderService;
+import com.wzkris.payment.service.RefundOrderService;
 import com.wzkris.payment.util.OrderNoGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,11 +31,11 @@ import java.math.BigDecimal;
  */
 @Service
 @RequiredArgsConstructor
-public class PayRefundApiImpl extends AbstractApi implements PayRefundApi {
+public class RefundApiImpl extends AbstractApi implements RefundApi {
 
     private final PayOrderService payOrderService;
 
-    private final PayRefundOrderService refundOrderService;
+    private final RefundOrderService refundOrderService;
 
     private final PaymentProviderRouter router;
 
@@ -64,7 +64,7 @@ public class PayRefundApiImpl extends AbstractApi implements PayRefundApi {
         }
 
         // 建退款单(REFUNDING)，短事务提交；建单失败则回退已预留额度
-        PayRefundOrderDO refund = new PayRefundOrderDO();
+        RefundOrderDO refund = new RefundOrderDO();
         refund.setRefundNo(orderNoGenerator.nextRefundNo());
         refund.setPayOrderId(order.getId());
         refund.setChannel(order.getChannel());
@@ -90,29 +90,38 @@ public class PayRefundApiImpl extends AbstractApi implements PayRefundApi {
                     if (updated) {
                         // 同步退款成功同样发布事件驱动业务方通知，与异步回调路径一致
                         eventPublisher.publishEvent(
-                                new PayRefundFinishedEvent(refund.getId(), order.getId()));
+                                new RefundFinishedEvent(refund.getId(), order.getId()));
                     }
+                    refund.setStatus(RefundStatusEnum.SUCCESS);
+                    refund.setChannelRefundNo(result.getChannelRefundNo());
+                    refund.setRefundAt(result.getRefundAt());
                 }
                 case PROCESSING -> {
                     // 渠道已受理退款(微信异步退款)，保持 REFUNDING，等异步退款回调终结为 SUCCESS/FAILED
                 }
-                case FAILED -> refundOrderService.updateToFailed(refund.getId(), result.getErrorMsg());
+                case FAILED -> {
+                    refundOrderService.updateToFailed(refund.getId(), result.getErrorMsg());
+                    refund.setStatus(RefundStatusEnum.FAILED);
+                    refund.setFailReason(result.getErrorMsg());
+                }
             }
         } catch (Exception e) {
             refundOrderService.updateToFailed(refund.getId(), e.getMessage());
+            refund.setStatus(RefundStatusEnum.FAILED);
+            refund.setFailReason(e.getMessage());
         }
 
-        PayRefundOrderDO latest = refundOrderService.getById(refund.getId());
-        RefundOrderResponse resp = BeanCopierUtil.copy(latest, RefundOrderResponse.class);
+        // 直接由内存中的退款单快照组装响应，避免再查一次库
+        RefundOrderResponse resp = BeanCopierUtil.copy(refund, RefundOrderResponse.class);
         // 枚举字段不被 cglib 自动拷贝，手动赋值
-        resp.setStatus(latest.getStatus());
-        resp.setChannel(latest.getChannel());
+        resp.setStatus(refund.getStatus());
+        resp.setChannel(refund.getChannel());
         return ok(resp);
     }
 
     @Override
     public Result<RefundOrderResponse> queryById(IdRequest request) {
-        PayRefundOrderDO refund = refundOrderService.getById(request.getId());
+        RefundOrderDO refund = refundOrderService.getById(request.getId());
         return ok(BeanCopierUtil.copy(refund, RefundOrderResponse.class));
     }
 

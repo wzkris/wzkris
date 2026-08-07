@@ -27,16 +27,21 @@ public class OrderNoGenerator {
      * 生成支付订单号
      */
     public String nextOrderNo() {
-        return properties.getOrderNoPrefix()
-                + FORMATTER.format(LocalDateTime.now())
-                + String.format("%08d", Math.abs(IdWorker.getId() % 100_000_000L));
+        return nextNo(properties.getOrderNoPrefix());
     }
 
     /**
      * 生成退款单号
      */
     public String nextRefundNo() {
-        return properties.getRefundNoPrefix()
+        return nextNo(properties.getRefundNoPrefix());
+    }
+
+    /**
+     * 前缀 + 秒级时间 + 雪花后 8 位
+     */
+    private String nextNo(String prefix) {
+        return prefix
                 + FORMATTER.format(LocalDateTime.now())
                 + String.format("%08d", Math.abs(IdWorker.getId() % 100_000_000L));
     }

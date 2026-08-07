@@ -1,6 +1,5 @@
 package com.wzkris.payment.provider.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.github.binarywang.wxpay.bean.notify.SignatureHeader;
 import com.github.binarywang.wxpay.bean.notify.WxPayNotifyV3Result;
 import com.github.binarywang.wxpay.bean.notify.WxPayRefundNotifyV3Result;
@@ -14,18 +13,19 @@ import com.github.binarywang.wxpay.bean.result.enums.TradeTypeEnum;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.github.binarywang.wxpay.v3.util.PemUtils;
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.common.core.utils.JsonUtil;
-import com.wzkris.payment.api.order.response.PrepayResponse;
 import com.wzkris.payment.domain.PayChannelConfigDO;
 import com.wzkris.payment.domain.PayOrderDO;
-import com.wzkris.payment.domain.PayRefundOrderDO;
+import com.wzkris.payment.domain.RefundOrderDO;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
-import com.wzkris.payment.enums.notify.NotifyTypeEnum;
 import com.wzkris.payment.enums.pay.PayModeEnum;
 import com.wzkris.payment.provider.PaymentProvider;
-import com.wzkris.payment.provider.model.NotifyParseResult;
+import com.wzkris.payment.provider.model.PayNotifyParseResult;
 import com.wzkris.payment.provider.model.PayQueryResult;
+import com.wzkris.payment.provider.model.PrepayResult;
+import com.wzkris.payment.provider.model.RefundNotifyParseResult;
 import com.wzkris.payment.provider.model.RefundResult;
 import com.wzkris.payment.provider.model.RefundResultStatus;
 import com.wzkris.payment.provider.wxpay.WxPayServiceFactory;
@@ -38,6 +38,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.time.OffsetDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -61,7 +62,7 @@ public class WxpayPaymentProvider implements PaymentProvider {
     }
 
     @Override
-    public PrepayResponse prepay(PayOrderDO order, PayChannelConfigDO config) {
+    public PrepayResult prepay(PayOrderDO order, PayChannelConfigDO config) {
         WxPayService service = factory.get(config);
         WxPayUnifiedOrderV3Request req = new WxPayUnifiedOrderV3Request();
         req.setOutTradeNo(order.getOrderNo());
@@ -73,7 +74,7 @@ public class WxpayPaymentProvider implements PaymentProvider {
         req.setAmount(new WxPayUnifiedOrderV3Request.Amount().setTotal(toFen(order.getAmount())));
         if (order.getPayMode() == PayModeEnum.JSAPI) {
             if (order.getPayerId() == null) {
-                throw new BusinessException(99902, "JSAPI支付需提供payerId(微信open_id)");
+                throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "JSAPI支付需提供payerId(微信open_id)");
             }
             req.setPayer(new WxPayUnifiedOrderV3Request.Payer().setOpenid(order.getPayerId()));
         }
@@ -82,11 +83,9 @@ public class WxpayPaymentProvider implements PaymentProvider {
         try {
             result = service.unifiedOrderV3(tradeType, req);
         } catch (WxPayException e) {
-            throw new BusinessException(99902, "微信预下单失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信预下单失败:" + e.getMessage());
         }
-        PrepayResponse resp = new PrepayResponse();
-        resp.setPrepayPayload(buildPrepayPayload(tradeType, config, result));
-        return resp;
+        return new PrepayResult(buildPrepayPayload(tradeType, config, result));
     }
 
     /**
@@ -112,7 +111,7 @@ public class WxpayPaymentProvider implements PaymentProvider {
         try {
             r = service.queryOrderV3(order.getOrderNo(), null);
         } catch (WxPayException e) {
-            throw new BusinessException(99902, "微信查单失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信查单失败:" + e.getMessage());
         }
         PayQueryResult result = new PayQueryResult();
         result.setChannelOrderNo(r.getTransactionId());
@@ -131,23 +130,23 @@ public class WxpayPaymentProvider implements PaymentProvider {
         try {
             service.closeOrderV3(order.getOrderNo());
         } catch (WxPayException e) {
-            throw new BusinessException(99902, "微信关单失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信关单失败:" + e.getMessage());
         }
     }
 
     @Override
-    public RefundResult refund(PayRefundOrderDO refund, PayChannelConfigDO config) {
+    public RefundResult refund(RefundOrderDO refund, PayChannelConfigDO config) {
         // 微信v3退款需原订单总额(amount.total)，退款单不含此字段，回查原单
         PayOrderDO order = payOrderService.getById(refund.getPayOrderId());
         if (order == null) {
-            throw new BusinessException(99902, "原支付订单不存在");
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "原支付订单不存在");
         }
         WxPayService service = factory.get(config);
         WxPayRefundV3Request req = new WxPayRefundV3Request();
         req.setOutTradeNo(order.getOrderNo());
         req.setOutRefundNo(refund.getRefundNo());
         req.setReason(refund.getReason());
-        req.setNotifyUrl(config.getNotifyUrl());
+        req.setNotifyUrl(config.getRefundNotifyUrl());
         req.setAmount(new WxPayRefundV3Request.Amount()
                 .setRefund(toFen(refund.getRefundAmount()))
                 .setTotal(toFen(order.getAmount())));
@@ -155,7 +154,7 @@ public class WxpayPaymentProvider implements PaymentProvider {
         try {
             r = service.refundV3(req);
         } catch (WxPayException e) {
-            throw new BusinessException(99902, "微信退款失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信退款失败:" + e.getMessage());
         }
         RefundResult result = new RefundResult();
         result.setChannelRefundNo(r.getRefundId());
@@ -169,13 +168,13 @@ public class WxpayPaymentProvider implements PaymentProvider {
     }
 
     @Override
-    public RefundResult queryRefund(PayRefundOrderDO refund, PayChannelConfigDO config) {
+    public RefundResult queryRefund(RefundOrderDO refund, PayChannelConfigDO config) {
         WxPayService service = factory.get(config);
         WxPayRefundQueryV3Result r;
         try {
             r = service.refundQueryV3(refund.getRefundNo());
         } catch (WxPayException e) {
-            throw new BusinessException(99902, "微信退款查询失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信退款查询失败:" + e.getMessage());
         }
         RefundResult result = new RefundResult();
         result.setChannelRefundNo(r.getRefundId());
@@ -189,38 +188,13 @@ public class WxpayPaymentProvider implements PaymentProvider {
     }
 
     @Override
-    public NotifyParseResult parseNotify(String body, Map<String, String> headers, PayChannelConfigDO config) {
+    public PayNotifyParseResult parsePayNotify(String body, Map<String, String> headers, PayChannelConfigDO config)
+            throws Exception {
         WxPayService service = factory.get(config);
-        SignatureHeader sigHeader = new SignatureHeader(
-                header(headers, "Wechatpay-Timestamp"),
-                header(headers, "Wechatpay-Nonce"),
-                header(headers, "Wechatpay-Signature"),
-                header(headers, "Wechatpay-Serial"));
-        String eventType;
-        try {
-            JsonNode root = JsonUtil.readTree(body);
-            eventType = root.path("event_type").asText();
-        } catch (Exception e) {
-            return failNotify(body, "微信回调报文解析失败:" + e.getMessage());
-        }
-        try {
-            if (eventType != null && eventType.startsWith("REFUND")) {
-                return parseRefundNotify(service, body, sigHeader);
-            }
-            return parsePayNotify(service, body, sigHeader);
-        } catch (Exception e) {
-            // 验签/解密失败
-            return failNotify(body, "微信回调验签/解密失败:" + e.getMessage());
-        }
-    }
-
-    private NotifyParseResult parsePayNotify(WxPayService service, String body, SignatureHeader sigHeader)
-            throws WxPayException {
-        WxPayNotifyV3Result notify = service.parseOrderNotifyV3Result(body, sigHeader);
+        WxPayNotifyV3Result notify = service.parseOrderNotifyV3Result(body, sigHeader(headers));
         WxPayNotifyV3Result.DecryptNotifyResult d = notify.getResult();
-        NotifyParseResult r = new NotifyParseResult();
+        PayNotifyParseResult r = new PayNotifyParseResult();
         r.setVerifySuccess(true);
-        r.setNotifyType(NotifyTypeEnum.PAY);
         r.setOutTradeNo(d.getOutTradeNo());
         r.setChannelNo(d.getTransactionId());
         r.setPaid("SUCCESS".equals(d.getTradeState()));
@@ -232,13 +206,14 @@ public class WxpayPaymentProvider implements PaymentProvider {
         return r;
     }
 
-    private NotifyParseResult parseRefundNotify(WxPayService service, String body, SignatureHeader sigHeader)
-            throws WxPayException {
-        WxPayRefundNotifyV3Result notify = service.parseRefundNotifyV3Result(body, sigHeader);
+    @Override
+    public RefundNotifyParseResult parseRefundNotify(String body, Map<String, String> headers, PayChannelConfigDO config)
+            throws Exception {
+        WxPayService service = factory.get(config);
+        WxPayRefundNotifyV3Result notify = service.parseRefundNotifyV3Result(body, sigHeader(headers));
         WxPayRefundNotifyV3Result.DecryptNotifyResult d = notify.getResult();
-        NotifyParseResult r = new NotifyParseResult();
+        RefundNotifyParseResult r = new RefundNotifyParseResult();
         r.setVerifySuccess(true);
-        r.setNotifyType(NotifyTypeEnum.REFUND);
         r.setOutRefundNo(d.getOutRefundNo());
         r.setChannelNo(d.getRefundId());
         String refundStatus = d.getRefundStatus();
@@ -254,22 +229,27 @@ public class WxpayPaymentProvider implements PaymentProvider {
         return r;
     }
 
+    /**
+     * 构造微信v3验签头（回调入口与退款回调入口共用）
+     */
+    private SignatureHeader sigHeader(Map<String, String> headers) {
+        return new SignatureHeader(
+                header(headers, "Wechatpay-Timestamp"),
+                header(headers, "Wechatpay-Nonce"),
+                header(headers, "Wechatpay-Signature"),
+                header(headers, "Wechatpay-Serial"));
+    }
+
     @Override
     public String buildNotifyAck(boolean success) {
         // 微信v3回调应答JSON
-        return "{\"code\":\"" + (success ? "SUCCESS" : "FAIL") + "\",\"message\":\""
-                + (success ? "成功" : "失败") + "\"}";
+        Map<String, String> ack = new LinkedHashMap<>();
+        ack.put("code", success ? "SUCCESS" : "FAIL");
+        ack.put("message", success ? "成功" : "失败");
+        return JsonUtil.toJsonString(ack);
     }
 
     // -------------------- helpers --------------------
-
-    private NotifyParseResult failNotify(String body, String err) {
-        NotifyParseResult r = new NotifyParseResult();
-        r.setVerifySuccess(false);
-        r.setErrorMsg(err);
-        r.setRawBody(body);
-        return r;
-    }
 
     private TradeTypeEnum mapTradeType(PayModeEnum mode) {
         return switch (mode) {
@@ -296,7 +276,7 @@ public class WxpayPaymentProvider implements PaymentProvider {
             return PemUtils.loadPrivateKey(
                     new ByteArrayInputStream(pem.getBytes(StandardCharsets.UTF_8)));
         } catch (Exception e) {
-            throw new BusinessException(99902, "微信商户私钥加载失败:" + e.getMessage());
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "微信商户私钥加载失败:" + e.getMessage());
         }
     }
 

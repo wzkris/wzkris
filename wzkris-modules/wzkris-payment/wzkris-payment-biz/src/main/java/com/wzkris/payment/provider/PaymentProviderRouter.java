@@ -1,5 +1,6 @@
 package com.wzkris.payment.provider;
 
+import com.wzkris.common.core.enums.BizBaseCodeEnum;
 import com.wzkris.common.core.exception.service.BusinessException;
 import com.wzkris.payment.domain.PayChannelConfigDO;
 import com.wzkris.payment.enums.channel.ChannelStatusEnum;
@@ -30,21 +31,21 @@ public class PaymentProviderRouter {
      */
     public ProviderContext resolve(PayChannelEnum channel, @Nullable Long configId) {
         if (configId == null) {
-            throw new BusinessException(99902, "未指定渠道配置:" + channel);
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "未指定渠道配置:" + channel);
         }
         PaymentProvider provider = providers.stream()
                 .filter(p -> p.channel() == channel)
                 .findFirst()
-                .orElseThrow(() -> new BusinessException(99902, "不支持的支付渠道:" + channel));
+                .orElseThrow(() -> new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "不支持的支付渠道:" + channel));
         PayChannelConfigDO config = configService.getById(configId);
         if (config == null) {
-            throw new BusinessException(99902, "渠道配置不存在:" + configId);
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "渠道配置不存在:" + configId);
         }
         if (config.getStatus() != ChannelStatusEnum.ENABLED) {
-            throw new BusinessException(99902, "渠道配置已停用:" + channel);
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "渠道配置已停用:" + channel);
         }
         if (config.getChannel() != channel) {
-            throw new BusinessException(99902, "配置与渠道不匹配:" + channel);
+            throw new BusinessException(BizBaseCodeEnum.REQUEST_ERROR.value(), "配置与渠道不匹配:" + channel);
         }
         return new ProviderContext(provider, config);
     }

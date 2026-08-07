@@ -1,12 +1,13 @@
 package com.wzkris.payment.provider;
 
-import com.wzkris.payment.api.order.response.PrepayResponse;
 import com.wzkris.payment.domain.PayChannelConfigDO;
 import com.wzkris.payment.domain.PayOrderDO;
-import com.wzkris.payment.domain.PayRefundOrderDO;
+import com.wzkris.payment.domain.RefundOrderDO;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
-import com.wzkris.payment.provider.model.NotifyParseResult;
+import com.wzkris.payment.provider.model.PayNotifyParseResult;
 import com.wzkris.payment.provider.model.PayQueryResult;
+import com.wzkris.payment.provider.model.PrepayResult;
+import com.wzkris.payment.provider.model.RefundNotifyParseResult;
 import com.wzkris.payment.provider.model.RefundResult;
 
 import java.util.Map;
@@ -28,7 +29,7 @@ public interface PaymentProvider {
     /**
      * 预下单，返回渠道侧支付参数
      */
-    PrepayResponse prepay(PayOrderDO order, PayChannelConfigDO config);
+    PrepayResult prepay(PayOrderDO order, PayChannelConfigDO config);
 
     /**
      * 主动查单
@@ -43,17 +44,22 @@ public interface PaymentProvider {
     /**
      * 退款
      */
-    RefundResult refund(PayRefundOrderDO refund, PayChannelConfigDO config);
+    RefundResult refund(RefundOrderDO refund, PayChannelConfigDO config);
 
     /**
      * 查询退款
      */
-    RefundResult queryRefund(PayRefundOrderDO refund, PayChannelConfigDO config);
+    RefundResult queryRefund(RefundOrderDO refund, PayChannelConfigDO config);
 
     /**
-     * 解析并验签异步回调
+     * 解析并验签【支付】异步回调。验签/解密失败时抛出，由编排层 catch 落库并回 NACK。
      */
-    NotifyParseResult parseNotify(String body, Map<String, String> headers, PayChannelConfigDO config);
+    PayNotifyParseResult parsePayNotify(String body, Map<String, String> headers, PayChannelConfigDO config) throws Exception;
+
+    /**
+     * 解析并验签【退款】异步回调。验签/解密失败时抛出，由编排层 catch 落库并回 NACK。
+     */
+    RefundNotifyParseResult parseRefundNotify(String body, Map<String, String> headers, PayChannelConfigDO config) throws Exception;
 
     /**
      * 构造回渠道的应答（微信 SUCCESS XML / 支付宝 success）

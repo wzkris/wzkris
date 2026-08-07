@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "退款订单分页查询参数体")
-public class PayRefundMngPageRequest extends PagingRequest {
+public class RefundMngPageRequest extends PagingRequest {
 
     @Parameter(description = "退款单号")
     private String refundNo;

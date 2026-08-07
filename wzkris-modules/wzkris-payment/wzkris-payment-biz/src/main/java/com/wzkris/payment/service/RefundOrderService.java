@@ -1,7 +1,7 @@
 package com.wzkris.payment.service;
 
 import com.wzkris.common.orm.plus.IServicePlus;
-import com.wzkris.payment.domain.PayRefundOrderDO;
+import com.wzkris.payment.domain.RefundOrderDO;
 
 import java.time.OffsetDateTime;
 
@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
  *
  * @author wzkris
  */
-public interface PayRefundOrderService extends IServicePlus<PayRefundOrderDO> {
+public interface RefundOrderService extends IServicePlus<RefundOrderDO> {
 
     /**
      * 状态机：REFUNDING -> SUCCESS（并发安全，仅退款中可流转）

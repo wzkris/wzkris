@@ -5,8 +5,8 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckPerms;
-import com.wzkris.payment.api.refund.PayRefundMngApi;
-import com.wzkris.payment.api.refund.request.PayRefundMngPageRequest;
+import com.wzkris.payment.api.refund.RefundMngApi;
+import com.wzkris.payment.api.refund.request.RefundMngPageRequest;
 import com.wzkris.payment.api.refund.response.RefundOrderResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,16 +27,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/pay-refund-manage")
 @RequiredArgsConstructor
-public class PayRefundMngController {
+public class RefundMngController {
 
     private static final String PERM_PREFIX = "pay-mod:refund-mng:";
 
-    private final PayRefundMngApi refundMngApi;
+    private final RefundMngApi refundMngApi;
 
     @Operation(summary = "退款订单分页")
     @GetMapping("/query-page")
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
-    public Result<Page<RefundOrderResponse>> queryPage(@ParameterObject PayRefundMngPageRequest request) {
+    public Result<Page<RefundOrderResponse>> queryPage(@ParameterObject RefundMngPageRequest request) {
         return refundMngApi.queryPage(request);
     }
 

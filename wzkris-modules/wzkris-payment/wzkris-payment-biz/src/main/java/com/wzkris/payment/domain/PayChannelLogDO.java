@@ -2,9 +2,9 @@ package com.wzkris.payment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.payment.enums.channel.ChannelLogStatusEnum;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
 import com.wzkris.payment.enums.pay.PayModeEnum;
-import com.wzkris.payment.enums.pay.PayStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,6 +41,6 @@ public class PayChannelLogDO extends BaseEntity {
     private String responseParams;
 
     @Schema(description = "交互状态")
-    private PayStatusEnum status;
+    private ChannelLogStatusEnum status;
 
 }

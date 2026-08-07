@@ -135,6 +135,35 @@ Controllers depend on the `Api` interface, **not** directly on Service/Mapper. E
 - **`StringUtil`** extends commons-lang3 `StringUtils` → has `isEmpty`/`isNotEmpty`/`isBlank`/`isNotBlank`. **No `hasText`** (that's Spring's `StringUtils`). Don't mix them up.
 - **`BeanCopierUtil.copy`/`copyList`** for DO↔VO/Response. Enum-typed fields are skipped by cglib — set them explicitly.
 
+## Payment Module (wzkris-payment)
+
+Platform-global gateway (its tables are **omitted from `tenant.includes`** - no `tenant_id`). Port 8001. `api + biz` dual-module, but with a channel-provider SPI and a merchant-notify outbox on top of the standard call chain.
+
+### Channel provider & routing
+- **`PaymentProvider`** (`provider/`): per-channel SPI (`prepay`/`query`/`close`/`refund`/`queryRefund`/`parsePayNotify`/`parseRefundNotify`/`buildNotifyAck`). `WxpayPaymentProvider` (real, WxJava `weixin-java-pay` 4.6.7.B v3) / `AlipayPaymentProvider` (stub).
+- **`PaymentProviderRouter.resolve(channel, configId)`**: `configId` is **mandatory** - multi-merchant. Callback paths `/pay/notify/{channel}/{configId}` + `/refund/notify/{channel}/{configId}` carry it to route the exact merchant (whose apiV3Key/cert verifies the signature). No single-arg resolve.
+- **`PayChannelConfigDO`**: multi-merchant `uk(channel, mch_id)`. Credentials (`api_key`/`private_key`/cert) stored **PLAINTEXT** (encryption deliberately not added). `notifyUrl` (pay) and `refundNotifyUrl` (refund) are separate fields.
+- **`PayChannelLogDO`**: every channel interaction logged with request/response JSON; status via **`ChannelLogStatusEnum`** (SUCCESS/FAILED) - not `PayStatusEnum`.
+
+### Notify callback - sealed template, two parallel stacks
+Pay/refund callbacks are **separate endpoints**; type is decided by the endpoint, never by sniffing the payload:
+- `/pay/notify` -> `PayNotifyApiImpl extends AbstractChannelNotifyApi<PayNotifyParseResult>`
+- `/refund/notify` -> `RefundNotifyApiImpl extends AbstractChannelNotifyApi<RefundNotifyParseResult>`
+- **`AbstractChannelNotifyApi<T extends NotifyParseResult>`** (`impl/notify`, extends `AbstractApi`): template `handle()` = record-raw -> verify+parse -> idempotency -> distributed-lock + state-machine -> ACK. Only 2 hooks: `parse()` / `process()`. `notifyType`/`outBusinessNo` live on the typed result, not as hooks.
+- **`NotifyParseResult`**: `sealed` base (`permits PayNotifyParseResult, RefundNotifyParseResult`); **`ProcessResult`**: `sealed interface` (`Ok`/`Reject(reason)`) returned by `process()` instead of boolean.
+- **`PayChannelNotifyDO`**: raw callback record, saved **first** (before parse/verify). Idempotency key `(channel, notify_type, out_business_no)`, `out_business_no` = our no (PAY=`order_no`, REFUND=`refund_no`); nullable on verify-failure (PG partial unique index tolerates multiple NULLs).
+- ACK is **channel-decided** (`provider.buildNotifyAck`): WeChat v3 JSON `{"code","message"}`.
+- Orchestration lives in the **ApiImpl** layer (like all other domains) - **no notify Service layer** exists.
+
+### Merchant notify outbox (gateway -> business)
+- `PayOrderPaidEvent` / `RefundFinishedEvent` -> async listener builds `PayNotifyRequest` payload -> **`NotifyTaskDispatcher`** (`listener/`): create `PayNotifyTaskDO` (PENDING) -> persist -> first send.
+- **`PayNotifySenderService`**: HTTP POST to merchant `notifyUrl`; retry via `claimSending` (PENDING | stuck-SENDING -> SENDING, atomic) to dedupe across instances / first-delivery races.
+
+### Refund flow & over-refund guard
+- `RefundApiImpl.apply`: `reserveRefund` (atomic `refunded_amount + amount <= amount`) -> save refund as REFUNDING (short txn) -> channel `refund()` **outside** the txn -> `updateToSuccess`/`updateToFailed`. Save-failure rolls back the reserved quota.
+- `RefundResult` is 3-state (`SUCCESS`/`PROCESSING`/`FAILED`): WeChat refund is accept-then-async, so `PROCESSING` stays REFUNDING until the refund callback resolves it.
+- State machines transition only from the expected prior state (PENDING->SUCCESS for pay; REFUNDING->SUCCESS/FAILED for refund); a `false` return = a concurrent callback already resolved it.
+
 ## Adding a New Business Domain
 
 1. Under `wzkris-modules/`, create `<name>/<name>-api` and `<name>/<name>-biz`; register `<module>` in `wzkris-modules/pom.xml`.

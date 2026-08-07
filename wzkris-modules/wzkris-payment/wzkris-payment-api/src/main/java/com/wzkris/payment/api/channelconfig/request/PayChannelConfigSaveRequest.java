@@ -48,6 +48,9 @@ public class PayChannelConfigSaveRequest {
     @Schema(description = "异步回调地址")
     private String notifyUrl;
 
+    @Schema(description = "退款异步回调地址")
+    private String refundNotifyUrl;
+
     @Schema(description = "支持的支付方式,逗号分隔")
     private String payModes;
 

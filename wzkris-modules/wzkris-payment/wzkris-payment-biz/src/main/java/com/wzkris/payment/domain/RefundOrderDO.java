@@ -18,8 +18,8 @@ import java.time.OffsetDateTime;
  */
 @Data
 @NoArgsConstructor
-@TableName(schema = "biz", value = "pay_refund_order")
-public class PayRefundOrderDO extends BaseEntity {
+@TableName(schema = "biz", value = "refund_order")
+public class RefundOrderDO extends BaseEntity {
 
     @Schema(description = "退款单号")
     private String refundNo;

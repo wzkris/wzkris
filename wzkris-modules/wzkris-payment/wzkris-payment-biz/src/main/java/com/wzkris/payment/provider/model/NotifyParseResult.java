@@ -1,24 +1,21 @@
 package com.wzkris.payment.provider.model;
 
 import com.wzkris.payment.enums.notify.NotifyTypeEnum;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 渠道回调解析+验签结果
+ * 渠道回调解析+验签结果基类（sealed）。
  *
- * <p>notifyType=PAY 携带支付字段；notifyType=REFUND 携带退款字段。
+ * <p>PAY/REFUND 各有专属子类型携带类型字段；{@link #notifyType()} 与 {@link #outBusinessNo()}
+ * 由子类型提供，编排模板不再需要嗅探式钩子区分回调类型。
  *
  * @author wzkris
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class NotifyParseResult {
+@Getter
+@Setter
+public abstract sealed class NotifyParseResult
+        permits PayNotifyParseResult, RefundNotifyParseResult {
 
     /**
      * 验签是否通过
@@ -26,52 +23,28 @@ public class NotifyParseResult {
     private boolean verifySuccess;
 
     /**
-     * 回调类型
-     */
-    private NotifyTypeEnum notifyType;
-
-    /**
-     * 我方订单号（PAY：即 order_no）
-     */
-    private String outTradeNo;
-
-    /**
-     * 我方退款号（REFUND：即 refund_no）
-     */
-    private String outRefundNo;
-
-    /**
      * 渠道侧号（transaction_id / refund_id / trade_no，存档用）
      */
     private String channelNo;
-
-    // ---- PAY 上下文 ----
-
-    /**
-     * 渠道侧是否支付成功
-     */
-    private boolean paid;
-
-    private BigDecimal amount;
-
-    private OffsetDateTime payAt;
-
-    // ---- REFUND 上下文 ----
-
-    /**
-     * 渠道侧是否退款成功
-     */
-    private boolean refundSuccess;
-
-    private BigDecimal refundAmount;
-
-    private OffsetDateTime refundAt;
 
     /**
      * 解析/处理错误信息（退款失败原因等）
      */
     private String errorMsg;
 
+    /**
+     * 原始报文
+     */
     private String rawBody;
+
+    /**
+     * 回调类型，由子类型决定
+     */
+    public abstract NotifyTypeEnum notifyType();
+
+    /**
+     * 幂等业务号（PAY=order_no / REFUND=refund_no），由子类型提供
+     */
+    public abstract String outBusinessNo();
 
 }

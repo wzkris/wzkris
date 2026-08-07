@@ -12,9 +12,11 @@ import com.wzkris.payment.api.order.response.PrepayResponse;
 import com.wzkris.payment.config.PaymentProperties;
 import com.wzkris.payment.domain.PayChannelLogDO;
 import com.wzkris.payment.domain.PayOrderDO;
+import com.wzkris.payment.enums.channel.ChannelLogStatusEnum;
 import com.wzkris.payment.enums.pay.PayStatusEnum;
 import com.wzkris.payment.provider.PaymentProviderRouter;
 import com.wzkris.payment.provider.ProviderContext;
+import com.wzkris.payment.provider.model.PrepayResult;
 import com.wzkris.payment.service.PayChannelLogService;
 import com.wzkris.payment.service.PayOrderService;
 import com.wzkris.payment.util.OrderNoGenerator;
@@ -60,12 +62,18 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
 
         // 先路由配置，订单快照 config_id；订单落库为独立短事务，渠道调用在其外
         ProviderContext ctx = router.resolve(request.getChannel(), request.getConfigId());
-        PayOrderDO order = BeanCopierUtil.copy(request, PayOrderDO.class);
+        PayOrderDO order = new PayOrderDO();
         order.setOrderNo(orderNoGenerator.nextOrderNo());
+        order.setBizType(request.getBizType());
+        order.setBizNo(request.getBizNo());
         order.setChannel(request.getChannel());
         order.setConfigId(ctx.config().getId());
         order.setPayMode(request.getPayMode());
+        order.setSubject(request.getSubject());
         order.setAmount(request.getAmount());
+        order.setPayerId(request.getPayerId());
+        order.setClientIp(request.getClientIp());
+        order.setNotifyUrl(request.getNotifyUrl());
         order.setStatus(PayStatusEnum.PENDING);
         int expireMin = request.getExpireMinutes() != null
                 ? request.getExpireMinutes()
@@ -89,18 +97,20 @@ public class PayOrderApiImpl extends AbstractApi implements PayOrderApi {
         channelLog.setPayMode(order.getPayMode());
         channelLog.setRequestParams(JsonUtil.toJsonString(order));
         try {
-            PrepayResponse resp = ctx.provider().prepay(order, ctx.config());
+            PrepayResult prepayResult = ctx.provider().prepay(order, ctx.config());
+            channelLog.setResponseParams(JsonUtil.toJsonString(prepayResult));
+            channelLog.setStatus(ChannelLogStatusEnum.SUCCESS);
+            payChannelLogService.save(channelLog);
+            PrepayResponse resp = new PrepayResponse();
             resp.setId(order.getId());
             resp.setOrderNo(order.getOrderNo());
             resp.setChannel(order.getChannel());
             resp.setPayMode(order.getPayMode());
-            channelLog.setResponseParams(JsonUtil.toJsonString(resp));
-            channelLog.setStatus(PayStatusEnum.SUCCESS);
-            payChannelLogService.save(channelLog);
+            resp.setPrepayPayload(prepayResult.getPrepayPayload());
             return ok(resp);
         } catch (Exception e) {
             channelLog.setResponseParams(e.getMessage());
-            channelLog.setStatus(PayStatusEnum.FAILED);
+            channelLog.setStatus(ChannelLogStatusEnum.FAILED);
             payChannelLogService.save(channelLog);
             return requestFail("渠道预下单失败：" + e.getMessage());
         }

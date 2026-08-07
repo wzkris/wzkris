@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayRefundFinishedEvent {
+public class RefundFinishedEvent {
 
     private Long refundOrderId;
 
