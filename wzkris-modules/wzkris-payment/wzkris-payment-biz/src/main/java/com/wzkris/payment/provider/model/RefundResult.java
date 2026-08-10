@@ -1,5 +1,6 @@
 package com.wzkris.payment.provider.model;
 
+import com.wzkris.payment.enums.refund.RefundStatusEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class RefundResult {
 
-    private RefundResultStatus status;
+    private RefundStatusEnum status;
 
     private String channelRefundNo;
 

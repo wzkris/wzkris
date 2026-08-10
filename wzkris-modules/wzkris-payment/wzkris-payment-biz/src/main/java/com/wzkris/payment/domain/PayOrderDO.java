@@ -25,12 +25,6 @@ public class PayOrderDO extends BaseEntity {
     @Schema(description = "业务可读订单号")
     private String orderNo;
 
-    @Schema(description = "业务类型")
-    private String bizType;
-
-    @Schema(description = "业务方订单号")
-    private String bizNo;
-
     @Schema(description = "支付渠道")
     private PayChannelEnum channel;
 
@@ -63,6 +57,12 @@ public class PayOrderDO extends BaseEntity {
 
     @Schema(description = "过期时间")
     private OffsetDateTime expireAt;
+
+    @Schema(description = "渠道预下单返回数据(JSON,含prepay_id/code_url等唤起支付参数)")
+    private String channelPrepayData;
+
+    @Schema(description = "渠道预下单时间")
+    private OffsetDateTime channelPrepayTime;
 
     @Schema(description = "渠道侧交易号")
     private String channelOrderNo;

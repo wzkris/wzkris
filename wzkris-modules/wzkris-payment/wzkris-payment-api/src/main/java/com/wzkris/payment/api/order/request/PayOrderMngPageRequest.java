@@ -21,15 +21,10 @@ public class PayOrderMngPageRequest extends PagingRequest {
     @Parameter(description = "订单号")
     private String orderNo;
 
-    @Parameter(description = "业务类型")
-    private String bizType;
-
-    @Parameter(description = "业务订单号")
-    private String bizNo;
-
     @Parameter(description = "支付渠道")
     private PayChannelEnum channel;
 
     @Parameter(description = "订单状态")
     private PayStatusEnum status;
+
 }

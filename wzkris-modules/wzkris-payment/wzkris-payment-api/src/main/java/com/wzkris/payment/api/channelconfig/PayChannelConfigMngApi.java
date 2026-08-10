@@ -25,4 +25,5 @@ public interface PayChannelConfigMngApi {
     Result<Void> update(PayChannelConfigUpdateRequest request);
 
     Result<Void> remove(IdListRequest request);
+
 }

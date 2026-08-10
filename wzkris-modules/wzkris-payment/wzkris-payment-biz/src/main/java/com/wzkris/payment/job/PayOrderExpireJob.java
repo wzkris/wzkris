@@ -1,8 +1,10 @@
+// com.wzkris.payment.job.PayOrderExpireJob.java
 package com.wzkris.payment.job;
 
 import com.wzkris.payment.domain.PayOrderDO;
-import com.wzkris.payment.provider.PaymentProviderRouter;
-import com.wzkris.payment.provider.ProviderContext;
+import com.wzkris.payment.impl.router.PaymentProviderRouter;
+import com.wzkris.payment.provider.model.ChannelResult;
+import com.wzkris.payment.provider.model.PaymentProviderContext;
 import com.wzkris.payment.service.PayOrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +40,31 @@ public class PayOrderExpireJob {
         List<PayOrderDO> orders = payOrderService.findExpiredPending(100);
         for (PayOrderDO order : orders) {
             try {
-                ProviderContext ctx = router.resolve(order.getChannel(), order.getConfigId());
-                ctx.provider().close(order, ctx.config());
-                payOrderService.updateToClosed(order.getId());
+                // 1. 配对渠道+商户配置（resolve 校验配置存在/provider，渠道由配置派生，不校验 ENABLED）
+                ChannelResult<PaymentProviderContext> resolved = router.resolve(order.getConfigId());
+                if (!resolved.success()) {
+                    log.warn("关单失败 payOrderId={} : {}", order.getId(), resolved.errMsg());
+                    continue;
+                }
+                PaymentProviderContext ctx = resolved.data();
+
+                // 2. 调用渠道关单
+                ChannelResult<Void> closeResult = ctx.provider().close(order, ctx);
+                if (!closeResult.success()) {
+                    log.warn("关单失败 payOrderId={} : {}", order.getId(), closeResult.errMsg());
+                    continue;
+                }
+
+                // 3. 条件更新：仅 PENDING 状态可流转为 CLOSED，防止并发回调已支付
+                boolean updated = payOrderService.updateToClosed(order.getId());
+                if (updated) {
+                    log.info("关单成功 payOrderId={} orderNo={}", order.getId(), order.getOrderNo());
+                } else {
+                    log.info("关单时订单状态已变更 payOrderId={} orderNo={}", order.getId(), order.getOrderNo());
+                }
             } catch (Exception e) {
-                // 关单失败（含渠道侧已支付）：保持 PENDING，由回调推进或下轮重试，不中断其他订单
-                log.warn("关单失败 payOrderId={} : {}", order.getId(), e.getMessage());
+                // 兜底：DB 异常等不可预期错误，保持 PENDING，不中断其他订单
+                log.warn("关单异常 payOrderId={} : {}", order.getId(), e.getMessage(), e);
             }
         }
     }

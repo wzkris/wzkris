@@ -47,4 +47,5 @@ public class PayChannelConfigResponse {
 
     @Schema(description = "备注")
     private String remark;
+
 }

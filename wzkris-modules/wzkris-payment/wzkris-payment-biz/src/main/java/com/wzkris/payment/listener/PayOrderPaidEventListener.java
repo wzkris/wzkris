@@ -1,10 +1,7 @@
 package com.wzkris.payment.listener;
 
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.payment.api.notify.PayNotifyRequest;
-import com.wzkris.payment.domain.PayOrderDO;
-import com.wzkris.payment.enums.notify.NotifyTypeEnum;
 import com.wzkris.payment.event.PayOrderPaidEvent;
+import com.wzkris.payment.service.NotifyTaskService;
 import com.wzkris.payment.service.PayOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
@@ -12,7 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
- * 支付成功事件监听：构造支付通知载荷并委托投递（事务外异步执行，不影响回调响应）
+ * 支付成功事件监听：加载订单并委托通知流水线（事务外异步执行，不影响回调响应）
  *
  * @author wzkris
  */
@@ -22,29 +19,12 @@ public class PayOrderPaidEventListener {
 
     private final PayOrderService payOrderService;
 
-    private final NotifyTaskDispatcher dispatcher;
+    private final NotifyTaskService notifyTaskService;
 
     @EventListener
     @Async
     public void onPaid(PayOrderPaidEvent event) {
-        PayOrderDO order = payOrderService.getById(event.getPayOrderId());
-        if (order == null || StringUtil.isEmpty(order.getNotifyUrl())) {
-            return;
-        }
-
-        PayNotifyRequest req = new PayNotifyRequest();
-        req.setNotifyType(NotifyTypeEnum.PAY);
-        req.setPayOrderId(order.getId());
-        req.setOrderNo(order.getOrderNo());
-        req.setBizType(order.getBizType());
-        req.setBizNo(order.getBizNo());
-        req.setChannel(order.getChannel());
-        req.setAmount(order.getAmount());
-        req.setStatus(order.getStatus());
-        req.setChannelOrderNo(order.getChannelOrderNo());
-        req.setPayAt(order.getPayAt());
-
-        dispatcher.dispatch(NotifyTypeEnum.PAY, order, req, null);
+        notifyTaskService.createAndSend(payOrderService.getById(event.getPayOrderId()));
     }
 
 }

@@ -16,4 +16,5 @@ public interface RefundMngApi {
     Result<Page<RefundOrderResponse>> queryPage(RefundMngPageRequest request);
 
     Result<RefundOrderResponse> queryById(IdRequest request);
+
 }

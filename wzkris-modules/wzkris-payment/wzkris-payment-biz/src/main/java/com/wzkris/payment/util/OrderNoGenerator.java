@@ -1,7 +1,7 @@
 package com.wzkris.payment.util;
 
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import com.wzkris.payment.config.PaymentProperties;
+import com.wzkris.payment.properties.PaymentProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

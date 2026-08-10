@@ -23,4 +23,5 @@ public class PayChannelConfigMngPageRequest extends PagingRequest {
 
     @Parameter(description = "状态")
     private ChannelStatusEnum status;
+
 }

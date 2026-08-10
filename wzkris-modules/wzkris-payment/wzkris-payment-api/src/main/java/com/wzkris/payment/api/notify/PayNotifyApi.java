@@ -1,7 +1,5 @@
 package com.wzkris.payment.api.notify;
 
-import com.wzkris.payment.enums.channel.PayChannelEnum;
-
 import java.util.Map;
 
 /**
@@ -16,8 +14,8 @@ public interface PayNotifyApi {
     /**
      * 处理渠道【支付】异步回调，返回回渠道的应答串。
      *
-     * @param configId 渠道商户配置ID（路径携带，多商户按配置精确路由验签/解密）
+     * @param configId 渠道商户配置ID（路径携带，多商户按配置精确路由验签/解密；渠道由配置派生）
      */
-    String handlePayNotify(PayChannelEnum channel, Long configId, String body, Map<String, String> headers);
+    String handle(Long configId, String body, Map<String, String> headers);
 
 }

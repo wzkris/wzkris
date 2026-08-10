@@ -13,6 +13,11 @@ import java.time.OffsetDateTime;
 public interface RefundOrderService extends IServicePlus<RefundOrderDO> {
 
     /**
+     * 按退款号查询
+     */
+    RefundOrderDO getByRefundNo(String refundNo);
+
+    /**
      * 状态机：REFUNDING -> SUCCESS（并发安全，仅退款中可流转）
      */
     boolean updateToSuccess(Long refundOrderId, String channelRefundNo, OffsetDateTime refundAt);

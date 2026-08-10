@@ -1,5 +1,6 @@
 package com.wzkris.payment.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.payment.domain.RefundOrderDO;
@@ -20,6 +21,12 @@ public class RefundOrderServiceImpl
         implements RefundOrderService {
 
     private final PayOrderService payOrderService;
+
+    @Override
+    public RefundOrderDO getByRefundNo(String refundNo) {
+        return this.getOne(new LambdaQueryWrapper<RefundOrderDO>()
+                .eq(RefundOrderDO::getRefundNo, refundNo));
+    }
 
     @Override
     public boolean updateToSuccess(Long refundOrderId, String channelRefundNo, OffsetDateTime refundAt) {

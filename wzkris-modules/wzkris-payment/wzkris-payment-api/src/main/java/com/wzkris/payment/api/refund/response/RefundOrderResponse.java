@@ -41,4 +41,5 @@ public class RefundOrderResponse {
 
     @Schema(description = "失败原因")
     private String failReason;
+
 }

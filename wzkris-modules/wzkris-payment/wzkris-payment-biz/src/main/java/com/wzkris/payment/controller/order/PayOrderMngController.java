@@ -2,8 +2,6 @@ package com.wzkris.payment.controller.order;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
-import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
 import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.annotation.CheckPerms;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,14 +45,6 @@ public class PayOrderMngController {
     @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
     public Result<PayOrderResponse> queryById(@ParameterObject IdRequest request) {
         return orderMngApi.queryById(request);
-    }
-
-    @Operation(summary = "主动关单")
-    @OperateLog(title = "支付订单管理", subTitle = "关单", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/close")
-    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "close")
-    public Result<Void> close(@ParameterObject IdRequest request) {
-        return orderMngApi.close(request);
     }
 
 }

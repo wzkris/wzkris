@@ -29,4 +29,5 @@ public class RefundMngPageRequest extends PagingRequest {
 
     @Parameter(description = "退款状态")
     private RefundStatusEnum status;
+
 }

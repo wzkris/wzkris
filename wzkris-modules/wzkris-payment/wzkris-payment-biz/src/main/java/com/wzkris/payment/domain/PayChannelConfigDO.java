@@ -1,9 +1,11 @@
 package com.wzkris.payment.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
 import com.wzkris.payment.enums.channel.ChannelStatusEnum;
 import com.wzkris.payment.enums.channel.PayChannelEnum;
+import com.wzkris.payment.enums.pay.PayModeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -62,5 +64,21 @@ public class PayChannelConfigDO extends BaseEntity {
 
     @Schema(description = "备注")
     private String remark;
+
+    /**
+     * 该配置是否支持指定支付方式：pay_modes 为空表示不限制（兼容存量配置），
+     * 非空时按逗号分隔的枚举值精确匹配（渠道隔离白名单）。
+     */
+    public boolean supports(PayModeEnum mode) {
+        if (StringUtil.isBlank(payModes)) {
+            return true;
+        }
+        for (String token : payModes.split(",")) {
+            if (mode.getValue().equals(token.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

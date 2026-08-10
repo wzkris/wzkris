@@ -16,12 +16,12 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS config_db WITH (FORCE);
+DROP DATABASE IF EXISTS config_db;
 --
 -- Name: config_db; Type: DATABASE; Schema: -; Owner: root
 --
 
-CREATE DATABASE config_db WITH ENCODING = 'UTF8';
+CREATE DATABASE config_db WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'Chinese (Simplified)_China.936';
 
 
 ALTER DATABASE config_db OWNER TO root;
@@ -1903,9 +1903,6 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
 ]', 'f83470a74550f4705cc975aaa2bcd7c4', '2023-06-19 02:28:00', '2026-07-31 16:17:02.693587', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '网关限流策略', NULL, NULL, 'json', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (15, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
 spring:
-  # datasource:
-  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
   datasource:
     url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
     username: root
@@ -1935,7 +1932,51 @@ tenant:
     - tenant_operate_log
     - tenant_wallet_info
     - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', '241915b88b9b832e165f323a2e5b1a2d', '2024-04-16 06:36:22', '2026-08-05 18:12:42.796463', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+    - tenant_wallet_withdrawal_record', 'd453b2ff812e7745f85983267b3f93ec', '2024-04-16 06:36:22', '2026-08-11 17:16:22.208968', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (17, 'wzkris-payment.yml', 'APPLICATION_GROUP', '# spring配置
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wzkris_payment?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      pool-name: hikari-pool
+
+# springdoc配置
+springdoc:
+  enabled: true
+  title: 支付网关接口文档
+  license: Powered By wzkris
+  version: v1.0.0
+  description: ---
+', '31c7da71ad47e6551a9e9d34ab8845e5', '2024-04-16 06:36:22', '2026-08-11 17:15:48.541618', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (19, 'wzkris-payment.yml', 'APPLICATION_GROUP', '# spring配置
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wzkris_payment?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      pool-name: hikari-pool
+
+# springdoc配置
+springdoc:
+  enabled: true
+  title: 支付网关接口文档
+  license: Powered By wzkris
+  version: v1.0.0
+  description: ---
+', '31c7da71ad47e6551a9e9d34ab8845e5', '2024-04-16 06:36:22', '2026-08-11 17:15:48.541618', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
   cloud:
     gateway:
@@ -1992,6 +2033,8 @@ security:
     enabled: true
     enforcedPaths:
       - /wzkris-auth-api/login', 'eaa692ac2d9c9ac50f7cade55c6bd0a3', '2023-06-19 02:28:00', '2026-08-07 10:44:52.583763', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (6, 'wzkris-captcha.yml', 'APPLICATION_GROUP', 'risk-captcha:
+  passTtlSeconds: 180', 'a0887872d4f7f6d5aef5923322591441', '2026-05-21 11:25:06', '2026-05-21 11:27:38', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
 
 
 --
@@ -2016,6 +2059,76 @@ security:
 -- Data for Name: his_config_info; Type: TABLE DATA; Schema: nacos; Owner: root
 --
 
+INSERT INTO nacos.his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key, publish_type, gray_name, ext_info) VALUES (17, 23, 'wzkris-payment.yml', 'APPLICATION_GROUP', '', '# spring配置
+spring:
+  # datasource:
+  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 600000
+      pool-name: hikari-pool
+
+# springdoc配置
+springdoc:
+  enabled: true
+  title: 用户中心接口文档
+  license: Powered By wzkris
+  version: v1.0.0
+  description: ---
+
+# 租户隔离表
+tenant:
+  includes:
+    - member_info
+    - post_info
+    - tenant_login_log
+    - tenant_operate_log
+    - tenant_wallet_info
+    - tenant_wallet_record
+    - tenant_wallet_withdrawal_record', 'a4b2ec61487b8940aaa240221f6400dc', '2026-08-11 17:15:48.541618', '2026-08-11 17:15:48.555', 'nacos', '0:0:0:0:0:0:0:1', 'U         ', 'application-dev', '', 'formal', '', '{"type":"yaml","src_user":"nacos"}');
+INSERT INTO nacos.his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key, publish_type, gray_name, ext_info) VALUES (15, 24, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '', '# spring配置
+spring:
+  # datasource:
+  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000 
+      maximum-pool-size: 10       
+      minimum-idle: 5             
+      idle-timeout: 600000        
+      pool-name: hikari-pool
+
+# springdoc配置
+springdoc:
+  enabled: true
+  title: 用户中心接口文档
+  license: Powered By wzkris
+  version: v1.0.0
+  description: ---
+
+# 租户隔离表
+tenant:
+  includes:
+    - member_info
+    - post_info
+    - tenant_login_log
+    - tenant_operate_log
+    - tenant_wallet_info
+    - tenant_wallet_record
+    - tenant_wallet_withdrawal_record', '241915b88b9b832e165f323a2e5b1a2d', '2026-08-11 17:16:22.208968', '2026-08-11 17:16:22.209', 'nacos', '0:0:0:0:0:0:0:1', 'U         ', 'application-dev', '', 'formal', '', '{"type":"yaml","src_user":"nacos"}');
 
 
 --
@@ -2113,7 +2226,7 @@ SELECT pg_catalog.setval('nacos.group_capacity_id_seq', 1, false);
 -- Name: his_config_info_nid_seq; Type: SEQUENCE SET; Schema: nacos; Owner: root
 --
 
-SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 22, true);
+SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 24, true);
 
 
 --

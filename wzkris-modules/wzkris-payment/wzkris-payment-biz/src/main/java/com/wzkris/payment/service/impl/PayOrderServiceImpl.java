@@ -17,17 +17,9 @@ import java.util.List;
 public class PayOrderServiceImpl extends ServiceImplPlus<PayOrderMapper, PayOrderDO> implements PayOrderService {
 
     @Override
-    public PayOrderDO getByBizTypeAndBizNo(String bizType, String bizNo) {
+    public PayOrderDO getByOrderNo(String orderNo) {
         return this.getOne(new LambdaQueryWrapper<PayOrderDO>()
-                .eq(PayOrderDO::getBizType, bizType)
-                .eq(PayOrderDO::getBizNo, bizNo));
-    }
-
-    @Override
-    public boolean existByBizTypeAndBizNo(String bizType, String bizNo) {
-        return baseMapper.exists(new LambdaQueryWrapper<PayOrderDO>()
-                .eq(PayOrderDO::getBizType, bizType)
-                .eq(PayOrderDO::getBizNo, bizNo));
+                .eq(PayOrderDO::getOrderNo, orderNo));
     }
 
     @Override

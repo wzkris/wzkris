@@ -15,10 +15,8 @@ import com.wzkris.payment.api.channelconfig.request.PayChannelConfigUpdateReques
 import com.wzkris.payment.api.channelconfig.response.PayChannelConfigResponse;
 import com.wzkris.payment.domain.PayChannelConfigDO;
 import com.wzkris.payment.enums.channel.ChannelStatusEnum;
-import com.wzkris.payment.event.PayChannelConfigChangedEvent;
 import com.wzkris.payment.service.PayChannelConfigService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,8 +29,6 @@ import org.springframework.stereotype.Service;
 public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChannelConfigMngApi {
 
     private final PayChannelConfigService configService;
-
-    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     public Result<Page<PayChannelConfigResponse>> queryPage(PayChannelConfigMngPageRequest request) {
@@ -57,32 +53,18 @@ public class PayChannelConfigMngApiImpl extends AbstractApi implements PayChanne
         PayChannelConfigDO config = BeanCopierUtil.copy(request, PayChannelConfigDO.class);
         config.setChannel(request.getChannel());
         config.setStatus(ChannelStatusEnum.ENABLED);
-        boolean ok = configService.save(config);
-        if (ok) {
-            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(config.getId()));
-        }
-        return toRes(ok);
+        return toRes(configService.save(config));
     }
 
     @Override
     public Result<Void> update(PayChannelConfigUpdateRequest request) {
         PayChannelConfigDO config = BeanCopierUtil.copy(request, PayChannelConfigDO.class);
-        boolean ok = configService.updateById(config);
-        if (ok) {
-            eventPublisher.publishEvent(new PayChannelConfigChangedEvent(request.getId()));
-        }
-        return toRes(ok);
+        return toRes(configService.updateById(config));
     }
 
     @Override
     public Result<Void> remove(IdListRequest request) {
-        boolean ok = configService.removeByIds(request.getIdList());
-        if (ok) {
-            for (Long configId : request.getIdList()) {
-                eventPublisher.publishEvent(new PayChannelConfigChangedEvent(configId));
-            }
-        }
-        return toRes(ok);
+        return toRes(configService.removeByIds(request.getIdList()));
     }
 
 }

@@ -172,14 +172,14 @@ COMMENT ON COLUMN biz.pay_channel_config.cert_serial_no IS '商户证书序列�
 -- Name: COLUMN pay_channel_config.notify_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_channel_config.notify_url IS '渠道支付回调地址(需含configId路由商户,如 /pay/notify/wxpay/{config_id})';
+COMMENT ON COLUMN biz.pay_channel_config.notify_url IS '渠道支付回调地址';
 
 
 --
 -- Name: COLUMN pay_channel_config.refund_notify_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_channel_config.refund_notify_url IS '渠道退款回调地址(需含configId路由商户,如 /refund/notify/wxpay/{config_id};为空则不接收退款回调,需主动查单)';
+COMMENT ON COLUMN biz.pay_channel_config.refund_notify_url IS '渠道退款回调地址';
 
 
 --
@@ -271,10 +271,10 @@ COMMENT ON COLUMN biz.pay_channel_log.status IS '交互状态 PENDING/SUCCESS/FA
 
 
 --
--- Name: pay_channel_notify; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: channel_notify_log; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.pay_channel_notify (
+CREATE TABLE biz.channel_notify_log (
     id bigint NOT NULL,
     channel character varying(16) NOT NULL,
     notify_type character varying(8),
@@ -294,74 +294,73 @@ CREATE TABLE biz.pay_channel_notify (
 );
 
 
-ALTER TABLE biz.pay_channel_notify OWNER TO postgres;
+ALTER TABLE biz.channel_notify_log OWNER TO postgres;
 
 --
--- Name: TABLE pay_channel_notify; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE channel_notify_log; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.pay_channel_notify IS '渠道回调记录(渠道->网关)';
-
-
---
--- Name: COLUMN pay_channel_notify.notify_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_channel_notify.notify_type IS '回调类型 PAY/REFUND(验签失败时可为空)';
+COMMENT ON TABLE biz.channel_notify_log IS '渠道回调记录(渠道->网关)';
 
 
 --
--- Name: COLUMN pay_channel_notify.out_business_no; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN channel_notify_log.notify_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_channel_notify.out_business_no IS '我方业务号(PAY=order_no/REFUND=refund_no),幂等键(验签失败时可为空)';
-
-
---
--- Name: COLUMN pay_channel_notify.channel_no; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_channel_notify.channel_no IS '渠道侧号(transaction_id/refund_id/trade_no),仅存档';
+COMMENT ON COLUMN biz.channel_notify_log.notify_type IS '回调类型 PAY/REFUND(验签失败时可为空)';
 
 
 --
--- Name: COLUMN pay_channel_notify.notify_data; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN channel_notify_log.out_business_no; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_channel_notify.notify_data IS '回调原始报文';
-
-
---
--- Name: COLUMN pay_channel_notify.verify_result; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_channel_notify.verify_result IS '验签结果';
+COMMENT ON COLUMN biz.channel_notify_log.out_business_no IS '我方业务号(PAY=order_no/REFUND=refund_no),幂等键(验签失败时可为空)';
 
 
 --
--- Name: COLUMN pay_channel_notify.processed; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN channel_notify_log.channel_no; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_channel_notify.processed IS '是否已处理(幂等标记)';
-
-
---
--- Name: COLUMN pay_channel_notify.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_channel_notify.error_msg IS '处理错误信息';
+COMMENT ON COLUMN biz.channel_notify_log.channel_no IS '渠道侧号(transaction_id/trade_no)';
 
 
 --
--- Name: pay_notify_task; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN channel_notify_log.notify_data; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.pay_notify_task (
+COMMENT ON COLUMN biz.channel_notify_log.notify_data IS '回调原始报文';
+
+
+--
+-- Name: COLUMN channel_notify_log.verify_result; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.channel_notify_log.verify_result IS '验签结果';
+
+
+--
+-- Name: COLUMN channel_notify_log.processed; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.channel_notify_log.processed IS '是否已处理(幂等标记)';
+
+
+--
+-- Name: COLUMN channel_notify_log.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.channel_notify_log.error_msg IS '处理错误信息';
+
+
+--
+-- Name: notify_task; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.notify_task (
     id bigint NOT NULL,
     notify_type character varying(8) NOT NULL,
     pay_order_id bigint NOT NULL,
     refund_order_id bigint,
-    biz_type character varying(32) NOT NULL,
     target_url character varying(256),
     payload text NOT NULL,
     http_status integer,
@@ -379,90 +378,83 @@ CREATE TABLE biz.pay_notify_task (
 );
 
 
-ALTER TABLE biz.pay_notify_task OWNER TO postgres;
+ALTER TABLE biz.notify_task OWNER TO postgres;
 
 --
--- Name: TABLE pay_notify_task; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE notify_task; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.pay_notify_task IS '业务方通知任务';
-
-
---
--- Name: COLUMN pay_notify_task.notify_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_notify_task.notify_type IS '通知类型 PAY/REFUND';
+COMMENT ON TABLE biz.notify_task IS '业务方通知任务';
 
 
 --
--- Name: COLUMN pay_notify_task.pay_order_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.notify_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.pay_order_id IS '支付订单ID';
-
-
---
--- Name: COLUMN pay_notify_task.refund_order_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_notify_task.refund_order_id IS '退款订单ID(REFUND类型时填)';
+COMMENT ON COLUMN biz.notify_task.notify_type IS '通知类型 PAY/REFUND';
 
 
 --
--- Name: COLUMN pay_notify_task.biz_type; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.pay_order_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.biz_type IS '业务类型(路由业务方)';
-
-
---
--- Name: COLUMN pay_notify_task.target_url; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_notify_task.target_url IS '业务方通知地址';
+COMMENT ON COLUMN biz.notify_task.pay_order_id IS '支付订单ID';
 
 
 --
--- Name: COLUMN pay_notify_task.payload; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.refund_order_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.payload IS '通知报文';
-
-
---
--- Name: COLUMN pay_notify_task.http_status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_notify_task.http_status IS '最近一次HTTP状态码';
+COMMENT ON COLUMN biz.notify_task.refund_order_id IS '退款订单ID';
 
 
 --
--- Name: COLUMN pay_notify_task.retry_count; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.target_url; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.retry_count IS '已重试次数';
-
-
---
--- Name: COLUMN pay_notify_task.max_retry; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_notify_task.max_retry IS '最大重试次数';
+COMMENT ON COLUMN biz.notify_task.target_url IS '业务方通知地址';
 
 
 --
--- Name: COLUMN pay_notify_task.next_retry_at; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.payload; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.next_retry_at IS '下次重试时间';
+COMMENT ON COLUMN biz.notify_task.payload IS '通知报文';
 
 
 --
--- Name: COLUMN pay_notify_task.status; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notify_task.http_status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_notify_task.status IS '任务状态 PENDING/SENDING/SUCCESS/FAILED';
+COMMENT ON COLUMN biz.notify_task.http_status IS '最近一次HTTP状态码';
+
+
+--
+-- Name: COLUMN notify_task.retry_count; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notify_task.retry_count IS '已重试次数';
+
+
+--
+-- Name: COLUMN notify_task.max_retry; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notify_task.max_retry IS '最大重试次数';
+
+
+--
+-- Name: COLUMN notify_task.next_retry_at; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notify_task.next_retry_at IS '下次重试时间';
+
+
+--
+-- Name: COLUMN notify_task.status; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.notify_task.status IS '任务状态 PENDING/SENDING/SUCCESS/FAILED';
 
 
 --
@@ -472,8 +464,6 @@ COMMENT ON COLUMN biz.pay_notify_task.status IS '任务状态 PENDING/SENDING/SU
 CREATE TABLE biz.pay_order (
     id bigint NOT NULL,
     order_no character varying(32) NOT NULL,
-    biz_type character varying(32) NOT NULL,
-    biz_no character varying(64) NOT NULL,
     channel character varying(16) NOT NULL,
     config_id bigint NOT NULL,
     pay_mode character varying(16),
@@ -485,10 +475,12 @@ CREATE TABLE biz.pay_order (
     payer_id character varying(64),
     client_ip character varying(64),
     expire_at timestamp with time zone,
+    channel_prepay_data character varying(500),
+    channel_prepay_time timestamp with time zone,
     channel_order_no character varying(64),
     pay_at timestamp with time zone,
     fail_reason character varying(256),
-    notify_url character varying(256),
+    notify_url character varying(256) NOT NULL,
     creator_id bigint,
     create_at timestamp with time zone DEFAULT now() NOT NULL,
     updater_id bigint,
@@ -515,20 +507,6 @@ COMMENT ON COLUMN biz.pay_order.order_no IS '业务可读订单号';
 
 
 --
--- Name: COLUMN pay_order.biz_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_order.biz_type IS '业务类型(标识业务方,回调路由用)';
-
-
---
--- Name: COLUMN pay_order.biz_no; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.pay_order.biz_no IS '业务方订单号(与biz_type组成幂等键)';
-
-
---
 -- Name: COLUMN pay_order.channel; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
@@ -539,7 +517,7 @@ COMMENT ON COLUMN biz.pay_order.channel IS '支付渠道';
 -- Name: COLUMN pay_order.config_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_order.config_id IS '成交时渠道配置ID快照(配置变更后仍可溯源)';
+COMMENT ON COLUMN biz.pay_order.config_id IS '成交时渠道配置ID快照';
 
 
 --
@@ -567,7 +545,7 @@ COMMENT ON COLUMN biz.pay_order.currency IS '币种(默认CNY)';
 -- Name: COLUMN pay_order.refunded_amount; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.pay_order.refunded_amount IS '已退款金额(含退款中,作超额退款原子护栏;退款失败回退)';
+COMMENT ON COLUMN biz.pay_order.refunded_amount IS '已退款金额(含退款中,退款失败回退)';
 
 
 --
@@ -589,6 +567,20 @@ COMMENT ON COLUMN biz.pay_order.payer_id IS '支付者标识(微信open_id/支�
 --
 
 COMMENT ON COLUMN biz.pay_order.expire_at IS '过期时间';
+
+
+--
+-- Name: COLUMN pay_order.channel_prepay_data; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.pay_order.channel_prepay_data IS '渠道预下单返回数据';
+
+
+--
+-- Name: COLUMN pay_order.channel_prepay_time; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.pay_order.channel_prepay_time IS '渠道预下单时间';
 
 
 --
@@ -627,6 +619,7 @@ CREATE TABLE biz.refund_order (
     id bigint NOT NULL,
     refund_no character varying(32) NOT NULL,
     pay_order_id bigint NOT NULL,
+    order_no character varying(32) NOT NULL,
     channel character varying(16) NOT NULL,
     config_id bigint NOT NULL,
     refund_amount numeric(18,2) NOT NULL,
@@ -635,6 +628,7 @@ CREATE TABLE biz.refund_order (
     channel_refund_no character varying(64),
     refund_at timestamp with time zone,
     fail_reason character varying(256),
+    notify_url character varying(256) NOT NULL,
     creator_id bigint,
     create_at timestamp with time zone DEFAULT now() NOT NULL,
     updater_id bigint,
@@ -665,6 +659,13 @@ COMMENT ON COLUMN biz.refund_order.refund_no IS '退款单号';
 --
 
 COMMENT ON COLUMN biz.refund_order.pay_order_id IS '原支付订单ID';
+
+
+--
+-- Name: COLUMN refund_order.order_no; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.refund_order.order_no IS '原支付订单号';
 
 
 --
@@ -703,6 +704,13 @@ COMMENT ON COLUMN biz.refund_order.refund_at IS '退款成功时间';
 
 
 --
+-- Name: COLUMN refund_order.notify_url; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.refund_order.notify_url IS '退款业务方通知地址';
+
+
+--
 -- Data for Name: pay_channel_config; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -715,13 +723,13 @@ COMMENT ON COLUMN biz.refund_order.refund_at IS '退款成功时间';
 
 
 --
--- Data for Name: pay_channel_notify; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: channel_notify_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 
 
 --
--- Data for Name: pay_notify_task; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: notify_task; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 
@@ -755,19 +763,19 @@ ALTER TABLE ONLY biz.pay_channel_log
 
 
 --
--- Name: pay_channel_notify pay_channel_notify_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: channel_notify_log channel_notify_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.pay_channel_notify
-    ADD CONSTRAINT pay_channel_notify_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.channel_notify_log
+    ADD CONSTRAINT channel_notify_log_pkey PRIMARY KEY (id);
 
 
 --
--- Name: pay_notify_task pay_notify_task_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: notify_task notify_task_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.pay_notify_task
-    ADD CONSTRAINT pay_notify_task_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.notify_task
+    ADD CONSTRAINT notify_task_pkey PRIMARY KEY (id);
 
 
 --
@@ -794,10 +802,10 @@ CREATE INDEX idx_pay_channel_log_order ON biz.pay_channel_log USING btree (pay_o
 
 
 --
--- Name: idx_pay_notify_task_retry; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_notify_task_retry; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_pay_notify_task_retry ON biz.pay_notify_task USING btree (status, next_retry_at) WHERE (deleted = false);
+CREATE INDEX idx_notify_task_retry ON biz.notify_task USING btree (status, next_retry_at) WHERE (deleted = false);
 
 
 --
@@ -829,31 +837,24 @@ CREATE UNIQUE INDEX uk_pay_channel_config_channel_mch ON biz.pay_channel_config 
 
 
 --
--- Name: uk_pay_channel_notify; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_channel_notify_log; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_pay_channel_notify ON biz.pay_channel_notify USING btree (channel, notify_type, out_business_no);
-
-
---
--- Name: uk_pay_notify_task_pay; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX uk_pay_notify_task_pay ON biz.pay_notify_task USING btree (pay_order_id) WHERE (((notify_type)::text = 'PAY'::text) AND (deleted = false));
+CREATE UNIQUE INDEX uk_channel_notify_log ON biz.channel_notify_log USING btree (channel, notify_type, out_business_no) WHERE (deleted = false);
 
 
 --
--- Name: uk_pay_notify_task_refund; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_notify_task_pay; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_pay_notify_task_refund ON biz.pay_notify_task USING btree (refund_order_id) WHERE (((notify_type)::text = 'REFUND'::text) AND (deleted = false));
+CREATE UNIQUE INDEX uk_notify_task_pay ON biz.notify_task USING btree (pay_order_id) WHERE (((notify_type)::text = 'PAY'::text) AND (deleted = false));
 
 
 --
--- Name: uk_pay_order_biz; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_notify_task_refund; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_pay_order_biz ON biz.pay_order USING btree (biz_type, biz_no) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_notify_task_refund ON biz.notify_task USING btree (refund_order_id) WHERE (((notify_type)::text = 'REFUND'::text) AND (deleted = false));
 
 
 --

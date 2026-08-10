@@ -27,6 +27,9 @@ public class RefundOrderDO extends BaseEntity {
     @Schema(description = "原支付订单ID")
     private Long payOrderId;
 
+    @Schema(description = "原支付订单号(冗余快照,退款通知关联键)")
+    private String orderNo;
+
     @Schema(description = "支付渠道")
     private PayChannelEnum channel;
 
@@ -50,5 +53,8 @@ public class RefundOrderDO extends BaseEntity {
 
     @Schema(description = "失败原因")
     private String failReason;
+
+    @Schema(description = "退款业务方通知地址(申请时必填)")
+    private String notifyUrl;
 
 }

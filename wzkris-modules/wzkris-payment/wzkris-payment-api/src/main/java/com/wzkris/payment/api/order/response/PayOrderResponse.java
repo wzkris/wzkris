@@ -23,10 +23,6 @@ public class PayOrderResponse {
 
     private String orderNo;
 
-    private String bizType;
-
-    private String bizNo;
-
     private PayChannelEnum channel;
 
     @Schema(description = "成交配置ID快照")
@@ -60,4 +56,5 @@ public class PayOrderResponse {
 
     @Schema(description = "失败原因")
     private String failReason;
+
 }

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 渠道预下单结果（provider 返回，由编排层组装为对外 {@code PrepayResponse}）
+ * 渠道预下单结果（provider 返回，由编排层组装为对外 {@code PayOrderCreateResponse}）
  *
  * <p>provider 只负责产出渠道侧支付参数，订单字段由编排层填充，避免响应跨两层拼装。
  *

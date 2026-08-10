@@ -16,5 +16,4 @@ public class RefundFinishedEvent {
 
     private Long refundOrderId;
 
-    private Long payOrderId;
 }

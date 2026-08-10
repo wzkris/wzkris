@@ -16,5 +16,4 @@ public class PayOrderPaidEvent {
 
     private Long payOrderId;
 
-    private String bizType;
 }

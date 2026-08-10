@@ -14,9 +14,7 @@ import java.util.List;
  */
 public interface PayOrderService extends IServicePlus<PayOrderDO> {
 
-    PayOrderDO getByBizTypeAndBizNo(String bizType, String bizNo);
-
-    boolean existByBizTypeAndBizNo(String bizType, String bizNo);
+    PayOrderDO getByOrderNo(String orderNo);
 
     /**
      * 状态机：PENDING -> SUCCESS（仅 PENDING 可流转，条件更新保证并发安全）

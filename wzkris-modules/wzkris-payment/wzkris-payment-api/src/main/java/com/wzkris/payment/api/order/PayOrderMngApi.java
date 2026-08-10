@@ -17,8 +17,4 @@ public interface PayOrderMngApi {
 
     Result<PayOrderResponse> queryById(IdRequest request);
 
-    /**
-     * 主动关单（仅 PENDING 可关）
-     */
-    Result<Void> close(IdRequest request);
 }

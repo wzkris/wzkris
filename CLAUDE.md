@@ -139,25 +139,27 @@ Controllers depend on the `Api` interface, **not** directly on Service/Mapper. E
 
 Platform-global gateway (its tables are **omitted from `tenant.includes`** - no `tenant_id`). Port 8001. `api + biz` dual-module, but with a channel-provider SPI and a merchant-notify outbox on top of the standard call chain.
 
+**Interface split**: business-facing (service-to-service) contracts live in `remote/api` — `PayOrderRemoteApi` (`/pay-order-remote`: create/query-by-id/query-by-no/close, all POST body) and `RefundRemoteApi` (`/refund-remote`: apply/query-by-id); management CRUD stays in `api/*MngApi` (controller paths `/pay-order-manage`, `/pay-refund-manage`, `/pay-channel-config-manage`); channel callbacks stay in `api/notify` (`/pay/notify`, `/refund/notify`, raw body). No `remote/interfaces` client declarations yet — consumers self-declare per the remote-layer convention. Shared full-order/refund views are rail-split: Mng uses `PayOrderResponse`/`RefundOrderResponse` (`api/.../response`), remote uses `PayOrderQueryResponse`/`RefundQueryResponse`.
+
 ### Channel provider & routing
-- **`PaymentProvider`** (`provider/`): per-channel SPI (`prepay`/`query`/`close`/`refund`/`queryRefund`/`parsePayNotify`/`parseRefundNotify`/`buildNotifyAck`). `WxpayPaymentProvider` (real, WxJava `weixin-java-pay` 4.6.7.B v3) / `AlipayPaymentProvider` (stub).
-- **`PaymentProviderRouter.resolve(channel, configId)`**: `configId` is **mandatory** - multi-merchant. Callback paths `/pay/notify/{channel}/{configId}` + `/refund/notify/{channel}/{configId}` carry it to route the exact merchant (whose apiV3Key/cert verifies the signature). No single-arg resolve.
+- **`PaymentProvider`** (`provider/`): per-channel SPI (`prepay`/`query`/`close`/`refund`/`queryRefund`/`parsePayNotify`/`parseRefundNotify`/`buildNotifyAck`). All SPI methods take `ProviderContext ctx` (`provider/model/`) — `PaymentProviderRouter.resolve(configId)` composes `(provider, config)` as early as possible and callers pass the ctx straight through, never unpack-and-pass-two-args. `WxpayPaymentProvider` (real, WxJava `weixin-java-pay` 4.8.5.B v3) / `AlipayPaymentProvider` (real, alipay-sdk-java 3.1.0: NATIVE=precreate qrCode, H5=pageExecute form, APP=sdkExecute orderStr, JSAPI=unsupported; sync refund = accepted-as-SUCCESS; callback verified via `AlipaySignature.rsaCheckV1`).
+- **`PaymentProviderRouter.resolve(configId)`**: single-arg (multi-merchant, `configId` is **mandatory**). `Channel` is derived from the config, never from the URL. Callback paths `/pay/notify/{configId}` + `/refund/notify/{configId}` carry it to route the exact merchant (whose apiV3Key/cert verifies the signature); `PayOrderRemoteApiImpl.create` keeps an explicit `config.getChannel() != request.getChannel()` check.
 - **`PayChannelConfigDO`**: multi-merchant `uk(channel, mch_id)`. Credentials (`api_key`/`private_key`/cert) stored **PLAINTEXT** (encryption deliberately not added). `notifyUrl` (pay) and `refundNotifyUrl` (refund) are separate fields.
 - **`PayChannelLogDO`**: every channel interaction logged with request/response JSON; status via **`ChannelLogStatusEnum`** (SUCCESS/FAILED) - not `PayStatusEnum`.
 
 ### Notify callback - sealed template, two parallel stacks
 Pay/refund callbacks are **separate endpoints**; type is decided by the endpoint, never by sniffing the payload:
-- `/pay/notify` -> `PayNotifyApiImpl extends AbstractChannelNotifyApi<PayNotifyParseResult>`
-- `/refund/notify` -> `RefundNotifyApiImpl extends AbstractChannelNotifyApi<RefundNotifyParseResult>`
-- **`AbstractChannelNotifyApi<T extends NotifyParseResult>`** (`impl/notify`, extends `AbstractApi`): template `handle()` = record-raw -> verify+parse -> idempotency -> distributed-lock + state-machine -> ACK. Only 2 hooks: `parse()` / `process()`. `notifyType`/`outBusinessNo` live on the typed result, not as hooks.
-- **`NotifyParseResult`**: `sealed` base (`permits PayNotifyParseResult, RefundNotifyParseResult`); **`ProcessResult`**: `sealed interface` (`Ok`/`Reject(reason)`) returned by `process()` instead of boolean.
-- **`PayChannelNotifyDO`**: raw callback record, saved **first** (before parse/verify). Idempotency key `(channel, notify_type, out_business_no)`, `out_business_no` = our no (PAY=`order_no`, REFUND=`refund_no`); nullable on verify-failure (PG partial unique index tolerates multiple NULLs).
-- ACK is **channel-decided** (`provider.buildNotifyAck`): WeChat v3 JSON `{"code","message"}`.
-- Orchestration lives in the **ApiImpl** layer (like all other domains) - **no notify Service layer** exists.
+- `/pay/notify/{configId}` -> `PayNotifyServiceImpl extends AbstractChannelNotifyService<PayNotifyParseResult>`
+- `/refund/notify/{configId}` -> `RefundNotifyServiceImpl extends AbstractChannelNotifyService<RefundNotifyParseResult>`
+- **`AbstractChannelNotifyService<T extends NotifyParseResult>`** (`service/`, abstract, not an `AbstractApi`): template `handle(configId, body, headers)` = resolve (channel derived from config; resolve-fail -> generic `"fail"` NACK, raw body not recorded) -> record-raw -> verify+parse -> idempotency -> distributed-lock + state-machine -> ACK. Only 2 hooks: `parse()` / `process()`. `notifyType`/`outBusinessNo` live on the typed result, not as hooks. Abstract base does **not** `implements` both notify interfaces (would make each bean both types -> Spring injection ambiguity).
+- **`NotifyParseResult`**: `sealed` base (`permits PayNotifyParseResult, RefundNotifyParseResult`); **`ProcessResult`** (`service/`): `sealed interface` (`Ok`/`Reject(reason)`) returned by `process()` instead of boolean.
+- **`ChannelNotifyLogDO`**: raw callback record, saved **after** resolve (channel comes from config). Idempotency key `(channel, notify_type, out_business_no)`, `out_business_no` = our no (PAY=`order_no`, REFUND=`refund_no`); nullable on verify-failure (PG partial unique index tolerates multiple NULLs).
+- ACK is **channel-decided** (`provider.buildNotifyAck`): WeChat v3 JSON `{"code","message"}`, Alipay `"success"/"fail"`.
+- Orchestration lives in the **Service** layer (matching the platform convention that `api/impl` is controller passthrough) - `PayNotifyApiImpl`/`RefundNotifyApiImpl` (`impl/notify`) are thin delegates injecting the corresponding `PayNotifyService`/`RefundNotifyService`.
 
 ### Merchant notify outbox (gateway -> business)
-- `PayOrderPaidEvent` / `RefundFinishedEvent` -> async listener builds `PayNotifyRequest` payload -> **`NotifyTaskDispatcher`** (`listener/`): create `PayNotifyTaskDO` (PENDING) -> persist -> first send.
-- **`PayNotifySenderService`**: HTTP POST to merchant `notifyUrl`; retry via `claimSending` (PENDING | stuck-SENDING -> SENDING, atomic) to dedupe across instances / first-delivery races.
+- `PayOrderPaidEvent` / `RefundFinishedEvent` -> async listener builds `NotifyRequest` payload -> **`NotifyTaskService.createAndSend`**: create `NotifyTaskDO` (PENDING) -> persist -> first send.
+- **`NotifyTaskService.send`**: HTTP POST to merchant `notifyUrl`; retry via `claimSending` (PENDING | stuck-SENDING -> SENDING, atomic) to dedupe across instances / first-delivery races.
 
 ### Refund flow & over-refund guard
 - `RefundApiImpl.apply`: `reserveRefund` (atomic `refunded_amount + amount <= amount`) -> save refund as REFUNDING (short txn) -> channel `refund()` **outside** the txn -> `updateToSuccess`/`updateToFailed`. Save-failure rolls back the reserved quota.
