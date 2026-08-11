@@ -33,4 +33,6 @@ public interface SecurityConstants {
      */
     String SUPER_ADMIN_NAME = "超级管理员";
 
+    String DEFAULT_HINT = "default";
+
 }
