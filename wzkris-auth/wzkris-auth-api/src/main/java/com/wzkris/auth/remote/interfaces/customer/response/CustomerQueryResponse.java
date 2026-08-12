@@ -20,6 +20,8 @@ public class CustomerQueryResponse implements Serializable {
 
     private String phoneNumber;
 
+    private String socialUid;
+
     private String status;
 
 }

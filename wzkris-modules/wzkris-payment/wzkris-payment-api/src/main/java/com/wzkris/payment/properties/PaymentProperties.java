@@ -25,6 +25,11 @@ public class PaymentProperties {
     private String refundNoPrefix = "RF";
 
     /**
+     * 提现单号前缀
+     */
+    private String withdrawalNoPrefix = "WD";
+
+    /**
      * 默认订单过期分钟数
      */
     private Integer defaultExpireMinutes = 30;

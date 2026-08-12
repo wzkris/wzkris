@@ -2,9 +2,9 @@ package com.wzkris.auth.remote.interfaces.customer;
 
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
-import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerSocialUpdateRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.SocialLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerQueryResponse;
-import com.wzkris.auth.remote.interfaces.customer.response.CustomerListResponse;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.remote.annotation.RemoteInterface;
 import com.wzkris.common.remote.constants.ServiceContextPathConstant;
@@ -29,13 +29,19 @@ import java.util.List;
 public interface ICustomerRemote {
 
     @PostExchange("/query-list")
-    Result<List<CustomerListResponse>> queryList(@RequestBody CustomerQueryRequest request);
+    Result<List<CustomerQueryResponse>> queryList(@RequestBody CustomerQueryRequest request);
 
     /**
-     * 微信小程序获取信息或注册
+     * 多渠道社交登录获取信息或注册
      */
-    @PostExchange("/wexcx-login")
-    Result<CustomerQueryResponse> wexcxLogin(@RequestBody WexcxLoginRequest request);
+    @PostExchange("/query-by-social")
+    Result<CustomerQueryResponse> socialLogin(@RequestBody SocialLoginRequest request);
+
+    /**
+     * 更新客户社交账号绑定，用于登录后绑定当前渠道openid（如微信支付人脸）
+     */
+    @PostExchange("/update-social-info")
+    Result<Void> updateSocialInfo(@RequestBody CustomerSocialUpdateRequest request);
 
     /**
      * 更新用户登录信息

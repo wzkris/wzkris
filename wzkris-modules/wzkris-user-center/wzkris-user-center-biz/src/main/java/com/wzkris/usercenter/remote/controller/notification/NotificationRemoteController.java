@@ -2,7 +2,7 @@ package com.wzkris.usercenter.remote.controller.notification;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.notification.NotificationRemoteApi;
-import com.wzkris.usercenter.remote.api.notification.request.NotificationSaveRequest;
+import com.wzkris.usercenter.remote.api.notification.request.NotificationSendRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class NotificationRemoteController {
 
     @Operation(summary = "发送通知给用户")
     @PostMapping("/send-to-users")
-    public Result<Void> send2Users(@RequestBody NotificationSaveRequest request) {
+    public Result<Void> send2Users(@RequestBody NotificationSendRequest request) {
         return notificationRemoteApi.send2Users(request);
     }
 

@@ -87,7 +87,7 @@ public class OperateLogRemoteApiImpl implements OperateLogRemoteApi {
             tenantOperateLogDO.setOperType(request.getOperType());
             tenantOperateLogDO.setMethod(request.getMethod());
             tenantOperateLogDO.setHttpMethod(request.getHttpMethod());
-            tenantOperateLogDO.setMemberId(request.getOperatorId());
+            tenantOperateLogDO.setTenantUserId(request.getOperatorId());
             tenantOperateLogDO.setUsername(request.getOperName());
             tenantOperateLogDO.setHttpUrl(request.getHttpUrl());
             tenantOperateLogDO.setOperIp(request.getOperIp());

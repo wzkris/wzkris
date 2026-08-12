@@ -49,7 +49,8 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
         }
 
         UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
-                .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
+                .loadUserBySocial(authenticationToken.getSocialType(), authenticationToken.getWxCode(),
+                        authenticationToken.getPhoneCode(), authenticationToken.getAppid());
 
         if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(

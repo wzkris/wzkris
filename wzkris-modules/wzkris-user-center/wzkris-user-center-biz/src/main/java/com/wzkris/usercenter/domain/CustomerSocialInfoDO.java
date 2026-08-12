@@ -2,7 +2,7 @@ package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.usercenter.enums.social.IdentifierTypeEnum;
+import com.wzkris.usercenter.enums.social.SocialTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,10 +20,13 @@ public class CustomerSocialInfoDO extends BaseEntity {
     @Schema(description = "客户ID")
     private Long customerId;
 
-    @Schema(description = "第三方唯一标识")
-    private String identifier;
+    @Schema(description = "三方平台用户唯一标识")
+    private String socialUid;
 
     @Schema(description = "渠道类型")
-    private IdentifierTypeEnum identifierType;
+    private SocialTypeEnum socialType;
+
+    @Schema(description = "渠道应用标识(小程序/公众号appid)")
+    private String appid;
 
 }

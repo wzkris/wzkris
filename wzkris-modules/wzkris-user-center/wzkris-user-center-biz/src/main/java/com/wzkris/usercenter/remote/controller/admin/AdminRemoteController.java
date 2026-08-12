@@ -3,7 +3,7 @@ package com.wzkris.usercenter.remote.controller.admin;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.UserRole;
 import com.wzkris.usercenter.remote.api.admin.AdminRemoteApi;
-import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminPermissionQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminListResponse;
@@ -34,7 +34,7 @@ public class AdminRemoteController {
 
     @Operation(summary = "查询管理员权限")
     @PostMapping("/query-permission")
-    public Result<List<UserRole>> queryPermission(@RequestBody AdminPermsQueryRequest request) {
+    public Result<List<UserRole>> queryPermission(@RequestBody AdminPermissionQueryRequest request) {
         return adminRemoteApi.queryPermission(request);
     }
 

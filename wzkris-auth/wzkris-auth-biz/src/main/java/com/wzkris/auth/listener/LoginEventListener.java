@@ -6,7 +6,7 @@ import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
-import com.wzkris.auth.remote.interfaces.member.IMemberRemote;
+import com.wzkris.auth.remote.interfaces.tenantuser.ITenantUserRemote;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
@@ -35,7 +35,7 @@ public class LoginEventListener {
 
     private final IAdminRemote adminRemote;
 
-    private final IMemberRemote memberRemote;
+    private final ITenantUserRemote memberRemote;
 
     private final ICustomerRemote customerRemote;
 

@@ -1058,8 +1058,9 @@ COMMENT ON COLUMN biz.customer_operate_log.trace_id IS '链路追踪ID';
 CREATE TABLE biz.customer_social_info (
     id bigint NOT NULL,
     customer_id bigint NOT NULL,
-    identifier character varying(32) NOT NULL,
-    identifier_type character varying(10) NOT NULL,
+    social_uid character varying(64) NOT NULL,
+    social_type character varying(10) NOT NULL,
+    appid character varying(64),
     creator_id bigint NOT NULL,
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
@@ -1079,121 +1080,25 @@ COMMENT ON TABLE biz.customer_social_info IS '第三方信息';
 
 
 --
--- Name: COLUMN customer_social_info.identifier; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN customer_social_info.social_uid; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.customer_social_info.identifier IS '三方唯一标识符';
-
-
---
--- Name: COLUMN customer_social_info.identifier_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_social_info.identifier_type IS '三方渠道';
+COMMENT ON COLUMN biz.customer_social_info.social_uid IS '三方平台用户唯一标识';
 
 
 --
--- Name: customer_wallet_info; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN customer_social_info.social_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.customer_wallet_info (
-    id bigint NOT NULL,
-    customer_id bigint NOT NULL,
-    balance numeric(10,2) NOT NULL,
-    status character(1) NOT NULL,
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    create_at timestamp(0) with time zone NOT NULL,
-    update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE biz.customer_wallet_info OWNER TO postgres;
-
---
--- Name: TABLE customer_wallet_info; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.customer_wallet_info IS '用户钱包';
+COMMENT ON COLUMN biz.customer_social_info.social_type IS '三方渠道';
 
 
 --
--- Name: COLUMN customer_wallet_info.balance; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN customer_social_info.appid; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.customer_wallet_info.balance IS '余额, 元';
+COMMENT ON COLUMN biz.customer_social_info.appid IS '渠道应用标识(小程序/公众号appid)';
 
-
---
--- Name: COLUMN customer_wallet_info.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_info.status IS '状态';
-
-
---
--- Name: customer_wallet_record; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.customer_wallet_record (
-    id bigint NOT NULL,
-    customer_id bigint NOT NULL,
-    amount numeric(10,2) NOT NULL,
-    record_type character(1) NOT NULL,
-    create_at timestamp(0) with time zone NOT NULL,
-    remark character varying(100),
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE biz.customer_wallet_record OWNER TO postgres;
-
---
--- Name: TABLE customer_wallet_record; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.customer_wallet_record IS '用户钱包记录';
-
-
---
--- Name: COLUMN customer_wallet_record.customer_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_record.customer_id IS '客户ID';
-
-
---
--- Name: COLUMN customer_wallet_record.amount; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_record.amount IS '金额, 元';
-
-
---
--- Name: COLUMN customer_wallet_record.record_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_record.record_type IS '记录类型';
-
-
---
--- Name: COLUMN customer_wallet_record.create_at; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_record.create_at IS '创建时间';
-
-
---
--- Name: COLUMN customer_wallet_record.remark; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.customer_wallet_record.remark IS '备注';
 
 
 --
@@ -1396,10 +1301,10 @@ COMMENT ON COLUMN biz.dictionary_info.hint IS '标签';
 
 
 --
--- Name: member_info; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: tenant_user; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.member_info (
+CREATE TABLE biz.tenant_user (
     id bigint NOT NULL,
     tenant_id bigint NOT NULL,
     username character varying(30) NOT NULL,
@@ -1420,122 +1325,123 @@ CREATE TABLE biz.member_info (
 );
 
 
-ALTER TABLE biz.member_info OWNER TO postgres;
+ALTER TABLE biz.tenant_user OWNER TO postgres;
 
 --
--- Name: TABLE member_info; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE tenant_user; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.member_info IS '租户成员表';
-
-
---
--- Name: COLUMN member_info.id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.id IS 'ID';
+COMMENT ON TABLE biz.tenant_user IS '租户用户表';
 
 
 --
--- Name: COLUMN member_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.tenant_id IS '租户ID';
-
-
---
--- Name: COLUMN member_info.username; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.username IS '用户名';
+COMMENT ON COLUMN biz.tenant_user.id IS 'ID';
 
 
 --
--- Name: COLUMN member_info.phone_number; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.phone_number IS '手机号码';
-
-
---
--- Name: COLUMN member_info.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.status IS '状态值';
+COMMENT ON COLUMN biz.tenant_user.tenant_id IS '租户ID';
 
 
 --
--- Name: COLUMN member_info.gender; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.username; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.gender IS '性别（0男 1女 2未知）';
-
-
---
--- Name: COLUMN member_info.avatar; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.avatar IS '头像地址';
+COMMENT ON COLUMN biz.tenant_user.username IS '用户名';
 
 
 --
--- Name: COLUMN member_info.password; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.phone_number; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.password IS '密码';
-
-
---
--- Name: COLUMN member_info.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.login_ip IS '登录ip';
+COMMENT ON COLUMN biz.tenant_user.phone_number IS '手机号码';
 
 
 --
--- Name: COLUMN member_info.login_date; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.login_date IS '登录时间';
-
-
---
--- Name: COLUMN member_info.remark; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.remark IS '备注';
+COMMENT ON COLUMN biz.tenant_user.status IS '状态值';
 
 
 --
--- Name: COLUMN member_info.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.gender; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.creator_id IS '创建者';
-
-
---
--- Name: COLUMN member_info.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_info.updater_id IS '更新者';
+COMMENT ON COLUMN biz.tenant_user.gender IS '性别（0男 1女 2未知）';
 
 
 --
--- Name: COLUMN member_info.hint; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.avatar; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_info.hint IS '标签';
+COMMENT ON COLUMN biz.tenant_user.avatar IS '头像地址';
 
 
 --
--- Name: member_social_info; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user.password; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.member_social_info (
+COMMENT ON COLUMN biz.tenant_user.password IS '密码';
+
+
+--
+-- Name: COLUMN tenant_user.login_ip; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.login_ip IS '登录ip';
+
+
+--
+-- Name: COLUMN tenant_user.login_date; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.login_date IS '登录时间';
+
+
+--
+-- Name: COLUMN tenant_user.remark; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.remark IS '备注';
+
+
+--
+-- Name: COLUMN tenant_user.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.creator_id IS '创建者';
+
+
+--
+-- Name: COLUMN tenant_user.updater_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.updater_id IS '更新者';
+
+
+--
+-- Name: COLUMN tenant_user.hint; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user.hint IS '标签';
+
+
+--
+-- Name: tenant_user_social_info; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_user_social_info (
     id bigint NOT NULL,
-    member_id bigint NOT NULL,
-    identifier character varying(32) NOT NULL,
-    identifier_type character varying(10) NOT NULL,
+    tenant_user_id bigint NOT NULL,
+    social_uid character varying(32) NOT NULL,
+    social_type character varying(10) NOT NULL,
+    appid character varying(64),
     creator_id bigint NOT NULL,
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
@@ -1545,37 +1451,44 @@ CREATE TABLE biz.member_social_info (
 );
 
 
-ALTER TABLE biz.member_social_info OWNER TO postgres;
+ALTER TABLE biz.tenant_user_social_info OWNER TO postgres;
 
 --
--- Name: TABLE member_social_info; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE tenant_user_social_info; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.member_social_info IS '第三方信息';
-
-
---
--- Name: COLUMN member_social_info.identifier; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_social_info.identifier IS '三方唯一标识符';
+COMMENT ON TABLE biz.tenant_user_social_info IS '第三方信息';
 
 
 --
--- Name: COLUMN member_social_info.identifier_type; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user_social_info.social_uid; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_social_info.identifier_type IS '三方渠道';
+COMMENT ON COLUMN biz.tenant_user_social_info.social_uid IS '三方平台用户唯一标识';
 
 
 --
--- Name: member_to_post; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user_social_info.social_type; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.member_to_post (
+COMMENT ON COLUMN biz.tenant_user_social_info.social_type IS '三方渠道';
+
+
+--
+-- Name: COLUMN tenant_user_social_info.appid; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user_social_info.appid IS '渠道应用标识(小程序/公众号appid)';
+
+
+--
+-- Name: tenant_user_to_role; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_user_to_role (
     id bigint NOT NULL,
-    member_id bigint NOT NULL,
-    post_id bigint NOT NULL,
+    tenant_user_id bigint NOT NULL,
+    tenant_role_id bigint NOT NULL,
     creator_id bigint NOT NULL,
     updater_id bigint,
     create_at timestamp(0) with time zone NOT NULL,
@@ -1585,27 +1498,27 @@ CREATE TABLE biz.member_to_post (
 );
 
 
-ALTER TABLE biz.member_to_post OWNER TO postgres;
+ALTER TABLE biz.tenant_user_to_role OWNER TO postgres;
 
 --
--- Name: TABLE member_to_post; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE tenant_user_to_role; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.member_to_post IS '租户成员和职位关联表';
-
-
---
--- Name: COLUMN member_to_post.member_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.member_to_post.member_id IS '租户成员ID';
+COMMENT ON TABLE biz.tenant_user_to_role IS '租户用户和角色关联表';
 
 
 --
--- Name: COLUMN member_to_post.post_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_user_to_role.tenant_user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.member_to_post.post_id IS '职位ID';
+COMMENT ON COLUMN biz.tenant_user_to_role.tenant_user_id IS '租户用户ID';
+
+
+--
+-- Name: COLUMN tenant_user_to_role.tenant_role_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_user_to_role.tenant_role_id IS '角色ID';
 
 
 --
@@ -1874,7 +1787,7 @@ COMMENT ON COLUMN biz.notification_to_admin.read IS '是否已读';
 CREATE TABLE biz.notification_to_tenant (
     id bigint NOT NULL,
     notification_id bigint NOT NULL,
-    member_id bigint NOT NULL,
+    tenant_user_id bigint NOT NULL,
     read boolean NOT NULL,
     creator_id bigint NOT NULL,
     updater_id bigint,
@@ -1902,10 +1815,10 @@ COMMENT ON COLUMN biz.notification_to_tenant.notification_id IS '通知ID';
 
 
 --
--- Name: COLUMN notification_to_tenant.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN notification_to_tenant.tenant_user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.notification_to_tenant.member_id IS '租户成员ID';
+COMMENT ON COLUMN biz.notification_to_tenant.tenant_user_id IS '租户用户ID';
 
 
 --
@@ -2011,15 +1924,15 @@ COMMENT ON COLUMN biz.oauth2_client.hint IS '标签';
 
 
 --
--- Name: post_info; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: tenant_role; Type: TABLE; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.post_info (
+CREATE TABLE biz.tenant_role (
     id bigint NOT NULL,
     tenant_id bigint NOT NULL,
-    post_name character varying(20) NOT NULL,
+    role_name character varying(20) NOT NULL,
     status character(1) NOT NULL,
-    post_sort smallint NOT NULL,
+    role_sort smallint NOT NULL,
     create_at timestamp(0) with time zone NOT NULL,
     creator_id bigint NOT NULL,
     update_at timestamp(0) with time zone,
@@ -2029,64 +1942,64 @@ CREATE TABLE biz.post_info (
 );
 
 
-ALTER TABLE biz.post_info OWNER TO postgres;
+ALTER TABLE biz.tenant_role OWNER TO postgres;
 
 --
--- Name: TABLE post_info; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE tenant_role; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.post_info IS '租户职位信息';
-
-
---
--- Name: COLUMN post_info.id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.post_info.id IS '职位ID';
+COMMENT ON TABLE biz.tenant_role IS '租户角色信息';
 
 
 --
--- Name: COLUMN post_info.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_role.id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.post_info.tenant_id IS '租户ID';
-
-
---
--- Name: COLUMN post_info.post_name; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.post_info.post_name IS '职位名称';
+COMMENT ON COLUMN biz.tenant_role.id IS '角色ID';
 
 
 --
--- Name: COLUMN post_info.status; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_role.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.post_info.status IS '状态（0代表正常 1代表停用）';
-
-
---
--- Name: COLUMN post_info.post_sort; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.post_info.post_sort IS '排序';
+COMMENT ON COLUMN biz.tenant_role.tenant_id IS '租户ID';
 
 
 --
--- Name: COLUMN post_info.hint; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_role.role_name; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.post_info.hint IS '标签';
+COMMENT ON COLUMN biz.tenant_role.role_name IS '角色名称';
 
 
 --
--- Name: post_to_menu; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_role.status; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.post_to_menu (
+COMMENT ON COLUMN biz.tenant_role.status IS '状态（0代表正常 1代表停用）';
+
+
+--
+-- Name: COLUMN tenant_role.role_sort; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_role.role_sort IS '排序';
+
+
+--
+-- Name: COLUMN tenant_role.hint; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_role.hint IS '标签';
+
+
+--
+-- Name: tenant_role_to_menu; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_role_to_menu (
     id bigint NOT NULL,
-    post_id bigint NOT NULL,
+    tenant_role_id bigint NOT NULL,
     menu_id bigint NOT NULL,
     creator_id bigint NOT NULL,
     updater_id bigint,
@@ -2097,27 +2010,27 @@ CREATE TABLE biz.post_to_menu (
 );
 
 
-ALTER TABLE biz.post_to_menu OWNER TO postgres;
+ALTER TABLE biz.tenant_role_to_menu OWNER TO postgres;
 
 --
--- Name: TABLE post_to_menu; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: TABLE tenant_role_to_menu; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON TABLE biz.post_to_menu IS '职位和菜单关联表';
-
-
---
--- Name: COLUMN post_to_menu.post_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.post_to_menu.post_id IS '职位ID';
+COMMENT ON TABLE biz.tenant_role_to_menu IS '角色和菜单关联表';
 
 
 --
--- Name: COLUMN post_to_menu.menu_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_role_to_menu.tenant_role_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.post_to_menu.menu_id IS '菜单ID';
+COMMENT ON COLUMN biz.tenant_role_to_menu.tenant_role_id IS '角色ID';
+
+
+--
+-- Name: COLUMN tenant_role_to_menu.menu_id; Type: COMMENT; Schema: biz; Owner: postgres
+--
+
+COMMENT ON COLUMN biz.tenant_role_to_menu.menu_id IS '菜单ID';
 
 
 --
@@ -2456,7 +2369,7 @@ COMMENT ON COLUMN biz.tenant_info.hint IS '标签';
 CREATE TABLE biz.tenant_login_log (
     id bigint NOT NULL,
     tenant_id bigint NOT NULL,
-    member_id bigint NOT NULL,
+    tenant_user_id bigint NOT NULL,
     username character varying(32) NOT NULL,
     login_type character varying(32) NOT NULL,
     success boolean NOT NULL,
@@ -2492,10 +2405,10 @@ COMMENT ON COLUMN biz.tenant_login_log.tenant_id IS '租户ID';
 
 
 --
--- Name: COLUMN tenant_login_log.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_login_log.tenant_user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_login_log.member_id IS '用户ID';
+COMMENT ON COLUMN biz.tenant_login_log.tenant_user_id IS '用户ID';
 
 
 --
@@ -2559,7 +2472,7 @@ CREATE TABLE biz.tenant_operate_log (
     method character varying(200),
     http_method character varying(10),
     tenant_id bigint NOT NULL,
-    member_id bigint NOT NULL,
+    tenant_user_id bigint NOT NULL,
     username character varying(50) NOT NULL,
     http_url character varying(500),
     oper_ip inet,
@@ -2639,10 +2552,10 @@ COMMENT ON COLUMN biz.tenant_operate_log.tenant_id IS '租户ID';
 
 
 --
--- Name: COLUMN tenant_operate_log.member_id; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_operate_log.tenant_user_id; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_operate_log.member_id IS '职工ID';
+COMMENT ON COLUMN biz.tenant_operate_log.tenant_user_id IS '租户用户ID';
 
 
 --
@@ -2730,8 +2643,8 @@ CREATE TABLE biz.tenant_package_info (
     updater_id bigint,
     update_at timestamp(0) with time zone,
     hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    member_num_limit smallint DEFAULT 5 NOT NULL,
-    post_num_limit smallint DEFAULT 5 NOT NULL,
+    account_num_limit smallint DEFAULT 5 NOT NULL,
+    role_num_limit smallint DEFAULT 5 NOT NULL,
     deleted boolean DEFAULT false NOT NULL
 );
 
@@ -2816,259 +2729,19 @@ COMMENT ON COLUMN biz.tenant_package_info.hint IS '标签';
 
 
 --
--- Name: COLUMN tenant_package_info.member_num_limit; Type: COMMENT; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_package_info.account_num_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-COMMENT ON COLUMN biz.tenant_package_info.member_num_limit IS '租户成员数量限制';
-
-
---
--- Name: COLUMN tenant_package_info.post_num_limit; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_package_info.post_num_limit IS '租户职位数量限制';
+COMMENT ON COLUMN biz.tenant_package_info.account_num_limit IS '租户账号数量限制';
 
 
 --
--- Name: tenant_wallet_info; Type: TABLE; Schema: biz; Owner: postgres
+-- Name: COLUMN tenant_package_info.role_num_limit; Type: COMMENT; Schema: biz; Owner: postgres
 --
 
-CREATE TABLE biz.tenant_wallet_info (
-    id bigint NOT NULL,
-    tenant_id bigint NOT NULL,
-    balance numeric(10,2) NOT NULL,
-    status character(1) NOT NULL,
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    create_at timestamp(0) with time zone NOT NULL,
-    update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    deleted boolean DEFAULT false NOT NULL
-);
+COMMENT ON COLUMN biz.tenant_package_info.role_num_limit IS '租户角色数量限制';
 
 
-ALTER TABLE biz.tenant_wallet_info OWNER TO postgres;
-
---
--- Name: TABLE tenant_wallet_info; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.tenant_wallet_info IS '租户钱包';
-
-
---
--- Name: COLUMN tenant_wallet_info.balance; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_info.balance IS '余额, 元';
-
-
---
--- Name: COLUMN tenant_wallet_info.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_info.status IS '状态';
-
-
---
--- Name: tenant_wallet_record; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.tenant_wallet_record (
-    id bigint NOT NULL,
-    tenant_id bigint NOT NULL,
-    amount numeric(10,2) NOT NULL,
-    record_type character(1) NOT NULL,
-    biz_type character(1) NOT NULL,
-    biz_no character varying(32) NOT NULL,
-    create_at timestamp(0) with time zone NOT NULL,
-    remark character varying(100),
-    creator_id bigint NOT NULL,
-    updater_id bigint,
-    update_at timestamp(0) with time zone,
-    hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE biz.tenant_wallet_record OWNER TO postgres;
-
---
--- Name: TABLE tenant_wallet_record; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.tenant_wallet_record IS '租户钱包记录';
-
-
---
--- Name: COLUMN tenant_wallet_record.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.tenant_id IS '租户ID';
-
-
---
--- Name: COLUMN tenant_wallet_record.amount; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.amount IS '金额, 单位元';
-
-
---
--- Name: COLUMN tenant_wallet_record.record_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.record_type IS '记录类型';
-
-
---
--- Name: COLUMN tenant_wallet_record.biz_type; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.biz_type IS '业务类型';
-
-
---
--- Name: COLUMN tenant_wallet_record.biz_no; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.biz_no IS '业务编号';
-
-
---
--- Name: COLUMN tenant_wallet_record.create_at; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.create_at IS '创建时间';
-
-
---
--- Name: COLUMN tenant_wallet_record.remark; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_record.remark IS '备注';
-
-
---
--- Name: tenant_wallet_withdrawal_record; Type: TABLE; Schema: biz; Owner: postgres
---
-
-CREATE TABLE biz.tenant_wallet_withdrawal_record (
-    id bigint NOT NULL,
-    order_no character varying(32) NOT NULL,
-    status character(1) NOT NULL,
-    tenant_id bigint NOT NULL,
-    request_params character varying(300) NOT NULL,
-    amount money NOT NULL,
-    error_msg character varying(100),
-    creator_id bigint NOT NULL,
-    create_at timestamp(0) with time zone NOT NULL,
-    complete_at timestamp(0) with time zone,
-    remark character varying(100),
-    hint character varying(10) DEFAULT ''::character varying NOT NULL,
-    updater_id bigint,
-    update_at timestamp(0) with time zone,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
-ALTER TABLE biz.tenant_wallet_withdrawal_record OWNER TO postgres;
-
---
--- Name: TABLE tenant_wallet_withdrawal_record; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON TABLE biz.tenant_wallet_withdrawal_record IS '系统提现记录';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.id IS 'id';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.order_no; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.order_no IS '订单号';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.status; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.status IS '状态
-''0'' 处理中
-''1'' 成功
-''2'' 失败';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.tenant_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.tenant_id IS '租户id';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.request_params; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.request_params IS '第三方请求参数';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.amount; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.amount IS '金额, 单位元';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.error_msg; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.error_msg IS '错误信息';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.creator_id; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.creator_id IS '创建者';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.create_at; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.create_at IS '创建时间';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.complete_at; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.complete_at IS '完成时间';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.remark; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.remark IS '备注';
-
-
---
--- Name: COLUMN tenant_wallet_withdrawal_record.hint; Type: COMMENT; Schema: biz; Owner: postgres
---
-
-COMMENT ON COLUMN biz.tenant_wallet_withdrawal_record.hint IS '标签';
-
-
---
 -- Data for Name: admin_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
@@ -3129,20 +2802,7 @@ INSERT INTO biz.customer_info (id, nickname, phone_number, status, gender, avata
 -- Data for Name: customer_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.customer_social_info (id, customer_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1988138628742279170, 1988138628742279170, 'ozNXO5eZpDZXZMInfjKhkkr7LQzs', 'we_xcx', 0, NULL, '2025-11-11 14:56:02+08', NULL, '', false);
-
-
---
--- Data for Name: customer_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-INSERT INTO biz.customer_wallet_info (id, customer_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1988138628742279170, 1988138628742279170, 0.00, '0', 0, NULL, '2025-11-11 14:56:02+08', NULL, '', false);
-
-
---
--- Data for Name: customer_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
+INSERT INTO biz.customer_social_info (id, customer_id, social_uid, social_type, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1988138628742279170, 1988138628742279170, 'ozNXO5eZpDZXZMInfjKhkkr7LQzs', 'we_xcx', 0, NULL, '2025-11-11 14:56:02+08', NULL, '', false);
 
 
 --
@@ -3162,7 +2822,7 @@ INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, cr
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933164953604, 'msg_status', '消息状态', '[{"label": "已发布", "value": "2", "tableCls": "primary"}, {"label": "草稿", "value": "0", "tableCls": "info"}, {"label": "关闭", "value": "1", "tableCls": "danger"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2024-12-16 10:30:17+08', '', false);
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933227868164, 'online_status', '设备连接状态', '[{"label": "在线", "value": "true", "tableCls": "success"}, {"label": "离线", "value": "false", "tableCls": "info"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2024-12-09 11:28:08+08', '', false);
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933290782723, 'data_scope', '数据权限', '[{"label": "全部数据权限", "value": "1", "tableCls": "default"}, {"label": "自定数据权限", "value": "2", "tableCls": "default"}, {"label": "本部门数据权限", "value": "3", "tableCls": "default"}, {"label": "本部门及以下数据权限", "value": "4", "tableCls": "default"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2024-11-20 14:27:20+08', '', false);
-INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933425000451, 'wallet_record_type', '钱包记录类型', '[{"label": "收入", "value": "0", "tableCls": "primary"}, {"label": "支出", "value": "1", "tableCls": "danger"}]', NULL, 1, 1, '2024-11-25 16:32:20+08', '2024-11-25 16:32:20+08', '', false);
+INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933425000451, 'balance_record_type', '余额变动类型', '[{"label": "收入", "value": "0", "tableCls": "primary"}, {"label": "支出", "value": "1", "tableCls": "danger"}]', NULL, 1, 1, '2024-11-25 16:32:20+08', '2024-11-25 16:32:20+08', '', false);
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933357891585, 'pay_type', '支付方式', '[{"label": "钱包支付", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2025-07-15 17:00:24+08', '', false);
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933290782722, 'pay_certification_status', '支付认证状态', '[{"label": "未认证", "value": "0", "tableCls": "info"}, {"label": "微信支付", "value": "1", "tableCls": "success"}, {"label": "支付宝", "value": "2", "tableCls": "primary"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2025-07-15 17:00:46+08', '', false);
 INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1905175933290782724, 'pay_status', '支付状态', '[{"label": "支付成功", "value": "1", "tableCls": "success"}, {"label": "订单关闭", "value": "2", "tableCls": "info"}, {"label": "未支付", "value": "0", "tableCls": "primary"}, {"label": "支付异常", "value": "3", "tableCls": "danger"}]', NULL, 1, 1, '2024-04-17 14:08:55+08', '2025-07-15 17:01:14+08', '', false);
@@ -3174,21 +2834,21 @@ INSERT INTO biz.dictionary_info (id, dict_key, dict_name, dict_value, remark, cr
 
 
 --
--- Data for Name: member_info; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: tenant_user; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.member_info (id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1910557183820165120, 1910557183820165122, 'testadmin', NULL, '0', '0', 'http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '172.16.8.59', '2026-04-14 14:09:01+08', NULL, 1, 0, '2025-04-11 12:55:04+08', '2026-04-14 14:09:01+08', '', false);
-
-
---
--- Data for Name: member_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-INSERT INTO biz.member_social_info (id, member_id, identifier, identifier_type, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1910557183820165120, 1910557183820165120, 'ozNXO5eZpDZXZMInfjKhkkr7LQzs', 'we_xcx', 1, NULL, '2025-04-11 12:55:04+08', NULL, '', false);
+INSERT INTO biz.tenant_user (id, tenant_id, username, phone_number, status, gender, avatar, password, login_ip, login_date, remark, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1910557183820165120, 1910557183820165122, 'testadmin', NULL, '0', '0', 'http://tmp/WK0iX8BuChGpbd2d939bf0fbdab283f01e98a4d9bc31.png', '{bcrypt}$2a$10$7JB720yubVSZvUI0rEqK/.VqGOZTH.ulu33dHOiBE8ByOhJIrdAu2', '172.16.8.59', '2026-04-14 14:09:01+08', NULL, 1, 0, '2025-04-11 12:55:04+08', '2026-04-14 14:09:01+08', '', false);
 
 
 --
--- Data for Name: member_to_post; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: tenant_user_social_info; Type: TABLE DATA; Schema: biz; Owner: postgres
+--
+
+INSERT INTO biz.tenant_user_social_info (id, tenant_user_id, social_uid, social_type, appid, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1910557183820165120, 1910557183820165120, 'ozNXO5eZpDZXZMInfjKhkkr7LQzs', 'we_xcx', NULL, 1, NULL, '2025-04-11 12:55:04+08', NULL, '', false);
+
+
+--
+-- Data for Name: tenant_user_to_role; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
 
@@ -3231,8 +2891,8 @@ INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component,
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000700, '终端管理', 1906263415450000003, 3, 'oauth2client', 'oauth2client/mng/index', NULL, 'M', '0', 'user-mod:oauth2client-mng:page', 'carbon:application', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 17:29:48+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000103, '配置管理', 1963871785836048386, 7, 'config', 'config/mng/index', NULL, 'M', '0', 'system-mod:config-mng:page', 'carbon:parameter', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-14 10:09:25+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000151, '登录日志', 1906263415450000104, 2, 'login', 'loginlog-admin/mng/index', NULL, 'M', '0', 'system-mod:admin-loginlog-mng:page', 'carbon:login', false, true, 'system', 1, 100, '2024-05-26 12:30:16+08', '2025-11-07 15:00:45+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976585906620653569, '职位管理', 1976565556872667137, 0, 'post', 'post/mng/index', NULL, 'M', '0', 'user-mod:post-mng:page', 'carbon:load-balancer-classic', false, true, 'tenant', 1, 1, '2025-10-10 17:49:38+08', '2025-10-15 14:55:02+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976570103963770881, '成员管理', 1976565556872667137, 8, 'member', 'member/mng/index', NULL, 'M', '0', 'user-mod:member-mng:page', 'carbon:user-identification', false, true, 'tenant', 1, 100, '2025-10-10 16:46:50+08', '2025-11-10 11:11:21+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976585906620653569, '角色管理', 1976565556872667137, 0, 'tenant-role', 'tenant-role/mng/index', NULL, 'M', '0', 'user-mod:tenant-role-mng:page', 'carbon:load-balancer-classic', false, true, 'tenant', 1, 1, '2025-10-10 17:49:38+08', '2025-10-15 14:55:02+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976570103963770881, '租户用户管理', 1976565556872667137, 8, 'tenant-user', 'tenant-user/mng/index', NULL, 'M', '0', 'user-mod:tenant-user-mng:page', 'carbon:user-identification', false, true, 'tenant', 1, 100, '2025-10-10 16:46:50+08', '2025-11-10 11:11:21+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000100, '公告管理', 1906263415450000001, 15, 'announcement', 'announcement/mng/index', NULL, 'M', '0', 'system-mod:announcement-mng:page', 'carbon:message-queue', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-14 10:06:06+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1980906706949554177, '操作日志', 1980906033277222913, 0, 'operate', 'operatelog-tenant/mng/index', NULL, 'M', '0', 'system-mod:tenant-operatelog-mng:page', 'carbon:touch-interaction', false, true, 'tenant', 1, 100, '2025-10-22 15:58:57+08', '2025-11-10 11:08:35+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976456851288154113, '删除公告', 1906263415450000100, 0, '#', NULL, NULL, 'B', '0', 'system-mod:announcement-mng:remove', '#', false, true, 'system', 1, 1, '2025-10-10 09:16:49+08', '2025-10-10 09:16:49+08', '', false);
@@ -3253,20 +2913,20 @@ INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component,
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000207, '菜单管理', 1906263415450000003, 50, 'menu', 'menu/mng/index', NULL, 'M', '0', 'user-mod:menu-mng:list', 'carbon:menu', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 13:36:05+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000002, '组织管理', 0, 50, 'organization-mng', NULL, NULL, 'D', '0', NULL, 'carbon:user', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-22 15:09:41+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976226385717030913, '删除租户', 1906263415450000601, 8, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-mng:remove', '#', false, true, 'system', 1, 1, '2025-10-09 18:01:02+08', '2025-10-09 18:01:02+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586082013863937, '新增职位', 1976585906620653569, 0, '#', NULL, NULL, 'B', '0', 'user-mod:post-mng:add', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:50:20+08', '2025-10-10 17:50:20+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001126, '商户提现', 1906263415450001127, 1, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-wallet-info:withdrawal', '#', false, true, 'tenant', 1, 1, '2024-05-26 12:30:16+08', '2025-10-09 17:38:23+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586082013863937, '新增角色', 1976585906620653569, 0, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-role-mng:add', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:50:20+08', '2025-10-10 17:50:20+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001126, '商户提现', 1906263415450001127, 1, '#', NULL, NULL, 'B', '0', 'payment-mod:tenant-balance-info:withdrawal', '#', false, true, 'tenant', 1, 1, '2024-05-26 12:30:16+08', '2025-10-09 17:38:23+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976223757310291969, '新增角色', 1906263415450000206, 0, '#', NULL, NULL, 'B', '0', 'user-mod:role-mng:add', '#', false, true, 'system', 1, 1, '2025-10-09 17:50:35+08', '2025-10-09 17:50:35+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450002016, '删除菜单', 1906263415450000207, 4, '#', NULL, NULL, 'B', '0', 'user-mod:menu-mng:remove', '#', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-09 17:59:20+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001133, '修改租户', 1906263415450000601, 2, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-mng:edit', '#', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-09 18:00:31+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586292211408897, '删除职位', 1976585906620653569, 5, '#', NULL, NULL, 'B', '0', 'user-mod:post-mng:remove', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:51:10+08', '2025-10-10 17:51:10+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586196090544129, '修改职位', 1976585906620653569, 3, '#', NULL, NULL, 'B', '0', 'user-mod:post-mng:edit', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:50:47+08', '2025-10-10 17:51:16+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586292211408897, '删除角色', 1976585906620653569, 5, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-role-mng:remove', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:51:10+08', '2025-10-10 17:51:10+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586196090544129, '修改角色', 1976585906620653569, 3, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-role-mng:edit', '#', false, true, 'tenant', 1, 1, '2025-10-10 17:50:47+08', '2025-10-10 17:51:16+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906272182215585793, '租户信息', 0, 100, 'tenant-info', 'tenant/info/index', NULL, 'M', '0', 'user-mod:tenant-info', 'carbon:information-filled', false, true, 'tenant', 1, 1, '2025-03-30 17:08:00+08', '2025-10-22 15:11:17+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000205, '部门管理', 1906263415450000002, 70, 'dept', 'dept/mng/index', NULL, 'M', '0', 'user-mod:dept-mng:list', 'carbon:departure', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-11 11:27:19+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450002062, '重置密码', 1906263415450000203, 7, '#', NULL, NULL, 'B', '0', 'user-mod:admin-mng:resetPwd', '#', false, true, 'system', 1, 100, '2024-05-26 12:30:16+08', '2025-11-07 13:57:48+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586772002037762, '删除', 1976570103963770881, 7, '#', NULL, NULL, 'B', '0', 'user-mod:member-mng:remove', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:53:04+08', '2025-11-10 11:06:54+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586698882736130, '授权职位', 1976570103963770881, 5, '#', NULL, NULL, 'B', '0', 'user-mod:member-mng:grant-post', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:47+08', '2025-11-10 11:07:04+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586612681400321, '修改', 1976570103963770881, 3, '#', NULL, NULL, 'B', '0', 'user-mod:member-mng:edit', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:26+08', '2025-11-10 11:07:13+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586554187636737, '新增', 1976570103963770881, 0, '#', NULL, NULL, 'B', '0', 'user-mod:member-mng:add', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:12+08', '2025-11-10 11:07:25+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586772002037762, '删除', 1976570103963770881, 7, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-user-mng:remove', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:53:04+08', '2025-11-10 11:06:54+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586698882736130, '授权角色', 1976570103963770881, 5, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-user-mng:grant-role', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:47+08', '2025-11-10 11:07:04+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586612681400321, '修改', 1976570103963770881, 3, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-user-mng:edit', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:26+08', '2025-11-10 11:07:13+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1976586554187636737, '新增', 1976570103963770881, 0, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-user-mng:add', '#', false, true, 'tenant', 1, 100, '2025-10-10 17:52:12+08', '2025-11-10 11:07:25+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000102, '字典管理', 1963871785836048386, 6, 'dictionary', 'dictionary/mng/index', NULL, 'M', '0', 'system-mod:dictionary-mng:page', 'carbon:text-vertical-alignment', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-10-14 10:09:30+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000601, '租户管理', 1906263415450000003, 100, 'tenant', 'tenant/mng/index', NULL, 'M', '0', 'user-mod:tenant-mng:page', 'carbon:id-management', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 17:29:31+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450002064, '修改账号', 1906263415450000203, 3, '#', NULL, NULL, 'B', '0', 'user-mod:admin-mng:edit', '#', false, true, 'system', 1, 100, '2024-05-26 12:30:16+08', '2025-11-07 14:03:09+08', '', false);
@@ -3278,8 +2938,8 @@ INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component,
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000203, '账号管理', 1906263415450000002, 100, 'admin', 'admin/mng/index', NULL, 'M', '0', 'user-mod:admin-mng:page', 'carbon:user-admin', true, true, 'system', 1, 100, '2024-05-26 12:30:16+08', '2025-11-07 14:01:25+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000201, '顾客管理', 1906263415450000003, 1, 'customer', 'customer/mng/index', NULL, 'M', '0', 'user-mod:customer-mng:page', 'carbon:customer', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 17:29:53+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450000150, '操作日志', 1906263415450000104, 1, 'operate', 'operatelog-admin/mng/index', NULL, 'M', '0', 'system-mod:admin-operatelog-mng:page', 'carbon:touch-interaction', false, true, 'system', 1, 100, '2024-05-26 12:30:16+08', '2025-11-07 15:01:01+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001125, '钱包记录', 1906263415450000601, 3, '#', NULL, NULL, 'B', '0', 'user-mod:tenant-wallet-mng:record-page', '#', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 16:17:56+08', '', false);
-INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001127, '商户钱包', 0, 85, '/tenant-wallet', 'tenant/wallet/index', '', 'M', '0', 'user-mod:tenant-wallet-info', 'carbon:wallet', false, true, 'tenant', 1, 100, '2024-05-26 12:30:16+08', '2026-04-14 10:20:48+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001125, '余额流水', 1906263415450000601, 3, '#', NULL, NULL, 'B', '0', 'payment-mod:tenant-balance-mng:record-page', '#', false, true, 'system', 1, 1, '2024-05-26 12:30:16+08', '2025-09-03 16:17:56+08', '', false);
+INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1906263415450001127, '商户余额', 0, 85, '/tenant-balance', 'tenant/balance/index', '', 'M', '0', 'payment-mod:tenant-balance-info', 'carbon:wallet', false, true, 'tenant', 1, 100, '2024-05-26 12:30:16+08', '2026-04-14 10:20:48+08', '', false);
 INSERT INTO biz.menu_info (id, menu_name, parent_id, menu_sort, path, component, query, menu_type, status, perms, icon, cacheable, visible, scope, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043932492313976834, '套餐信息', 1906272182215585793, 0, '#', NULL, NULL, 'M', '0', 'user-mod:tenant-package-info', 'carbon:package-node', false, true, 'tenant', 100, 100, '2026-04-14 14:00:55+08', '2026-04-14 14:00:55+08', '', false);
 
 
@@ -3310,27 +2970,27 @@ INSERT INTO biz.oauth2_client (id, client_name, client_id, client_secret, scopes
 
 
 --
--- Data for Name: post_info; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: tenant_role; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.post_info (id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) VALUES (1978377271113371649, 1910557183820165122, 'CEO', '0', 0, '2025-10-15 16:27:53+08', 1910557183820165120, '2025-10-15 16:27:53+08', 1910557183820165120, '', false);
-INSERT INTO biz.post_info (id, tenant_id, post_name, status, post_sort, create_at, creator_id, update_at, updater_id, hint, deleted) VALUES (1978377302486765569, 1910557183820165122, 'CFO', '0', 0, '2025-10-15 16:28:00+08', 1910557183820165120, '2025-10-15 16:44:51+08', 1910557183820165120, '', false);
+INSERT INTO biz.tenant_role (id, tenant_id, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) VALUES (1978377271113371649, 1910557183820165122, 'CEO', '0', 0, '2025-10-15 16:27:53+08', 1910557183820165120, '2025-10-15 16:27:53+08', 1910557183820165120, '', false);
+INSERT INTO biz.tenant_role (id, tenant_id, role_name, status, role_sort, create_at, creator_id, update_at, updater_id, hint, deleted) VALUES (1978377302486765569, 1910557183820165122, 'CFO', '0', 0, '2025-10-15 16:28:00+08', 1910557183820165120, '2025-10-15 16:44:51+08', 1910557183820165120, '', false);
 
 
 --
--- Data for Name: post_to_menu; Type: TABLE DATA; Schema: biz; Owner: postgres
+-- Data for Name: tenant_role_to_menu; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1, 1978377271113371649, 1906272182215585793, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2, 1978377271113371649, 1915322746249367554, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (3, 1978377271113371649, 1906263415450001127, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (4, 1978377271113371649, 1906263415450001126, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (5, 1978377302486765569, 1976565556872667137, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (6, 1978377302486765569, 1976570103963770881, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (7, 1978377302486765569, 1976586772002037762, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (8, 1978377302486765569, 1976586698882736130, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (9, 1978377302486765569, 1976586612681400321, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
-INSERT INTO biz.post_to_menu (id, post_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (10, 1978377302486765569, 1976586554187636737, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1, 1978377271113371649, 1906272182215585793, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2, 1978377271113371649, 1915322746249367554, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (3, 1978377271113371649, 1906263415450001127, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (4, 1978377271113371649, 1906263415450001126, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (5, 1978377302486765569, 1976565556872667137, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (6, 1978377302486765569, 1976570103963770881, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (7, 1978377302486765569, 1976586772002037762, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (8, 1978377302486765569, 1976586698882736130, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (9, 1978377302486765569, 1976586612681400321, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
+INSERT INTO biz.tenant_role_to_menu (id, tenant_role_id, menu_id, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (10, 1978377302486765569, 1976586554187636737, 1910557183820165120, NULL, '2025-10-15 16:27:53+08', NULL, '', false);
 
 
 --
@@ -3368,20 +3028,20 @@ INSERT INTO biz.tenant_info (id, administrator, tenant_type, contact_phone, tena
 -- Data for Name: tenant_login_log; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039616960859942914, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-02 16:12:31+08', '20260402161230015-2-5218330', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039619680941584385, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', false, '商户已过期，请联系管理员', '172.16.8.59', ' 局域网', '2026-04-02 16:23:20+08', '20260402162319581-24-4431240', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039875760288346113, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', false, '商户已过期，请联系管理员', '172.16.8.59', ' 局域网', '2026-04-03 09:20:54+08', '20260403092053754-3-1020537', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039876053499555842, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-03 09:22:04+08', '20260403092204414-6-9873025', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039991299685998593, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-03 17:00:01+08', '20260403170000730-9-3938299', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043603881446875137, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:15:07+08', '20260413161506773-10-5080856', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043605997569712130, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:23:32+08', '20260413162332423-28-8325869', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043607731578871810, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:30:26+08', '20260413163025840-41-9816497', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043627964460965889, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 17:50:50+08', '20260413175049718-196-4803573', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043860782856294401, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 09:15:58+08', '20260414091557958-93-6827529', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043892825145315330, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 11:23:17+08', '20260414112316085-637-4873955', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043898960040529921, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 11:47:40+08', '20260414114736872-828-8753834', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043934154957017090, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 14:07:30+08', '20260414140728845-2-4192942', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
-INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043934531546796033, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 14:09:01+08', '20260414140900999-28-6897970', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039616960859942914, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-02 16:12:31+08', '20260402161230015-2-5218330', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039619680941584385, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', false, '商户已过期，请联系管理员', '172.16.8.59', ' 局域网', '2026-04-02 16:23:20+08', '20260402162319581-24-4431240', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039875760288346113, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', false, '商户已过期，请联系管理员', '172.16.8.59', ' 局域网', '2026-04-03 09:20:54+08', '20260403092053754-3-1020537', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039876053499555842, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-03 09:22:04+08', '20260403092204414-6-9873025', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2039991299685998593, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-03 17:00:01+08', '20260403170000730-9-3938299', '{"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0"}', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043603881446875137, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:15:07+08', '20260413161506773-10-5080856', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043605997569712130, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:23:32+08', '20260413162332423-28-8325869', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043607731578871810, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 16:30:26+08', '20260413163025840-41-9816497', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043627964460965889, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-13 17:50:50+08', '20260413175049718-196-4803573', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043860782856294401, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 09:15:58+08', '20260414091557958-93-6827529', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043892825145315330, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 11:23:17+08', '20260414112316085-637-4873955', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043898960040529921, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 11:47:40+08', '20260414114736872-828-8753834', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043934154957017090, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 14:07:30+08', '20260414140728845-2-4192942', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
+INSERT INTO biz.tenant_login_log (id, tenant_id, tenant_user_id, username, login_type, success, error_msg, login_ip, login_location, login_time, trace_id, user_agent, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (2043934531546796033, 1910557183820165122, 1910557183820165120, 'testadmin', 'password', true, '', '172.16.8.59', ' 局域网', '2026-04-14 14:09:01+08', '20260414140900999-28-6897970', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36 Edg/146.0.0.0', NULL, NULL, NULL, NULL, NULL, false);
 
 
 --
@@ -3394,26 +3054,7 @@ INSERT INTO biz.tenant_login_log (id, tenant_id, member_id, username, login_type
 -- Data for Name: tenant_package_info; Type: TABLE DATA; Schema: biz; Owner: postgres
 --
 
-INSERT INTO biz.tenant_package_info (id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, member_num_limit, post_num_limit, deleted) VALUES (1773625804122202113, '默认套餐', '0', '{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}', '通用租户套餐', 1, '2024-04-17 14:08:54+08', 100, '2026-04-14 14:07:58+08', '', 5, 5, false);
-
-
---
--- Data for Name: tenant_wallet_info; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-INSERT INTO biz.tenant_wallet_info (id, tenant_id, balance, status, creator_id, updater_id, create_at, update_at, hint, deleted) VALUES (1910557183820165122, 1910557183820165122, 0.00, '0', 1, NULL, '2025-04-11 12:55:04+08', NULL, '', false);
-
-
---
--- Data for Name: tenant_wallet_record; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
-
-
---
--- Data for Name: tenant_wallet_withdrawal_record; Type: TABLE DATA; Schema: biz; Owner: postgres
---
-
+INSERT INTO biz.tenant_package_info (id, package_name, status, menu_ids, remark, creator_id, create_at, updater_id, update_at, hint, account_num_limit, role_num_limit, deleted) VALUES (1773625804122202113, '默认套餐', '0', '{1906272182215585793,2043932492313976834,1915322746249367554,1906263415450001127,1906263415450001126,1976565556872667137,1976570103963770881,1976586772002037762,1976586698882736130,1976586612681400321,1976586554187636737,1976585906620653569,1976586292211408897,1976586196090544129,1976586082013863937,1980906033277222913,1980906374936838146,1980906706949554177}', '通用租户套餐', 1, '2024-04-17 14:08:54+08', 100, '2026-04-14 14:07:58+08', '', 5, 5, false);
 
 
 --
@@ -3496,21 +3137,6 @@ ALTER TABLE ONLY biz.customer_social_info
     ADD CONSTRAINT customer_social_info_pkey PRIMARY KEY (id);
 
 
---
--- Name: customer_wallet_info customer_wallet_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.customer_wallet_info
-    ADD CONSTRAINT customer_wallet_info_pkey PRIMARY KEY (id);
-
-
---
--- Name: customer_wallet_record customer_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.customer_wallet_record
-    ADD CONSTRAINT customer_wallet_record_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: dept_info dept_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
@@ -3529,27 +3155,27 @@ ALTER TABLE ONLY biz.dictionary_info
 
 
 --
--- Name: member_info member_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_user tenant_user_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.member_info
-    ADD CONSTRAINT member_info_pkey PRIMARY KEY (id);
-
-
---
--- Name: member_social_info member_social_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.member_social_info
-    ADD CONSTRAINT member_social_info_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.tenant_user
+    ADD CONSTRAINT tenant_user_pkey PRIMARY KEY (id);
 
 
 --
--- Name: member_to_post member_to_post_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_user_social_info tenant_user_social_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.member_to_post
-    ADD CONSTRAINT member_to_post_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.tenant_user_social_info
+    ADD CONSTRAINT tenant_user_social_info_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tenant_user_to_role tenant_user_to_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.tenant_user_to_role
+    ADD CONSTRAINT tenant_user_to_role_pkey PRIMARY KEY (id);
 
 
 --
@@ -3593,19 +3219,19 @@ ALTER TABLE ONLY biz.oauth2_client
 
 
 --
--- Name: post_info post_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_role tenant_role_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.post_info
-    ADD CONSTRAINT post_info_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.tenant_role
+    ADD CONSTRAINT tenant_role_pkey PRIMARY KEY (id);
 
 
 --
--- Name: post_to_menu post_to_menu_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+-- Name: tenant_role_to_menu tenant_role_to_menu_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
 --
 
-ALTER TABLE ONLY biz.post_to_menu
-    ADD CONSTRAINT post_to_menu_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY biz.tenant_role_to_menu
+    ADD CONSTRAINT tenant_role_to_menu_pkey PRIMARY KEY (id);
 
 
 --
@@ -3672,29 +3298,6 @@ ALTER TABLE ONLY biz.tenant_package_info
     ADD CONSTRAINT tenant_package_info_pkey PRIMARY KEY (id);
 
 
---
--- Name: tenant_wallet_info tenant_wallet_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.tenant_wallet_info
-    ADD CONSTRAINT tenant_wallet_info_pkey PRIMARY KEY (id);
-
-
---
--- Name: tenant_wallet_record tenant_wallet_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.tenant_wallet_record
-    ADD CONSTRAINT tenant_wallet_record_pkey PRIMARY KEY (id);
-
-
---
--- Name: tenant_wallet_withdrawal_record tenant_wallet_withdrawal_record_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
---
-
-ALTER TABLE ONLY biz.tenant_wallet_withdrawal_record
-    ADD CONSTRAINT tenant_wallet_withdrawal_record_pkey PRIMARY KEY (id);
-
 
 --
 -- Name: idx_admin_login_log_login_time; Type: INDEX; Schema: biz; Owner: postgres
@@ -3725,11 +3328,6 @@ CREATE INDEX idx_customer_operate_log_oper_time ON biz.customer_operate_log USIN
 
 
 --
--- Name: idx_customer_wallet_record_customer_id; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE INDEX idx_customer_wallet_record_customer_id ON biz.customer_wallet_record USING btree (customer_id) WHERE (deleted = false);
-
 
 --
 -- Name: idx_dept_info_ancestors; Type: INDEX; Schema: biz; Owner: postgres
@@ -3767,18 +3365,8 @@ CREATE INDEX idx_tenant_operate_log_oper_time ON biz.tenant_operate_log USING br
 
 
 --
--- Name: idx_tenant_wallet_record_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE INDEX idx_tenant_wallet_record_tenant_id ON biz.tenant_wallet_record USING btree (tenant_id) WHERE (deleted = false);
-
 
 --
--- Name: idx_tenant_wallet_withdrawal_record_order_no; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX idx_tenant_wallet_withdrawal_record_order_no ON biz.tenant_wallet_withdrawal_record USING btree (order_no) WHERE (deleted = false);
-
 
 --
 -- Name: uk_admin_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
@@ -3816,25 +3404,20 @@ CREATE UNIQUE INDEX uk_customer_info_phone_number ON biz.customer_info USING btr
 
 
 --
--- Name: uk_customer_social_info_customer; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_customer_social_info_customer; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_customer_social_info_customer ON biz.customer_social_info USING btree (customer_id) WHERE (deleted = false);
-
-
---
--- Name: uk_customer_social_info_identifier; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX uk_customer_social_info_identifier ON biz.customer_social_info USING btree (identifier) WHERE (deleted = false);
+CREATE INDEX idx_customer_social_info_customer ON biz.customer_social_info USING btree (customer_id) WHERE (deleted = false);
 
 
 --
--- Name: uk_customer_wallet_info_customer; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_customer_social_info_type_appid_uid; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_customer_wallet_info_customer ON biz.customer_wallet_info USING btree (customer_id) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_customer_social_info_type_appid_uid ON biz.customer_social_info USING btree (social_type, appid, social_uid) WHERE (deleted = false);
 
+
+--
 
 --
 -- Name: uk_dictionary_info_dict_key; Type: INDEX; Schema: biz; Owner: postgres
@@ -3844,38 +3427,38 @@ CREATE UNIQUE INDEX uk_dictionary_info_dict_key ON biz.dictionary_info USING btr
 
 
 --
--- Name: uk_member_info_phone_number; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_tenant_user_phone_number; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_info_phone_number ON biz.member_info USING btree (phone_number) WHERE (deleted = false);
-
-
---
--- Name: uk_member_info_username; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX uk_member_info_username ON biz.member_info USING btree (username) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_tenant_user_phone_number ON biz.tenant_user USING btree (phone_number) WHERE (deleted = false);
 
 
 --
--- Name: uk_member_social_info_identifier; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_tenant_user_username; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_social_info_identifier ON biz.member_social_info USING btree (identifier) WHERE (deleted = false);
-
-
---
--- Name: uk_member_social_info_member; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX uk_member_social_info_member ON biz.member_social_info USING btree (member_id) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_tenant_user_username ON biz.tenant_user USING btree (username) WHERE (deleted = false);
 
 
 --
--- Name: uk_member_to_post; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: idx_tenant_user_social_info_tenant_user; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_member_to_post ON biz.member_to_post USING btree (member_id, post_id) WHERE (deleted = false);
+CREATE INDEX idx_tenant_user_social_info_tenant_user ON biz.tenant_user_social_info USING btree (tenant_user_id) WHERE (deleted = false);
+
+
+--
+-- Name: uk_tenant_user_social_info_type_appid_uid; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_tenant_user_social_info_type_appid_uid ON biz.tenant_user_social_info USING btree (social_type, appid, social_uid) WHERE (deleted = false);
+
+
+--
+-- Name: uk_tenant_user_to_role; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_tenant_user_to_role ON biz.tenant_user_to_role USING btree (tenant_user_id, tenant_role_id) WHERE (deleted = false);
 
 
 --
@@ -3889,7 +3472,7 @@ CREATE UNIQUE INDEX uk_notification_to_admin ON biz.notification_to_admin USING 
 -- Name: uk_notification_to_tenant; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_notification_to_tenant ON biz.notification_to_tenant USING btree (notification_id, member_id) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_notification_to_tenant ON biz.notification_to_tenant USING btree (notification_id, tenant_user_id) WHERE (deleted = false);
 
 
 --
@@ -3900,10 +3483,10 @@ CREATE UNIQUE INDEX uk_oauth2_client_client_id ON biz.oauth2_client USING btree 
 
 
 --
--- Name: uk_post_to_menu; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_tenant_role_to_menu; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE UNIQUE INDEX uk_post_to_menu ON biz.post_to_menu USING btree (post_id, menu_id) WHERE (deleted = false);
+CREATE UNIQUE INDEX uk_tenant_role_to_menu ON biz.tenant_role_to_menu USING btree (tenant_role_id, menu_id) WHERE (deleted = false);
 
 
 --
@@ -3935,11 +3518,6 @@ CREATE UNIQUE INDEX uk_tenant_info_administrator ON biz.tenant_info USING btree 
 
 
 --
--- Name: uk_tenant_wallet_info_tenant; Type: INDEX; Schema: biz; Owner: postgres
---
-
-CREATE UNIQUE INDEX uk_tenant_wallet_info_tenant ON biz.tenant_wallet_info USING btree (tenant_id) WHERE (deleted = false);
-
 
 --
 -- PostgreSQL database dump complete

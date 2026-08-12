@@ -4,7 +4,7 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.admin.IAdminRemote;
-import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminPermissionQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminListResponse;
 import com.wzkris.auth.service.LoginUserService;
@@ -44,7 +44,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
         AdminQueryRequest request = new AdminQueryRequest();
         request.setPhoneNumber(phoneNumber);
         Result<List<AdminListResponse>> userResult = adminRemote.queryList(request);
@@ -111,7 +111,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
         // 获取权限信息
         Result<List<UserRole>> userRoleR = adminRemote.queryPermission(
-                new AdminPermsQueryRequest(userResp.getId(), userResp.getDeptId()));
+                new AdminPermissionQueryRequest(userResp.getId(), userResp.getDeptId()));
         if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }

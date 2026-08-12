@@ -20,7 +20,7 @@ import java.time.OffsetDateTime;
 public class TenantLoginLogDO extends BaseTenantEntity {
 
     @Schema(description = "用户ID")
-    private Long memberId;
+    private Long tenantUserId;
 
     @Schema(description = "用户名")
     private String username;

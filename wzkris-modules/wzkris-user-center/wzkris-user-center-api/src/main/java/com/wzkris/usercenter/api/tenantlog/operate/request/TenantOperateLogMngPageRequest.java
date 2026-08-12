@@ -10,7 +10,7 @@ import lombok.Data;
 public class TenantOperateLogMngPageRequest extends PagingRequest {
 
     @Parameter(description = "用户ID")
-    private Long memberId;
+    private Long tenantUserId;
 
     @Parameter(description = "操作模块")
     private String title;

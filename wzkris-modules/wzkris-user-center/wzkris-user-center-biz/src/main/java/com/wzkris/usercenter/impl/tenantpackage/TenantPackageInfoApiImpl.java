@@ -47,9 +47,9 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
 
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
-    private final MemberInfoService memberInfoService;
+    private final TenantUserService tenantUserService;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
 
     // =============== 配额注册表 ===============
 
@@ -58,20 +58,20 @@ public class TenantPackageInfoApiImpl extends AbstractApi implements TenantPacka
     private List<QuotaDefinition> getQuotaDefinitions() {
         return List.of(
                 new QuotaDefinition("account",
-                        tenantId -> Math.toIntExact(memberInfoService.count(
-                                Wrappers.lambdaQuery(com.wzkris.usercenter.domain.MemberInfoDO.class)
-                                        .eq(com.wzkris.usercenter.domain.MemberInfoDO::getTenantId, tenantId)))),
-                new QuotaDefinition("post",
-                        tenantId -> Math.toIntExact(postInfoService.count(
-                                Wrappers.lambdaQuery(com.wzkris.usercenter.domain.PostInfoDO.class)
-                                        .eq(com.wzkris.usercenter.domain.PostInfoDO::getTenantId, tenantId))))
+                        tenantId -> Math.toIntExact(tenantUserService.count(
+                                Wrappers.lambdaQuery(com.wzkris.usercenter.domain.TenantUserDO.class)
+                                        .eq(com.wzkris.usercenter.domain.TenantUserDO::getTenantId, tenantId)))),
+                new QuotaDefinition("role",
+                        tenantId -> Math.toIntExact(tenantRoleService.count(
+                                Wrappers.lambdaQuery(com.wzkris.usercenter.domain.TenantRoleDO.class)
+                                        .eq(com.wzkris.usercenter.domain.TenantRoleDO::getTenantId, tenantId))))
         );
     }
 
     private Integer getQuotaLimit(TenantPackageInfoDO pkg, String quotaKey) {
         return switch (quotaKey) {
-            case "account" -> pkg.getMemberNumLimit();
-            case "post" -> pkg.getPostNumLimit();
+            case "account" -> pkg.getAccountNumLimit();
+            case "role" -> pkg.getRoleNumLimit();
             default -> null;
         };
     }

@@ -7,7 +7,7 @@ import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import com.wzkris.usercenter.remote.api.admin.AdminRemoteApi;
-import com.wzkris.usercenter.remote.api.admin.request.AdminPermsQueryRequest;
+import com.wzkris.usercenter.remote.api.admin.request.AdminPermissionQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.AdminQueryRequest;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.admin.response.AdminListResponse;
@@ -41,7 +41,7 @@ public class AdminRemoteApiImpl implements AdminRemoteApi {
     }
 
     @Override
-    public Result<List<UserRole>> queryPermission(AdminPermsQueryRequest request) {
+    public Result<List<UserRole>> queryPermission(AdminPermissionQueryRequest request) {
         return Result.ok(permissionService.getAdminPermission(
                 request.getId(), request.getDeptId()));
     }

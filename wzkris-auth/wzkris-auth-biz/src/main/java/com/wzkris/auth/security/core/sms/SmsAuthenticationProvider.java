@@ -60,7 +60,10 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
         checkCaptcha(authenticationToken);
 
         UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
-                .loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
+                .loadUserByPhoneNumber(
+                        authenticationToken.getPhoneNumber(),
+                        authenticationToken.getWxCode(),
+                        authenticationToken.getAppid());
 
         if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(

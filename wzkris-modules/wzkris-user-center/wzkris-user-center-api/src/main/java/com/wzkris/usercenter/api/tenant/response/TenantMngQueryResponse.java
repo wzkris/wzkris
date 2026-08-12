@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 /**
@@ -55,15 +54,12 @@ public class TenantMngQueryResponse {
     private OffsetDateTime expireTime;
 
     @Schema(description = "账号数量（-1不限制）")
-    private Integer memberNumLimit;
+    private Integer accountNumLimit;
 
-    @Schema(description = "职位数量（-1不限制）")
-    private Integer postNumLimit;
+    @Schema(description = "角色数量（-1不限制）")
+    private Integer roleNumLimit;
 
     @Schema(description = "套餐名称")
     private String packageName;
-
-    @Schema(description = "余额, 元")
-    private BigDecimal balance;
 
 }

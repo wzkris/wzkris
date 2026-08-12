@@ -12,19 +12,25 @@ import org.springframework.security.core.Transient;
 @Transient
 public final class WexcxAuthenticationToken extends CommonAuthenticationToken {
 
+    private final String socialType;
+
     private final String wxCode;
 
     private final String phoneCode;
 
-    private WexcxAuthenticationToken(AuthTypeEnum authType, String wxCode, String phoneCode) {
+    private final String appid;
+
+    private WexcxAuthenticationToken(AuthTypeEnum authType, String socialType, String wxCode, String phoneCode, String appid) {
         super(authType);
+        this.socialType = socialType;
         this.wxCode = wxCode;
         this.phoneCode = phoneCode;
+        this.appid = appid;
     }
 
     public static WexcxAuthenticationToken unauthenticated(
-            AuthTypeEnum authType, String wxCode, String phoneCode) {
-        return new WexcxAuthenticationToken(authType, wxCode, phoneCode);
+            AuthTypeEnum authType, String socialType, String wxCode, String phoneCode, String appid) {
+        return new WexcxAuthenticationToken(authType, socialType, wxCode, phoneCode, appid);
     }
 
     @Override

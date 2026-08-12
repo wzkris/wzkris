@@ -32,7 +32,7 @@ public class TenantLoginlogMngApiImpl
 
     private LambdaQueryWrapper<TenantLoginLogDO> buildQueryWrapper(TenantLoginLogMngPageRequest request) {
         return new LambdaQueryWrapper<TenantLoginLogDO>()
-                .eq(ObjectUtils.isNotEmpty(request.getMemberId()), TenantLoginLogDO::getMemberId, request.getMemberId())
+                .eq(ObjectUtils.isNotEmpty(request.getTenantUserId()), TenantLoginLogDO::getTenantUserId, request.getTenantUserId())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantLoginLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantLoginLogDO::getTraceId, request.getTraceId())
                 .like(StringUtil.isNotEmpty(request.getUsername()), TenantLoginLogDO::getUsername, request.getUsername())

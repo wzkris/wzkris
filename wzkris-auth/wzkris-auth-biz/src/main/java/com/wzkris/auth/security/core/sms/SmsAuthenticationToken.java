@@ -16,15 +16,21 @@ public final class SmsAuthenticationToken extends CommonAuthenticationToken {
 
     private final String smsCode;
 
-    private SmsAuthenticationToken(AuthTypeEnum authType, String phoneNumber, String smsCode) {
+    private final String wxCode;
+
+    private final String appid;
+
+    private SmsAuthenticationToken(AuthTypeEnum authType, String phoneNumber, String smsCode, String wxCode, String appid) {
         super(authType);
         this.phoneNumber = phoneNumber;
         this.smsCode = smsCode;
+        this.wxCode = wxCode;
+        this.appid = appid;
     }
 
     public static SmsAuthenticationToken unauthenticated(
-            AuthTypeEnum authType, String phoneNumber, String smsCode) {
-        return new SmsAuthenticationToken(authType, phoneNumber, smsCode);
+            AuthTypeEnum authType, String phoneNumber, String smsCode, String wxCode, String appid) {
+        return new SmsAuthenticationToken(authType, phoneNumber, smsCode, wxCode, appid);
     }
 
     @Override

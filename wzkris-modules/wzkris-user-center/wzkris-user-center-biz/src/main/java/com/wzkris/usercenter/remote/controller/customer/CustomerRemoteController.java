@@ -4,9 +4,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.usercenter.remote.api.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.usercenter.remote.api.customer.CustomerRemoteApi;
 import com.wzkris.usercenter.remote.api.customer.request.CustomerQueryRequest;
-import com.wzkris.usercenter.remote.api.customer.request.WexcxLoginRequest;
+import com.wzkris.usercenter.remote.api.customer.request.CustomerSocialUpdateRequest;
+import com.wzkris.usercenter.remote.api.customer.request.SocialLoginRequest;
 import com.wzkris.usercenter.remote.api.customer.response.CustomerQueryResponse;
-import com.wzkris.usercenter.remote.api.customer.response.CustomerListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -28,14 +28,20 @@ public class CustomerRemoteController {
 
     @Operation(summary = "查询客户列表")
     @PostMapping("/query-list")
-    public Result<List<CustomerListResponse>> queryList(@RequestBody @Valid CustomerQueryRequest request) {
+    public Result<List<CustomerQueryResponse>> queryList(@RequestBody @Valid CustomerQueryRequest request) {
         return customerRemoteApi.queryList(request);
     }
 
-    @Operation(summary = "客户微信登录")
-    @PostMapping("/wexcx-login")
-    public Result<CustomerQueryResponse> wexcxLogin(@RequestBody WexcxLoginRequest request) {
-        return customerRemoteApi.wexcxLogin(request);
+    @Operation(summary = "根据社交code查询客户")
+    @PostMapping("/query-by-social")
+    public Result<CustomerQueryResponse> socialLogin(@RequestBody SocialLoginRequest request) {
+        return customerRemoteApi.socialLogin(request);
+    }
+
+    @Operation(summary = "更新客户社交账号绑定")
+    @PostMapping("/update-social-info")
+    public Result<Void> updateSocialInfo(@RequestBody @Valid CustomerSocialUpdateRequest request) {
+        return customerRemoteApi.updateSocialInfo(request);
     }
 
     @Operation(summary = "更新客户登录信息")

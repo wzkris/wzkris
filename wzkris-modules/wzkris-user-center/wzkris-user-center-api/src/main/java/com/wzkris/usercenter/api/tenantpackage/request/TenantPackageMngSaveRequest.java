@@ -24,11 +24,11 @@ public class TenantPackageMngSaveRequest {
 
     @NotNull(message = "账号数量{validate.notnull}")
     @Schema(description = "账号数量（-1 不限制）")
-    private Integer memberNumLimit;
+    private Integer accountNumLimit;
 
-    @NotNull(message = "职位数量{validate.notnull}")
-    @Schema(description = "职位数量（-1 不限制）")
-    private Integer postNumLimit;
+    @NotNull(message = "角色数量{validate.notnull}")
+    @Schema(description = "角色数量（-1 不限制）")
+    private Integer roleNumLimit;
 
     @Schema(description = "备注")
     private String remark;

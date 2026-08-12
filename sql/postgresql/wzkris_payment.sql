@@ -872,6 +872,309 @@ CREATE UNIQUE INDEX uk_refund_no ON biz.refund_order USING btree (refund_no) WHE
 
 
 --
+-- Name: customer_balance_info; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.customer_balance_info (
+    id bigint NOT NULL,
+    customer_id bigint NOT NULL,
+    currency varchar(8) DEFAULT 'CNY'::character varying NOT NULL,
+    balance numeric(10,2) NOT NULL,
+    frozen numeric(10,2) DEFAULT 0 NOT NULL,
+    total_in numeric(10,2) DEFAULT 0 NOT NULL,
+    total_out numeric(10,2) DEFAULT 0 NOT NULL,
+    status character(1) NOT NULL,
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE biz.customer_balance_info OWNER TO postgres;
+
+COMMENT ON TABLE biz.customer_balance_info IS '用户账户';
+
+COMMENT ON COLUMN biz.customer_balance_info.currency IS '币种';
+
+COMMENT ON COLUMN biz.customer_balance_info.balance IS '可用余额, 元';
+
+COMMENT ON COLUMN biz.customer_balance_info.frozen IS '冻结余额, 元(预留)';
+
+COMMENT ON COLUMN biz.customer_balance_info.total_in IS '累计入账, 元';
+
+COMMENT ON COLUMN biz.customer_balance_info.total_out IS '累计支出, 元';
+
+COMMENT ON COLUMN biz.customer_balance_info.status IS '状态';
+
+
+--
+-- Name: customer_balance_transaction_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.customer_balance_transaction_log (
+    id bigint NOT NULL,
+    customer_id bigint NOT NULL,
+    amount numeric(10,2) NOT NULL,
+    record_type character(1) NOT NULL,
+    biz_type character(1) NOT NULL,
+    biz_no character varying(32) NOT NULL,
+    before_balance numeric(10,2),
+    after_balance numeric(10,2),
+    create_at timestamp(0) with time zone NOT NULL,
+    remark character varying(100),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE biz.customer_balance_transaction_log OWNER TO postgres;
+
+COMMENT ON TABLE biz.customer_balance_transaction_log IS '用户资金流水';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.customer_id IS '客户ID';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.amount IS '金额, 元';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.record_type IS '记录类型';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.biz_type IS '业务类型';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.biz_no IS '业务编号';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.before_balance IS '变动前余额';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.after_balance IS '变动后余额';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.create_at IS '创建时间';
+
+COMMENT ON COLUMN biz.customer_balance_transaction_log.remark IS '备注';
+
+
+--
+-- Name: tenant_balance_info; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_balance_info (
+    id bigint NOT NULL,
+    tenant_id bigint NOT NULL,
+    currency varchar(8) DEFAULT 'CNY'::character varying NOT NULL,
+    balance numeric(10,2) NOT NULL,
+    frozen numeric(10,2) DEFAULT 0 NOT NULL,
+    total_in numeric(10,2) DEFAULT 0 NOT NULL,
+    total_out numeric(10,2) DEFAULT 0 NOT NULL,
+    status character(1) NOT NULL,
+    pay_password character varying(100),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    create_at timestamp(0) with time zone NOT NULL,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE biz.tenant_balance_info OWNER TO postgres;
+
+COMMENT ON TABLE biz.tenant_balance_info IS '租户账户';
+
+COMMENT ON COLUMN biz.tenant_balance_info.currency IS '币种';
+
+COMMENT ON COLUMN biz.tenant_balance_info.balance IS '可用余额, 元';
+
+COMMENT ON COLUMN biz.tenant_balance_info.frozen IS '冻结余额, 元(预留)';
+
+COMMENT ON COLUMN biz.tenant_balance_info.total_in IS '累计入账, 元';
+
+COMMENT ON COLUMN biz.tenant_balance_info.total_out IS '累计支出, 元';
+
+COMMENT ON COLUMN biz.tenant_balance_info.status IS '状态';
+
+COMMENT ON COLUMN biz.tenant_balance_info.pay_password IS '提现支付密码（bcrypt）';
+
+
+--
+-- Name: tenant_balance_transaction_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_balance_transaction_log (
+    id bigint NOT NULL,
+    tenant_id bigint NOT NULL,
+    amount numeric(10,2) NOT NULL,
+    record_type character(1) NOT NULL,
+    biz_type character(1) NOT NULL,
+    biz_no character varying(32) NOT NULL,
+    before_balance numeric(10,2),
+    after_balance numeric(10,2),
+    create_at timestamp(0) with time zone NOT NULL,
+    remark character varying(100),
+    creator_id bigint NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone,
+    hint character varying(10) DEFAULT ''::character varying NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE biz.tenant_balance_transaction_log OWNER TO postgres;
+
+COMMENT ON TABLE biz.tenant_balance_transaction_log IS '租户资金流水';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.tenant_id IS '租户ID';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.amount IS '金额, 单位元';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.record_type IS '记录类型';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.biz_type IS '业务类型';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.biz_no IS '业务编号';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.create_at IS '创建时间';
+
+COMMENT ON COLUMN biz.tenant_balance_transaction_log.remark IS '备注';
+
+
+--
+-- Name: tenant_balance_withdrawal_log; Type: TABLE; Schema: biz; Owner: postgres
+--
+
+CREATE TABLE biz.tenant_balance_withdrawal_log (
+    id bigint NOT NULL,
+    withdrawal_no character varying(32) NOT NULL,
+    tenant_id bigint NOT NULL,
+    channel character varying(16),
+    config_id bigint,
+    withdrawal_amount numeric(18,2) NOT NULL,
+    currency character varying(8) DEFAULT 'CNY'::character varying NOT NULL,
+    status character varying(16) NOT NULL,
+    fail_reason character varying(256),
+    channel_withdrawal_no character varying(64),
+    withdrawal_at timestamp(0) with time zone,
+    creator_id bigint,
+    create_at timestamp(0) with time zone DEFAULT now() NOT NULL,
+    updater_id bigint,
+    update_at timestamp(0) with time zone DEFAULT now() NOT NULL,
+    hint character varying(64),
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE biz.tenant_balance_withdrawal_log OWNER TO postgres;
+
+COMMENT ON TABLE biz.tenant_balance_withdrawal_log IS '系统提现记录';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.withdrawal_no IS '提现单号';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.tenant_id IS '租户id';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.channel IS '打款渠道';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.config_id IS '渠道配置id';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.withdrawal_amount IS '提现金额, 单位元';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.currency IS '币种';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.status IS '状态
+''PROCESSING'' 处理中
+''SUCCESS'' 成功
+''FAILED'' 失败';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.fail_reason IS '失败原因';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.channel_withdrawal_no IS '渠道提现单号';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.withdrawal_at IS '提现完成时间';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.creator_id IS '创建者';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.create_at IS '创建时间';
+
+COMMENT ON COLUMN biz.tenant_balance_withdrawal_log.hint IS '标签';
+
+
+--
+-- Name: customer_balance_info customer_balance_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.customer_balance_info
+    ADD CONSTRAINT customer_balance_info_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: customer_balance_transaction_log customer_balance_transaction_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.customer_balance_transaction_log
+    ADD CONSTRAINT customer_balance_transaction_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tenant_balance_info tenant_balance_info_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.tenant_balance_info
+    ADD CONSTRAINT tenant_balance_info_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tenant_balance_transaction_log tenant_balance_transaction_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.tenant_balance_transaction_log
+    ADD CONSTRAINT tenant_balance_transaction_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tenant_balance_withdrawal_log tenant_balance_withdrawal_log_pkey; Type: CONSTRAINT; Schema: biz; Owner: postgres
+--
+
+ALTER TABLE ONLY biz.tenant_balance_withdrawal_log
+    ADD CONSTRAINT tenant_balance_withdrawal_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_customer_balance_transaction_log_customer_id; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_customer_balance_transaction_log_customer_id ON biz.customer_balance_transaction_log USING btree (customer_id) WHERE (deleted = false);
+
+
+--
+-- Name: idx_tenant_balance_transaction_log_tenant_id; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE INDEX idx_tenant_balance_transaction_log_tenant_id ON biz.tenant_balance_transaction_log USING btree (tenant_id) WHERE (deleted = false);
+
+
+--
+-- Name: idx_tenant_balance_withdrawal_log_withdrawal_no; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX idx_tenant_balance_withdrawal_log_withdrawal_no ON biz.tenant_balance_withdrawal_log USING btree (withdrawal_no) WHERE (deleted = false);
+
+
+--
+-- Name: uk_customer_balance_info_owner; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_customer_balance_info_owner ON biz.customer_balance_info USING btree (customer_id) WHERE (deleted = false);
+
+
+--
+-- Name: uk_tenant_balance_info_owner; Type: INDEX; Schema: biz; Owner: postgres
+--
+
+CREATE UNIQUE INDEX uk_tenant_balance_info_owner ON biz.tenant_balance_info USING btree (tenant_id) WHERE (deleted = false);
+
+
+--
 -- PostgreSQL database dump complete
 --
 

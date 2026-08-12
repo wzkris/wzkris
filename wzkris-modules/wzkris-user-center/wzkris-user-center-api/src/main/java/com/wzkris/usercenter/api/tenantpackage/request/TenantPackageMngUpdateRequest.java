@@ -24,10 +24,10 @@ public class TenantPackageMngUpdateRequest {
     private Long[] menuIds;
 
     @Schema(description = "账号数量（-1 不限制）")
-    private Integer memberNumLimit;
+    private Integer accountNumLimit;
 
-    @Schema(description = "职位数量（-1 不限制）")
-    private Integer postNumLimit;
+    @Schema(description = "角色数量（-1 不限制）")
+    private Integer roleNumLimit;
 
     @Schema(description = "备注")
     private String remark;

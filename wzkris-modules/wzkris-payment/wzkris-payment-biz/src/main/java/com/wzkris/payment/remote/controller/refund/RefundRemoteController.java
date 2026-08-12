@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author wzkris
  */
-@Tag(name = "退款（内部）")
+@Tag(name = "退款")
 @Validated
 @RestController
 @RequestMapping("/refund-remote")

@@ -24,12 +24,12 @@ public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
     List<String> listPermsByRoleIds(@Nullable List<Long> roleIds);
 
     /**
-     * 根据职位ID集合查询权限
+     * 根据角色ID集合查询权限
      *
-     * @param postIds 职位ID集合
+     * @param tenantRoleIds 角色ID集合
      * @return 权限列表
      */
-    List<String> listPermsByPostIds(@Nullable List<Long> postIds);
+    List<String> listPermsByTenantRoleIds(@Nullable List<Long> tenantRoleIds);
 
     /**
      * 根据菜单ID集合查询权限
@@ -58,10 +58,10 @@ public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
     /**
      * 查询租户菜单选择树
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 菜单列表
      */
-    List<SelectTreeResponse> listTenantSelectTree(Long memberId);
+    List<SelectTreeResponse> listTenantSelectTree(Long tenantUserId);
 
     /**
      * 查询所有租户菜单选择树
@@ -79,12 +79,12 @@ public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
     List<RouterResponse> listSystemRoutes(Long adminId);
 
     /**
-     * 根据租户成员ID查询租户路由
+     * 根据租户用户ID查询租户路由
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 前端路由
      */
-    List<RouterResponse> listTenantRoutes(Long memberId);
+    List<RouterResponse> listTenantRoutes(Long tenantUserId);
 
     /**
      * 查询管理员对应菜单id
@@ -95,12 +95,12 @@ public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
     List<Long> listMenuIdByAdminId(Long adminId);
 
     /**
-     * 查询租户租户成员对应菜单id
+     * 查询租户租户用户对应菜单id
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 菜单ID
      */
-    List<Long> listMenuIdByMemberId(Long memberId);
+    List<Long> listMenuIdByTenantUserId(Long tenantUserId);
 
     /**
      * 根据角色ID查询菜单ID
@@ -111,12 +111,12 @@ public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
     List<Long> listMenuIdByRoleId(@Nullable Long roleId);
 
     /**
-     * 根据职位ID查询菜单ID
+     * 根据角色ID查询菜单ID
      *
-     * @param postId 职位ID
+     * @param tenantRoleId 角色ID
      * @return 菜单ID
      */
-    List<Long> listMenuIdByPostId(@Nullable Long postId);
+    List<Long> listMenuIdByTenantRoleId(@Nullable Long tenantRoleId);
 
     /**
      * 是否存在菜单子节点

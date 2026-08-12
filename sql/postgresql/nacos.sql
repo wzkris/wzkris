@@ -1659,46 +1659,6 @@ mybatis-plus:
       logic-delete-value: ''true''
       logic-not-delete-value: ''false''
 ', '874d10bfc0e95bdebce974e5ef4671d4', '2023-06-19 02:28:00', '2026-07-17 14:47:25', NULL, '0:0:0:0:0:0:0:1', '', 'application-dev', '公共配置', '', '', 'yaml', '', '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (2, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
-  cloud:
-    gateway:
-      server:
-        webmvc:
-          routes:
-            # 认证中心
-            - id: wzkris-auth
-              uri: lb://wzkris-auth
-              predicates:
-                - Path=/wzkris-auth-api/**
-              # 用户中心服务
-            - id: wzkris-user-center
-              uri: lb://wzkris-user-center
-              predicates:
-                - Path=/wzkris-user-center-api/**
-            # 验证码模块
-            - id: wzkris-captcha
-              uri: lb://wzkris-captcha
-              predicates:
-                - Path=/wzkris-captcha-api/**
-
-# 路由策略
-route-decision:
-  policy: OPEN
-  forceConfig: 
-    hintValue: 0.1
-  openConfig: 
-    defaultHintValue: ""
-
-knife4j:
-  # 聚合swagger文档
-  gateway:
-    enabled: false
-
-security:
-  risk-captcha:
-    enabled: true
-    enforcedPaths:
-      - /wzkris-auth-api/login', '5715d84ce8f69bb8a11ccd05ebdcb66c', '2023-06-19 02:28:00', '2026-07-31 18:20:14.410662', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (14, 'wzkris-auth.yml', 'APPLICATION_GROUP', '
 # springdoc配置
 springdoc:
@@ -1762,6 +1722,51 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
         "clusterMode": false
     }
 ]', 'f83470a74550f4705cc975aaa2bcd7c4', '2023-06-19 02:28:00', '2026-07-31 16:16:52.562724', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '网关限流策略', NULL, NULL, 'json', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (2, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            # 认证中心
+            - id: wzkris-auth
+              uri: lb://wzkris-auth
+              predicates:
+                - Path=/wzkris-auth-api/**
+            # 用户中心服务
+            - id: wzkris-user-center
+              uri: lb://wzkris-user-center
+              predicates:
+                - Path=/wzkris-user-center-api/**
+            # 支付网关
+            - id: wzkris-payment
+              uri: lb://wzkris-payment
+              predicates:
+                - Path=/wzkris-payment-api/**
+            # 验证码模块
+            - id: wzkris-captcha
+              uri: lb://wzkris-captcha
+              predicates:
+                - Path=/wzkris-captcha-api/**
+
+# 路由策略
+route-decision:
+  policy: OPEN
+  forceConfig: 
+    hintValue: 0.1
+  openConfig: 
+    defaultHintValue: ""
+
+knife4j:
+  # 聚合swagger文档
+  gateway:
+    enabled: false
+
+security:
+  risk-captcha:
+    enabled: true
+    enforcedPaths:
+      - /wzkris-auth-api/login', '40eb02a32698b3c1126821549321c0db', '2023-06-19 02:28:00', '2026-08-13 17:42:24.894581', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (4, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '# spring配置
 spring:
   # datasource:
@@ -1786,13 +1791,10 @@ springdoc:
 # 租户隔离表
 tenant:
   includes:
-    - member_info
-    - post_info
+    - tenant_user
+    - tenant_role
     - tenant_login_log
-    - tenant_operate_log
-    - tenant_wallet_info
-    - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', 'd54a11e22b0e43d9d8e528e1e90d4874', '2024-04-16 01:03:03', '2026-08-05 18:12:51.171991', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
+    - tenant_operate_log', 'bcd1d5a03fbe9eaec10d4db47c151b06', '2024-04-16 01:03:03', '2026-08-13 16:02:24.972488', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (16, 'wzkris-monitor-admin.yml', 'APPLICATION_GROUP', '# spring
 spring:
   security:
@@ -1926,13 +1928,10 @@ springdoc:
 # 租户隔离表
 tenant:
   includes:
-    - member_info
-    - post_info
+    - tenant_user
+    - tenant_role
     - tenant_login_log
-    - tenant_operate_log
-    - tenant_wallet_info
-    - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', 'd453b2ff812e7745f85983267b3f93ec', '2024-04-16 06:36:22', '2026-08-11 17:16:22.208968', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
+    - tenant_operate_log', 'f3e836e7c9b448cad45c906c4e915efc', '2024-04-16 06:36:22', '2026-08-13 16:02:12.085241', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (17, 'wzkris-payment.yml', 'APPLICATION_GROUP', '# spring配置
 spring:
   datasource:
@@ -1977,6 +1976,8 @@ springdoc:
   version: v1.0.0
   description: ---
 ', '31c7da71ad47e6551a9e9d34ab8845e5', '2024-04-16 06:36:22', '2026-08-11 17:15:48.541618', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-prod', '', NULL, NULL, 'yaml', NULL, '');
+INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (6, 'wzkris-captcha.yml', 'APPLICATION_GROUP', 'risk-captcha:
+  passTtlSeconds: 180', 'a0887872d4f7f6d5aef5923322591441', '2026-05-21 11:25:06', '2026-05-21 11:27:38', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
 INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (13, 'wzkris-gateway.yml', 'APPLICATION_GROUP', 'spring:
   cloud:
     gateway:
@@ -1988,11 +1989,16 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
               uri: lb://wzkris-auth
               predicates:
                 - Path=/wzkris-auth-api/**
-              # 用户中心服务
+            # 用户中心服务
             - id: wzkris-user-center
               uri: lb://wzkris-user-center
               predicates:
                 - Path=/wzkris-user-center-api/**
+            # 支付网关
+            - id: wzkris-payment
+              uri: lb://wzkris-payment
+              predicates:
+                - Path=/wzkris-payment-api/**
             # 验证码模块
             - id: wzkris-captcha
               uri: lb://wzkris-captcha
@@ -2032,9 +2038,7 @@ security:
   risk-captcha:
     enabled: true
     enforcedPaths:
-      - /wzkris-auth-api/login', 'eaa692ac2d9c9ac50f7cade55c6bd0a3', '2023-06-19 02:28:00', '2026-08-07 10:44:52.583763', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
-INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, gmt_modified, src_user, src_ip, app_name, tenant_id, c_desc, c_use, effect, type, c_schema, encrypted_data_key) VALUES (6, 'wzkris-captcha.yml', 'APPLICATION_GROUP', 'risk-captcha:
-  passTtlSeconds: 180', 'a0887872d4f7f6d5aef5923322591441', '2026-05-21 11:25:06', '2026-05-21 11:27:38', NULL, '0:0:0:0:0:0:0:1', '', 'application-prod', '', '', '', 'yaml', '', '');
+      - /wzkris-auth-api/login', '1e6884510084616852f7734edcb4462e', '2023-06-19 02:28:00', '2026-08-13 17:40:07.199446', 'nacos', '0:0:0:0:0:0:0:1', '', 'application-dev', '', NULL, NULL, 'yaml', NULL, '');
 
 
 --
@@ -2059,76 +2063,6 @@ INSERT INTO nacos.config_info (id, data_id, group_id, content, md5, gmt_create, 
 -- Data for Name: his_config_info; Type: TABLE DATA; Schema: nacos; Owner: root
 --
 
-INSERT INTO nacos.his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key, publish_type, gray_name, ext_info) VALUES (17, 23, 'wzkris-payment.yml', 'APPLICATION_GROUP', '', '# spring配置
-spring:
-  # datasource:
-  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
-  datasource:
-    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
-    username: root
-    password: root
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 30000
-      maximum-pool-size: 10
-      minimum-idle: 5
-      idle-timeout: 600000
-      pool-name: hikari-pool
-
-# springdoc配置
-springdoc:
-  enabled: true
-  title: 用户中心接口文档
-  license: Powered By wzkris
-  version: v1.0.0
-  description: ---
-
-# 租户隔离表
-tenant:
-  includes:
-    - member_info
-    - post_info
-    - tenant_login_log
-    - tenant_operate_log
-    - tenant_wallet_info
-    - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', 'a4b2ec61487b8940aaa240221f6400dc', '2026-08-11 17:15:48.541618', '2026-08-11 17:15:48.555', 'nacos', '0:0:0:0:0:0:0:1', 'U         ', 'application-dev', '', 'formal', '', '{"type":"yaml","src_user":"nacos"}');
-INSERT INTO nacos.his_config_info (id, nid, data_id, group_id, app_name, content, md5, gmt_create, gmt_modified, src_user, src_ip, op_type, tenant_id, encrypted_data_key, publish_type, gray_name, ext_info) VALUES (15, 24, 'wzkris-user-center.yml', 'APPLICATION_GROUP', '', '# spring配置
-spring:
-  # datasource:
-  #   driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
-  #   url: jdbc:shardingsphere:classpath:sharding-${spring.profiles.active}.yml
-  datasource:
-    url: jdbc:postgresql://localhost:5432/wzkris_user_center?ssl=false&reWriteBatchedInserts=true&stringtype=unspecified
-    username: root
-    password: root
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      connection-timeout: 30000 
-      maximum-pool-size: 10       
-      minimum-idle: 5             
-      idle-timeout: 600000        
-      pool-name: hikari-pool
-
-# springdoc配置
-springdoc:
-  enabled: true
-  title: 用户中心接口文档
-  license: Powered By wzkris
-  version: v1.0.0
-  description: ---
-
-# 租户隔离表
-tenant:
-  includes:
-    - member_info
-    - post_info
-    - tenant_login_log
-    - tenant_operate_log
-    - tenant_wallet_info
-    - tenant_wallet_record
-    - tenant_wallet_withdrawal_record', '241915b88b9b832e165f323a2e5b1a2d', '2026-08-11 17:16:22.208968', '2026-08-11 17:16:22.209', 'nacos', '0:0:0:0:0:0:0:1', 'U         ', 'application-dev', '', 'formal', '', '{"type":"yaml","src_user":"nacos"}');
 
 
 --
@@ -2225,8 +2159,6 @@ SELECT pg_catalog.setval('nacos.group_capacity_id_seq', 1, false);
 --
 -- Name: his_config_info_nid_seq; Type: SEQUENCE SET; Schema: nacos; Owner: root
 --
-
-SELECT pg_catalog.setval('nacos.his_config_info_nid_seq', 24, true);
 
 
 --

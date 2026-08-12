@@ -3,10 +3,8 @@ package com.wzkris.usercenter.service.impl;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
-import com.wzkris.usercenter.domain.CustomerWalletInfoDO;
 import com.wzkris.usercenter.mapper.CustomerInfoMapper;
 import com.wzkris.usercenter.mapper.CustomerSocialInfoMapper;
-import com.wzkris.usercenter.mapper.CustomerWalletInfoMapper;
 import com.wzkris.usercenter.service.CustomerInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +18,12 @@ public class CustomerInfoServiceImpl
         extends ServiceImplPlus<CustomerInfoMapper, CustomerInfoDO>
         implements CustomerInfoService {
 
-    private final CustomerWalletInfoMapper customerWalletInfoMapper;
-
     private final CustomerSocialInfoMapper customerSocialInfoMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveCustomer(CustomerInfoDO customer) {
         baseMapper.insert(customer);
-        CustomerWalletInfoDO wallet = new CustomerWalletInfoDO(customer.getId());
-        customerWalletInfoMapper.insert(wallet);
     }
 
     @Override

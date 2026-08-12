@@ -1,6 +1,6 @@
 package com.wzkris.auth.remote.interfaces.admin;
 
-import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminPermissionQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
 import com.wzkris.auth.remote.interfaces.admin.response.AdminListResponse;
@@ -35,7 +35,7 @@ public interface IAdminRemote {
      * 查询管理员权限
      */
     @PostExchange("/query-permission")
-    Result<List<UserRole>> queryPermission(@RequestBody AdminPermsQueryRequest request);
+    Result<List<UserRole>> queryPermission(@RequestBody AdminPermissionQueryRequest request);
 
     /**
      * 更新用户登录信息

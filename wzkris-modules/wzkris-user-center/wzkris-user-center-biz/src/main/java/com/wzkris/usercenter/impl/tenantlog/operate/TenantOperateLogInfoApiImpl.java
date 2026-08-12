@@ -33,7 +33,7 @@ public class TenantOperateLogInfoApiImpl
 
     private LambdaQueryWrapper<TenantOperateLogDO> buildQueryWrapper(TenantOperateLogInfoPageRequest request) {
         return new LambdaQueryWrapper<TenantOperateLogDO>()
-                .eq(TenantOperateLogDO::getMemberId, SecurityUtil.getUid())
+                .eq(TenantOperateLogDO::getTenantUserId, SecurityUtil.getUid())
                 .eq(ObjectUtils.isNotEmpty(request.getSuccess()), TenantOperateLogDO::getSuccess, request.getSuccess())
                 .eq(StringUtil.isNotEmpty(request.getTraceId()), TenantOperateLogDO::getTraceId, request.getTraceId())
                 .like(StringUtil.isNotBlank(request.getTitle()), TenantOperateLogDO::getTitle, request.getTitle())

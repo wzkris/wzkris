@@ -11,12 +11,12 @@ import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
 import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
 import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
 import com.wzkris.usercenter.mapper.MenuInfoMapper;
-import com.wzkris.usercenter.mapper.PostToMenuMapper;
+import com.wzkris.usercenter.mapper.TenantRoleToMenuMapper;
 import com.wzkris.usercenter.mapper.RoleToMenuMapper;
 import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.response.SelectTreeResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
-import com.wzkris.usercenter.service.PostInfoService;
+import com.wzkris.usercenter.service.TenantRoleService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +51,9 @@ public class MenuInfoServiceImpl
 
     private final RoleToMenuMapper roleToMenuMapper;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
 
-    private final PostToMenuMapper postToMenuMapper;
+    private final TenantRoleToMenuMapper tenantRoleToMenuMapper;
 
     /**
      * url query参数转map
@@ -125,11 +125,11 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<String> listPermsByPostIds(List<Long> postIds) {
-        if (CollectionUtils.isEmpty(postIds)) {
+    public List<String> listPermsByTenantRoleIds(List<Long> tenantRoleIds) {
+        if (CollectionUtils.isEmpty(tenantRoleIds)) {
             return Collections.emptyList();
         }
-        List<Long> menuIds = postToMenuMapper.listMenuIdByPostIds(postIds);
+        List<Long> menuIds = tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(tenantRoleIds);
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
@@ -176,15 +176,15 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<SelectTreeResponse> listTenantSelectTree(Long memberId) {
+    public List<SelectTreeResponse> listTenantSelectTree(Long tenantUserId) {
         List<Long> menuIds;
         Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
-                TenantInfoDO::getAdministrator, memberId);
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
             // 租户最高管理员，去查套餐绑定菜单
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByMemberId(memberId);
+            menuIds = this.listMenuIdByTenantUserId(tenantUserId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
@@ -220,16 +220,16 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<RouterResponse> listTenantRoutes(Long memberId) {
+    public List<RouterResponse> listTenantRoutes(Long tenantUserId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
         Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
-                TenantInfoDO::getAdministrator, memberId);
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
             // 户最高管理员，去查套餐绑定菜单租
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByMemberId(memberId);
+            menuIds = this.listMenuIdByTenantUserId(tenantUserId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
@@ -269,13 +269,13 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<Long> listMenuIdByMemberId(Long memberId) {
-        List<Long> postIds = postInfoService.listByMemberId(memberId).stream()
-                .map(PostInfoDO::getId).toList();
-        if (CollectionUtils.isEmpty(postIds)) {
+    public List<Long> listMenuIdByTenantUserId(Long tenantUserId) {
+        List<Long> tenantRoleIds = tenantRoleService.listByTenantUserId(tenantUserId).stream()
+                .map(TenantRoleDO::getId).toList();
+        if (CollectionUtils.isEmpty(tenantRoleIds)) {
             return Collections.emptyList();
         }
-        return postToMenuMapper.listMenuIdByPostIds(postIds);
+        return tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(tenantRoleIds);
     }
 
     @Override
@@ -287,11 +287,11 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<Long> listMenuIdByPostId(@Nullable Long postId) {
-        if (postId == null) {
+    public List<Long> listMenuIdByTenantRoleId(@Nullable Long tenantRoleId) {
+        if (tenantRoleId == null) {
             return Collections.emptyList();
         }
-        return postToMenuMapper.listMenuIdByPostIds(Collections.singletonList(postId));
+        return tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(Collections.singletonList(tenantRoleId));
     }
 
     /**
@@ -425,8 +425,8 @@ public class MenuInfoServiceImpl
         if (success) {
             roleToMenuMapper.delete(Wrappers.lambdaQuery(RoleToMenuDO.class)
                     .eq(RoleToMenuDO::getMenuId, menuId));
-            postToMenuMapper.delete(Wrappers.lambdaQuery(PostToMenuDO.class)
-                    .eq(PostToMenuDO::getMenuId, menuId));
+            tenantRoleToMenuMapper.delete(Wrappers.lambdaQuery(TenantRoleToMenuDO.class)
+                    .eq(TenantRoleToMenuDO::getMenuId, menuId));
         }
         return success;
     }

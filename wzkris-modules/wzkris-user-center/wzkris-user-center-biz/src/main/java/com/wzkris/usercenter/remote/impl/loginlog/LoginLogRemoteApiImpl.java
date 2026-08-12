@@ -72,7 +72,7 @@ public class LoginLogRemoteApiImpl implements LoginLogRemoteApi {
         List<TenantLoginLogDO> loginLogs = new ArrayList<>();
         for (LoginLogEventRequest loginLogEventRequest : loginLogEventRequests) {
             TenantLoginLogDO tenantLoginLogDO = new TenantLoginLogDO();
-            tenantLoginLogDO.setMemberId(loginLogEventRequest.getOperatorId());
+            tenantLoginLogDO.setTenantUserId(loginLogEventRequest.getOperatorId());
             tenantLoginLogDO.setUsername(loginLogEventRequest.getUsername());
             tenantLoginLogDO.setTenantId(loginLogEventRequest.getTenantId());
             tenantLoginLogDO.setLoginType(loginLogEventRequest.getLoginType());

@@ -24,11 +24,11 @@ public interface PermissionService {
     /**
      * 返回已授权码及数据权限
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @param tenantId 租户ID
      * @return 权限
      */
-    List<UserRole> getTenantPermission(Long memberId, Long tenantId);
+    List<UserRole> getTenantPermission(Long tenantUserId, Long tenantId);
 
 }
 

@@ -49,7 +49,7 @@ public class NotificationInfoServiceImpl
     }
 
     @Override
-    public void save2Tenant(List<Long> memberIds, SimpleMessageRequest messageDTO) {
+    public void save2Tenant(List<Long> tenantUserIds, SimpleMessageRequest messageDTO) {
         transactionTemplate.executeWithoutResult(status -> {
             NotificationInfoDO notificationInfoDO = new NotificationInfoDO();
             notificationInfoDO.setTitle(messageDTO.getTitle());
@@ -59,7 +59,7 @@ public class NotificationInfoServiceImpl
                     SecurityUtil.isLogin() ? SecurityUtil.getUid() : SecurityConstants.SYSTEM_USER_ID);
             notificationInfoDO.setCreateAt(OffsetDateTime.now());
             baseMapper.insert(notificationInfoDO);
-            List<NotificationToTenantDO> list = memberIds.stream()
+            List<NotificationToTenantDO> list = tenantUserIds.stream()
                     .map(uid -> new NotificationToTenantDO(notificationInfoDO.getId(), uid))
                     .toList();
             notificationToTenantMapper.insert(list);

@@ -34,7 +34,7 @@ public class TenantOperateLogDO extends BaseTenantEntity {
     private String httpMethod;
 
     @Schema(description = "职工ID")
-    private Long memberId;
+    private Long tenantUserId;
 
     @Schema(description = "用户名")
     private String username;

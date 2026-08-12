@@ -2,12 +2,13 @@ package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.enums.SocialTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
 import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
 import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
-import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerSocialUpdateRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.SocialLoginRequest;
 import com.wzkris.auth.remote.interfaces.customer.response.CustomerQueryResponse;
-import com.wzkris.auth.remote.interfaces.customer.response.CustomerListResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
@@ -39,10 +40,10 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
         CustomerQueryRequest request = new CustomerQueryRequest();
         request.setPhoneNumber(phoneNumber);
-        Result<List<CustomerListResponse>> listResult = customerRemote.queryList(request);
+        Result<List<CustomerQueryResponse>> listResult = customerRemote.queryList(request);
 
         if (!ResultUtil.check(listResult)) {
             return null;
@@ -52,9 +53,13 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
             return null;
         }
 
-        CustomerListResponse customerResponse = listResult.getData().getFirst();
+        CustomerQueryResponse customerResponse = listResult.getData().getFirst();
 
         try {
+            // 手机号登录时绑定当前微信openid，用于后续微信支付
+            if (StringUtil.isNotBlank(wxCode)) {
+                this.bindWeXcxOpenid(customerResponse.getId(), wxCode, appid);
+            }
             return this.buildAuthenticationToken(customerResponse);
         } catch (Exception e) {
             this.recordFailedLog(customerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
@@ -62,13 +67,34 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
         }
     }
 
+    /**
+     * 绑定当前微信openid到客户，失败仅记录日志不阻断登录
+     */
+    private void bindWeXcxOpenid(Long customerId, String wxCode, String appid) {
+        try {
+            CustomerSocialUpdateRequest bindRequest = new CustomerSocialUpdateRequest();
+            bindRequest.setCustomerId(customerId);
+            bindRequest.setSocialType(SocialTypeEnum.WE_XCX.getValue());
+            bindRequest.setWxCode(wxCode);
+            bindRequest.setAppid(appid);
+            Result<Void> bindResult = customerRemote.updateSocialInfo(bindRequest);
+            if (!ResultUtil.check(bindResult)) {
+                log.warn("手机号登录绑定微信openid失败: {}", bindResult.getMessage());
+            }
+        } catch (Exception e) {
+            log.warn("手机号登录绑定微信openid异常", e);
+        }
+    }
+
     @Nullable
     @Override
-    public UsernamePasswordAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
-        WexcxLoginRequest wexcxLoginRequest = new WexcxLoginRequest();
-        wexcxLoginRequest.setWxCode(wxCode);
-        wexcxLoginRequest.setPhoneCode(phoneCode);
-        Result<CustomerQueryResponse> customerResult = customerRemote.wexcxLogin(wexcxLoginRequest);
+    public UsernamePasswordAuthenticationToken loadUserBySocial(String socialType, String wxCode, @Nullable String phoneCode, @Nullable String appid) {
+        SocialLoginRequest socialLoginRequest = new SocialLoginRequest();
+        socialLoginRequest.setSocialType(socialType);
+        socialLoginRequest.setWxCode(wxCode);
+        socialLoginRequest.setPhoneCode(phoneCode);
+        socialLoginRequest.setAppid(appid);
+        Result<CustomerQueryResponse> customerResult = customerRemote.socialLogin(socialLoginRequest);
 
         if (!ResultUtil.check(customerResult)) {
             return null;

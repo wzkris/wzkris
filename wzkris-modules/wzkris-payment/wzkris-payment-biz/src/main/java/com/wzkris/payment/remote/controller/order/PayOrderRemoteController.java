@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author wzkris
  */
-@Tag(name = "支付订单（内部）")
+@Tag(name = "支付订单")
 @Validated
 @RestController
 @RequestMapping("/pay-order-remote")

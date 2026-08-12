@@ -41,7 +41,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
                 SELECT n.id, n.title, n.content, s.read, n.create_at
                 FROM biz.notification_to_tenant s
                 INNER JOIN biz.notification_info n ON s.notification_id = n.id
-                WHERE n.deleted = false AND s.member_id = #{memberId}
+                WHERE n.deleted = false AND s.tenant_user_id = #{tenantUserId}
             	    <if test="notificationType != null and notificationType != ''">
             	        AND n.notification_type = #{notificationType}
             	    </if>
@@ -53,7 +53,7 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             """)
     IPage<NotificationInfoPageResponse> pageTenantNotice(
             IPage<NotificationInfoPageResponse> page,
-            @Param("memberId") Long memberId,
+            @Param("tenantUserId") Long tenantUserId,
             @Nullable @Param("notificationType") String notificationType,
             @Nullable @Param("read") Boolean read);
 
@@ -82,8 +82,8 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
     /**
      * 租户端标记已读
      */
-    @Update("UPDATE biz.notification_to_tenant SET read = TRUE WHERE notification_id = #{notificationId} AND member_id = #{memberId}")
-    int updateTenantRead(@Param("notificationId") Long notificationId, @Param("memberId") Long memberId);
+    @Update("UPDATE biz.notification_to_tenant SET read = TRUE WHERE notification_id = #{notificationId} AND tenant_user_id = #{tenantUserId}")
+    int updateTenantRead(@Param("notificationId") Long notificationId, @Param("tenantUserId") Long tenantUserId);
 
     /**
      * 租户端未读统计（最大统计100）
@@ -92,14 +92,14 @@ public interface NotificationInfoMapper extends BaseMapperPlus<NotificationInfoD
             <script>
                 SELECT COUNT(*) FROM
                 (SELECT 1 FROM biz.notification_to_tenant u INNER JOIN biz.notification_info n ON u.notification_id = n.id
-                WHERE n.deleted = false AND u.member_id = #{memberId} AND u.read = FALSE
+                WHERE n.deleted = false AND u.tenant_user_id = #{tenantUserId} AND u.read = FALSE
                     <if test="notificationType != null and notificationType != ''">
                         AND notification_type = #{notificationType}
                     </if>
                 LIMIT 100) tmp
             </script>
             """)
-    int selectCountTenantUnread(@Param("memberId") Long memberId, @Nullable @Param("notificationType") String notificationType);
+    int selectCountTenantUnread(@Param("tenantUserId") Long tenantUserId, @Nullable @Param("notificationType") String notificationType);
 
 }
 

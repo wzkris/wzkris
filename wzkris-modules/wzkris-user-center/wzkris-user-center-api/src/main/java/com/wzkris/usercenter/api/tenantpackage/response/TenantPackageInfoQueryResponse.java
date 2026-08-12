@@ -52,7 +52,7 @@ public class TenantPackageInfoQueryResponse {
     @Data
     public static class QuotaItem {
 
-        @Schema(description = "配额标识 account | post | ...")
+        @Schema(description = "配额标识 account | role | ...")
         private String quotaKey;
 
         @Schema(description = "已使用")

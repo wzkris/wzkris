@@ -38,6 +38,13 @@ public class OrderNoGenerator {
     }
 
     /**
+     * 生成提现单号
+     */
+    public String nextWithdrawalNo() {
+        return nextNo(properties.getWithdrawalNoPrefix());
+    }
+
+    /**
      * 前缀 + 秒级时间 + 雪花后 8 位
      */
     private String nextNo(String prefix) {

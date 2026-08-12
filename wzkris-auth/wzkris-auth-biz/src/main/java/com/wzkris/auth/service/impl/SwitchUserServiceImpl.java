@@ -1,10 +1,10 @@
 package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.remote.interfaces.member.IMemberRemote;
-import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
-import com.wzkris.auth.remote.interfaces.member.request.TenantIdRequest;
-import com.wzkris.auth.remote.interfaces.member.response.MemberQueryResponse;
+import com.wzkris.auth.remote.interfaces.tenantuser.ITenantUserRemote;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserPermissionQueryRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantIdRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.response.TenantUserQueryResponse;
 import com.wzkris.auth.service.SwitchUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.constant.CommonConstants;
@@ -30,19 +30,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SwitchUserServiceImpl implements SwitchUserService {
 
-    private final IMemberRemote memberRemote;
+    private final ITenantUserRemote memberRemote;
 
     private final TokenService tokenService;
 
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken switchToTenant(LoginUser loginUser, Long tenantId, String actorSid) {
-        Result<MemberQueryResponse> memberResult = memberRemote.queryAdministratorByTenantId(
+        Result<TenantUserQueryResponse> memberResult = memberRemote.queryAdministratorByTenantId(
                 new TenantIdRequest(tenantId));
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
-        MemberQueryResponse memberResp = memberResult.getData();
+        TenantUserQueryResponse memberResp = memberResult.getData();
 
         UsernamePasswordAuthenticationToken token = buildTenantAuthenticationToken(memberResp);
         DefaultLoginUser switchedUser = (DefaultLoginUser) token.getPrincipal();
@@ -63,11 +63,11 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
-    private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(MemberQueryResponse userResp) {
+    private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(TenantUserQueryResponse userResp) {
         checkTenantAccount(userResp);
 
         Result<List<UserRole>> userRoleR = memberRemote.queryPermission(
-                new MemberPermsQueryRequest(userResp.getId(), userResp.getTenantId()));
+                new TenantUserPermissionQueryRequest(userResp.getId(), userResp.getTenantId()));
         if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(
                     BizBaseCodeEnum.API_REQUEST_ERROR.value(), userRoleR.getMessage());
@@ -88,7 +88,7 @@ public class SwitchUserServiceImpl implements SwitchUserService {
         return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
-    private void checkTenantAccount(MemberQueryResponse memberResp) {
+    private void checkTenantAccount(TenantUserQueryResponse memberResp) {
         if (StringUtil.equals(memberResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");

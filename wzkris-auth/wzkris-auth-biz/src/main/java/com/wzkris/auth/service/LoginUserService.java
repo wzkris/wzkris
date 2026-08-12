@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 public interface LoginUserService {
 
     @Nullable
-    default UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
+    default UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
         return null;
     }
 
@@ -21,7 +21,7 @@ public interface LoginUserService {
     }
 
     @Nullable
-    default UsernamePasswordAuthenticationToken loadUserByWxXcx(String wxCode, @Nullable String phoneCode) {
+    default UsernamePasswordAuthenticationToken loadUserBySocial(String socialType, String code, @Nullable String phoneCode, @Nullable String appid) {
         return null;
     }
 

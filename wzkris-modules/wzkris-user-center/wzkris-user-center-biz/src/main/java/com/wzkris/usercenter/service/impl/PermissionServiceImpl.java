@@ -34,7 +34,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final RoleToDeptMapper roleToDeptMapper;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
 
     private final TenantInfoService tenantInfoService;
 
@@ -63,19 +63,19 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public List<UserRole> getTenantPermission(Long memberId, Long tenantId) {
+    public List<UserRole> getTenantPermission(Long tenantUserId, Long tenantId) {
         List<UserRole> roles;
         // 租户最高管理员特殊处理
         Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
-                TenantInfoDO::getAdministrator, memberId);
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
             roles = List.of(new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, null, null,
                     menuInfoService.listPermsByTenantPackageId(tenantPackageId)));
         } else {
-            List<PostInfoDO> posts = postInfoService.listByMemberId(memberId);
-            roles = posts.stream()
-                    .map(post -> new UserRole(post.getId(), post.getPostName(), null, null,
-                            menuInfoService.listPermsByPostIds(List.of(post.getId()))))
+            List<TenantRoleDO> roleList = tenantRoleService.listByTenantUserId(tenantUserId);
+            roles = roleList.stream()
+                    .map(role -> new UserRole(role.getId(), role.getRoleName(), null, null,
+                            menuInfoService.listPermsByTenantRoleIds(List.of(role.getId()))))
                     .collect(Collectors.toList());
         }
         return roles;

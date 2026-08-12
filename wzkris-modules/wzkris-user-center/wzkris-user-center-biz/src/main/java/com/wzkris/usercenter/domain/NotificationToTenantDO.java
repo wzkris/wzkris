@@ -3,9 +3,9 @@ package com.wzkris.usercenter.domain;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 /**
@@ -23,15 +23,15 @@ public class NotificationToTenantDO extends BaseEntity {
     @Schema(description = "通知ID")
     private Long notificationId;
 
-    @Schema(description = "租户成员ID")
-    private Long memberId;
+    @Schema(description = "租户用户ID")
+    private Long tenantUserId;
 
     @Schema(description = "是否已读")
     private Boolean read;
 
-    public NotificationToTenantDO(Long notificationId, Long memberId) {
+    public NotificationToTenantDO(Long notificationId, Long tenantUserId) {
         this.notificationId = notificationId;
-        this.memberId = memberId;
+        this.tenantUserId = tenantUserId;
         this.read = false;
     }
 

@@ -38,22 +38,22 @@ public interface TenantInfoService extends IServicePlus<TenantInfoDO> {
     boolean checkAccountLimit(Long tenantId);
 
     /**
-     * 校验租户职位数量
+     * 校验租户角色数量
      *
      * @param tenantId 租户ID
      * @return true通过 false不通过
      */
-    boolean checkPostLimit(Long tenantId);
+    boolean checkRoleLimit(Long tenantId);
 
     /**
      * 校验是否租户超管
      *
-     * @param memberIds 用户ID
+     * @param tenantUserIds 用户ID
      */
-    boolean checkAdministrator(List<Long> memberIds);
+    boolean checkAdministrator(List<Long> tenantUserIds);
 
-    default boolean checkAdministrator(Long memberId) {
-        return this.checkAdministrator(Collections.singletonList(memberId));
+    default boolean checkAdministrator(Long tenantUserId) {
+        return this.checkAdministrator(Collections.singletonList(tenantUserId));
     }
 
 }

@@ -10,6 +10,6 @@ public interface NotificationInfoService extends IServicePlus<NotificationInfoDO
 
     void save2Admin(List<Long> adminIds, SimpleMessageRequest messageDTO);
 
-    void save2Tenant(List<Long> memberIds, SimpleMessageRequest messageDTO);
+    void save2Tenant(List<Long> tenantUserIds, SimpleMessageRequest messageDTO);
 
 }

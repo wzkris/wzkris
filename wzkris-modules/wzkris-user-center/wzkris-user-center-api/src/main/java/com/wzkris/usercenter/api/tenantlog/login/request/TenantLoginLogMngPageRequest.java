@@ -10,7 +10,7 @@ import lombok.Data;
 public class TenantLoginLogMngPageRequest extends PagingRequest {
 
     @Parameter(description = "用户ID")
-    private Long memberId;
+    private Long tenantUserId;
 
     @Parameter(description = "用户名")
     private String username;
