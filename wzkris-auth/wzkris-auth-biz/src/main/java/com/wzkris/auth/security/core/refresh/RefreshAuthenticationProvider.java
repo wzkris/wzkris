@@ -1,13 +1,12 @@
 package com.wzkris.auth.security.core.refresh;
 
 import com.wzkris.auth.domain.TokenClaims;
+import com.wzkris.auth.domain.UserSessionContext;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.RoleContext;
-import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
@@ -41,22 +40,21 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
         String refreshToken = authenticationToken.getRefreshToken();
         AuthTypeEnum authType = authenticationToken.getAuthType();
 
-        Long uid = checkParameter(refreshToken, authType);
+        // 解析 refreshToken 并校验 authType
+        TokenClaims claims = parseRefreshToken(refreshToken, authType);
 
-        // 从存储中加载用户信息
-        LoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
-        if (loginUser == null) {
+        // 一次 Redis 往返读取会话校验 + 用户信息 + 权限，避免三段独立读取的多往返开销
+        UserSessionContext ctx = tokenService.loadUserSessionContext(authType.getValue(), claims.getUid(), claims.getSid());
+        if (ctx.revoked() || ctx.userContext().loginUser() == null) {
+            // sid 已被拉黑或用户信息不存在
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
 
-        // 从存储中加载角色上下文
-        RoleContext roleContext = tokenService.loadRoleContextByUid(authType.getValue(), uid);
-
-        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(ctx.userContext().loginUser(), null, ctx.userContext().roleContext());
     }
 
-    private Long checkParameter(String refreshToken, AuthTypeEnum authType) {
+    private TokenClaims parseRefreshToken(String refreshToken, AuthTypeEnum authType) {
         // 从 refreshToken JWT 中解析 uid 和 sid
         TokenClaims claims;
         try {
@@ -72,14 +70,7 @@ public final class RefreshAuthenticationProvider extends CommonAuthenticationPro
             OAuth2ExceptionUtil.throwErrorI18n(
                     BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
         }
-
-        // 检查 sid 是否在黑名单中
-        if (tokenService.isRevoked(authType.getValue(), claims.getUid(), claims.getSid())) {
-            // sid 已被拉黑
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.AUTHENTICATION_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.refresh.fail");
-        }
-        return claims.getUid();
+        return claims;
     }
 
     @Override

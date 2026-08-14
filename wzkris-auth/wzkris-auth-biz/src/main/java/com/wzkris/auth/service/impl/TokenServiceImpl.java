@@ -1,8 +1,6 @@
 package com.wzkris.auth.service.impl;
 
-import com.wzkris.auth.domain.OnlineSession;
-import com.wzkris.auth.domain.TokenClaims;
-import com.wzkris.auth.domain.TokenPair;
+import com.wzkris.auth.domain.*;
 import com.wzkris.auth.properties.TokenProperties;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.auth.utils.JwtTokenHelper;
@@ -57,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public TokenPair loginReuse(LoginUser loginUser, RoleContext roleContext, String sid) {
+    public TokenPair loginReuse(LoginUser loginUser, RoleContext roleContext, Serializable sid) {
         return issue(loginUser, roleContext, sid, SessionWriteOp.REUSE);
     }
 
@@ -79,12 +77,12 @@ public class TokenServiceImpl implements TokenService {
         return loginCreate(loginUser, roleContext);
     }
 
-    private TokenPair issue(LoginUser loginUser, RoleContext roleContext, String sid, SessionWriteOp op) {
+    private TokenPair issue(LoginUser loginUser, RoleContext roleContext, Serializable sid, SessionWriteOp op) {
         persist(loginUser, sid, roleContext, op);
         return new TokenPair(generateAccessToken(loginUser, sid), generateRefreshToken(loginUser, sid));
     }
 
-    private String generateAccessToken(LoginUser loginUser, String sid) {
+    private String generateAccessToken(LoginUser loginUser, Serializable sid) {
         return jwtTokenHelper.encodeLoginToken(
                 tokenProperties.getAccessTokenTimeOut(),
                 loginUser.getUid(),
@@ -92,7 +90,7 @@ public class TokenServiceImpl implements TokenService {
                 loginUser.getAuthType());
     }
 
-    private String generateRefreshToken(LoginUser loginUser, String sid) {
+    private String generateRefreshToken(LoginUser loginUser, Serializable sid) {
         return jwtTokenHelper.encodeLoginToken(
                 tokenProperties.getRefreshTokenTimeOut(),
                 loginUser.getUid(),
@@ -100,10 +98,11 @@ public class TokenServiceImpl implements TokenService {
                 loginUser.getAuthType());
     }
 
-    private void persist(LoginUser loginUser, String sid, RoleContext roleContext, SessionWriteOp op) {
+    private void persist(LoginUser loginUser, Serializable sid, RoleContext roleContext, SessionWriteOp op) {
         Serializable uid = loginUser.getUid();
         String type = loginUser.getAuthType().getValue();
-        long refreshTTL = tokenProperties.getRefreshTokenTimeOut();
+        // 身份快照/会话元数据/会话索引统一以 refresh_token 有效期为过期时间，随会话上下文同生共死
+        long ttl = tokenProperties.getRefreshTokenTimeOut();
 
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
         String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
@@ -118,19 +117,22 @@ public class TokenServiceImpl implements TokenService {
                 userinfoMap.put(HASH_FIELD_ROLES, roleContext);
 
                 ops.multi();
+                // 身份快照
                 ops.opsForHash().putAll(userInfoKey, userinfoMap);
-                ops.expire(userInfoKey, refreshTTL, TimeUnit.SECONDS);
+                ops.expire(userInfoKey, ttl, TimeUnit.SECONDS);
 
+                // 会话元数据：独立 key、随会话到期自动消失；CREATE 写入，REUSE 仅续期
                 if (op == SessionWriteOp.CREATE) {
-                    ops.opsForValue().set(sessionEntryKey, buildOnlineSession(), refreshTTL, TimeUnit.SECONDS);
+                    ops.opsForValue().set(sessionEntryKey, buildOnlineSession(), ttl, TimeUnit.SECONDS);
                 } else {
-                    ops.expire(sessionEntryKey, refreshTTL, TimeUnit.SECONDS);
+                    ops.expire(sessionEntryKey, ttl, TimeUnit.SECONDS);
                 }
 
-                long expireTimestamp = System.currentTimeMillis() + (refreshTTL * 1000);
+                // 会话存活索引：score 即过期时间，是"会话是否存活"的唯一真相源
+                long expireTimestamp = System.currentTimeMillis() + (ttl * 1000);
                 ops.opsForZSet().add(sessionIndexKey, sid, expireTimestamp);
                 ops.opsForZSet().removeRangeByScore(sessionIndexKey, 0, System.currentTimeMillis() - 1);
-                ops.expire(sessionIndexKey, refreshTTL, TimeUnit.SECONDS);
+                ops.expire(sessionIndexKey, ttl, TimeUnit.SECONDS);
                 ops.exec();
                 return null;
             }
@@ -138,41 +140,48 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public DefaultLoginUser loadLoginUserByUid(String type, Serializable uid) {
+    public UserContext loadUserContext(String type, Serializable uid) {
         String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        return (DefaultLoginUser) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_USER);
+
+        // 两段读取（HGET loginUser + HGET roles）合成一次 pipeline 往返，与 loadUserSessionContext 结构一致。
+        List<Object> results = redisTemplate.executePipelined(new SessionCallback<Object>() {
+            @Override
+            @SuppressWarnings({"unchecked"})
+            public Object execute(RedisOperations ops) {
+                ops.opsForHash().get(userInfoKey, HASH_FIELD_USER);
+                ops.opsForHash().get(userInfoKey, HASH_FIELD_ROLES);
+                return null;
+            }
+        });
+
+        DefaultLoginUser loginUser = results.get(0) instanceof DefaultLoginUser u ? u : null;
+        RoleContext roleContext = results.get(1) instanceof RoleContext r ? r : null;
+        return new UserContext(loginUser, roleContext);
     }
 
     @Override
-    public RoleContext loadRoleContextByUid(String type, Serializable uid) {
-        String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
-        return (RoleContext) redisTemplate.opsForHash().get(userInfoKey, HASH_FIELD_ROLES);
-    }
-
-    @Override
-    public void revoke(String type, Serializable uid, String sid) {
-        String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
+    public UserSessionContext loadUserSessionContext(String type, Serializable uid, Serializable sid) {
         String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
-        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
+        String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
 
-        redisTemplate.delete(sessionEntryKey);
-        redisTemplate.opsForZSet().remove(sessionIndexKey, sid);
+        // 三段读取（ZSCORE 会话存活 + HGET loginUser + HGET roles）合成一次 pipeline 往返。
+        // 两 key 均带 {type:uid} hash tag 落在同一 slot，pipeline 不会触发 CROSSSLOT。
+        List<Object> results = redisTemplate.executePipelined(new SessionCallback<Object>() {
+            @Override
+            @SuppressWarnings({"unchecked"})
+            public Object execute(RedisOperations ops) {
+                ops.opsForZSet().score(sessionIndexKey, sid);
+                ops.opsForHash().get(userInfoKey, HASH_FIELD_USER);
+                ops.opsForHash().get(userInfoKey, HASH_FIELD_ROLES);
+                return null;
+            }
+        });
 
-        String luaScript =
-                "redis.call('ZREMRANGEBYSCORE', KEYS[1], 0, ARGV[1]) "
-                        + "if redis.call('ZCARD', KEYS[1]) == 0 then "
-                        + "    redis.call('DEL', KEYS[1], KEYS[2]) "
-                        + "end "
-                        + "return 1";
-
-        DefaultRedisScript<Long> script = new DefaultRedisScript<>(luaScript, Long.class);
-        redisTemplate.execute(script, Arrays.asList(sessionIndexKey, userInfoKey), System.currentTimeMillis());
-    }
-
-    @Override
-    public boolean isRevoked(String type, Long uid, String sid) {
-        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
-        return !redisTemplate.hasKey(sessionEntryKey);
+        // sid 在会话索引中（score 存在）则未撤销，否则已撤销
+        boolean revoked = !(results.get(0) instanceof Number);
+        DefaultLoginUser loginUser = results.get(1) instanceof DefaultLoginUser u ? u : null;
+        RoleContext roleContext = results.get(2) instanceof RoleContext r ? r : null;
+        return new UserSessionContext(revoked, new UserContext(loginUser, roleContext));
     }
 
     private OnlineSession buildOnlineSession() {
@@ -213,6 +222,7 @@ public class TokenServiceImpl implements TokenService {
             sids.add(sid);
             entryKeys.add(TokenKeyBuilder.buildSessionEntryKey(type, uid, sid));
         }
+        // 一次性多读各会话元数据 key
         List<Object> sessions = redisTemplate.opsForValue().multiGet(entryKeys);
 
         List<Object> dirtySids = new ArrayList<>();
@@ -231,6 +241,28 @@ public class TokenServiceImpl implements TokenService {
         }
 
         return result;
+    }
+
+    @Override
+    public void revoke(String type, Serializable uid, Serializable sid) {
+        String sessionEntryKey = TokenKeyBuilder.buildSessionEntryKey(type, uid, sid);
+        String sessionIndexKey = TokenKeyBuilder.buildSessionIndexKey(type, uid);
+        String userInfoKey = TokenKeyBuilder.buildUserInfoKey(type, uid);
+
+        // 删会话元数据 + 从索引移除；索引清空则连同身份快照一并删除。
+        // 三 key 均带 {type:uid} hash tag 同 slot，Lua 可原子执行。
+        String luaScript =
+                "redis.call('DEL', KEYS[1]) "
+                        + "redis.call('ZREM', KEYS[2], ARGV[1]) "
+                        + "redis.call('ZREMRANGEBYSCORE', KEYS[2], 0, ARGV[2]) "
+                        + "if redis.call('ZCARD', KEYS[2]) == 0 then "
+                        + "    redis.call('DEL', KEYS[2], KEYS[3]) "
+                        + "end "
+                        + "return 1";
+
+        DefaultRedisScript<Long> script = new DefaultRedisScript<>(luaScript, Long.class);
+        redisTemplate.execute(script, Arrays.asList(sessionEntryKey, sessionIndexKey, userInfoKey),
+                sid, System.currentTimeMillis());
     }
 
     private enum SessionWriteOp {

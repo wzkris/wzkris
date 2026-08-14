@@ -1,5 +1,6 @@
 package com.wzkris.auth.remote.impl.loginuser;
 
+import com.wzkris.auth.domain.UserSessionContext;
 import com.wzkris.auth.remote.api.loginuser.LoginUserRemoteApi;
 import com.wzkris.auth.remote.api.loginuser.request.LoginUserQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.request.OAuth2TokenQueryRequest;
@@ -36,19 +37,19 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
         final String sid = request.getSid();
         final AuthTypeEnum authType = request.getAuthType();
 
+        // 一次 Redis 往返读取会话校验 + 用户信息 + 权限，避免三段独立读取的多往返开销
+        UserSessionContext ctx = tokenService.loadUserSessionContext(authType.getValue(), uid, sid);
+
         // 检查 sid 是否不在会话中
-        if (tokenService.isRevoked(authType.getValue(), uid, sid)) {
+        if (ctx.revoked()) {
             return Result.unauth("Token has been revoked");
         }
 
-        // 通过 uid 获取用户信息和权限
-        DefaultLoginUser loginUser = tokenService.loadLoginUserByUid(authType.getValue(), uid);
-        if (loginUser == null) {
+        if (ctx.userContext().loginUser() == null) {
             return Result.unauth("Token has been expired");
         }
 
-        RoleContext roleContext = tokenService.loadRoleContextByUid(authType.getValue(), uid);
-        return Result.ok(new LoginUserResponse(loginUser, roleContext));
+        return Result.ok(new LoginUserResponse(ctx.userContext().loginUser(), ctx.userContext().roleContext()));
     }
 
     @Override

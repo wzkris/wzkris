@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +35,7 @@ public class JwtTokenHelper {
         return TokenClaims.from(jwtDecoder.decode(token));
     }
 
-    public String encodeLoginToken(int ttlSeconds, Long uid, String sid, AuthTypeEnum authType) {
+    public String encodeLoginToken(int ttlSeconds, Serializable uid, Serializable sid, AuthTypeEnum authType) {
         Instant issuedAt = Instant.now();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer(authorizationServerSettings.getIssuer())

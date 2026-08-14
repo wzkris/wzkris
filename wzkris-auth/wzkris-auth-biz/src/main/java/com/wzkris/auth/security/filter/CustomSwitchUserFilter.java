@@ -96,7 +96,7 @@ public final class CustomSwitchUserFilter extends SwitchUserFilter {
         authenticated.setDetails(tokenService.loginReuse(tenantUser, roleContext, actor.getSid()));
 
         TokenClaims claims = jwtTokenHelper.parse(SecurityUtil.getTokenValue());
-        tokenService.revoke(tenantUser, claims.getSid());
+        tokenService.revoke(tenantUser.getAuthType().getValue(), tenantUser.getUid(), claims.getSid());
         return authenticated;
     }
 

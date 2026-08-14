@@ -24,7 +24,8 @@ public class TokenProperties {
 
     /**
      * refresh_token 有效期 （单位：秒）
-     **/
+     * 同时作为会话活性/会话元数据/身份快照的统一过期时间。
+     */
     private int refreshTokenTimeOut = 86400 * 3;
 
     /**

@@ -1,9 +1,10 @@
 package com.wzkris.auth.service.impl;
 
+import com.wzkris.auth.domain.UserContext;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.tenantuser.ITenantUserRemote;
-import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserPermissionQueryRequest;
 import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantIdRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserPermissionQueryRequest;
 import com.wzkris.auth.remote.interfaces.tenantuser.response.TenantUserQueryResponse;
 import com.wzkris.auth.service.SwitchUserService;
 import com.wzkris.auth.service.TokenService;
@@ -53,14 +54,12 @@ public class SwitchUserServiceImpl implements SwitchUserService {
     @Nullable
     @Override
     public UsernamePasswordAuthenticationToken switchBack(Long actorUid, AuthTypeEnum authTypeEnum) {
-        var loadedUser = tokenService.loadLoginUserByUid(authTypeEnum.getValue(), actorUid);
-        if (!(loadedUser instanceof LoginUser loginUser)) {
+        UserContext userContext = tokenService.loadUserContext(authTypeEnum.getValue(), actorUid);
+        if (!(userContext.loginUser() instanceof LoginUser loginUser)) {
             return null;
         }
 
-        RoleContext roleContext = tokenService.loadRoleContextByUid(authTypeEnum.getValue(), actorUid);
-
-        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, userContext.roleContext());
     }
 
     private UsernamePasswordAuthenticationToken buildTenantAuthenticationToken(TenantUserQueryResponse userResp) {
