@@ -11,10 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,6 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class IdempotentAspectTest {
 
     @Mock
@@ -58,6 +62,7 @@ class IdempotentAspectTest {
         when(joinPoint.getSignature()).thenReturn(signature);
         when(signature.getDeclaringTypeName()).thenReturn("com.wzkris.demo.TestService");
         when(signature.getName()).thenReturn("submit");
+        when(signature.getReturnType()).thenReturn(String.class);
 
         when(valueOperations.setIfAbsent(anyString(), any(), any(Duration.class)))
                 .thenAnswer(invocation -> {
@@ -95,6 +100,8 @@ class IdempotentAspectTest {
 
     @Test
     void shouldUseSpelKeyWhenSpecified() throws Throwable {
+        // SpEL 求值需要真实 Method（-parameters 保留参数名，供 #p0 解析）
+        when(signature.getMethod()).thenReturn(spelTargetMethod());
         when(joinPoint.getArgs()).thenReturn(new Object[]{"A"});
         when(joinPoint.proceed()).thenReturn("ok-A");
 
@@ -148,6 +155,34 @@ class IdempotentAspectTest {
 
         assertThrows(TooManyRequestException.class,
                 () -> idempotentAspect.around(joinPoint, idempotent(60)));
+    }
+
+    @Test
+    void shouldExecuteWhenRecordExpiresInRaceWindow() throws Throwable {
+        // setIfAbsent 首次返回 false（旧记录刚存在），get 返回 null（记录已过期），
+        // 视为新请求重新抢占成功后执行业务，而非误报请求过频。
+        when(valueOperations.setIfAbsent(anyString(), any(), any(Duration.class)))
+                .thenReturn(false)
+                .thenReturn(true);
+        when(valueOperations.get(anyString())).thenReturn(null);
+        when(joinPoint.getArgs()).thenReturn(new Object[]{"{\"a\":1}"});
+        when(joinPoint.proceed()).thenReturn("fresh");
+
+        Object result = idempotentAspect.around(joinPoint, idempotent());
+
+        assertEquals("fresh", result);
+        verify(joinPoint).proceed();
+    }
+
+    /**
+     * 提供真实 Method 供 SpEL #p0 参数名解析（依赖 -parameters 编译参数）。
+     */
+    private static Method spelTargetMethod() throws NoSuchMethodException {
+        return IdempotentAspectTest.class.getDeclaredMethod("spelTarget", String.class);
+    }
+
+    private static String spelTarget(String p0) {
+        return p0;
     }
 
     private Idempotent idempotent() {

@@ -22,7 +22,9 @@ import com.wzkris.usercenter.service.DictionaryInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +58,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
 
     @Override
     public Result<Void> save(DictionaryMngSaveRequest request) {
+        Result<Void> validateResult = validateDictValue(request.getDictValue());
+        if (validateResult != null) {
+            return validateResult;
+        }
         if (dictionaryInfoService.checkUsedByDictKey(request.getId(), request.getDictKey())) {
             return requestFail("新增字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
@@ -64,6 +70,10 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
 
     @Override
     public Result<Void> update(DictionaryMngUpdateRequest request) {
+        Result<Void> validateResult = validateDictValue(request.getDictValue());
+        if (validateResult != null) {
+            return validateResult;
+        }
         if (dictionaryInfoService.checkUsedByDictKey(request.getId(), request.getDictKey())) {
             return requestFail("修改字典'" + request.getDictName() + "'失败，字典类型已存在");
         }
@@ -80,6 +90,25 @@ public class DictionaryMngApiImpl extends AbstractApi implements DictionaryMngAp
     public Result<?> refreshCache() {
         dictionaryInfoService.loadingDictCache();
         return ok();
+    }
+
+    /**
+     * 校验字典项：value/label 非空，value 在字典内唯一。返回 null 表示通过。
+     */
+    private Result<Void> validateDictValue(DictionaryDataInfo[] dictValue) {
+        if (dictValue == null) {
+            return null;
+        }
+        Set<String> seen = new HashSet<>();
+        for (DictionaryDataInfo item : dictValue) {
+            if (StringUtil.isBlank(item.getValue()) || StringUtil.isBlank(item.getLabel())) {
+                return requestFail("字典项的值和标签不能为空");
+            }
+            if (!seen.add(item.getValue())) {
+                return requestFail("字典项值'" + item.getValue() + "'重复");
+            }
+        }
+        return null;
     }
 
     private DictionaryMngPageResponse toPageResponse(DictionaryInfoDO source) {

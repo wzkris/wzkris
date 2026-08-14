@@ -3,6 +3,7 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.usercenter.domain.ConfigInfoDO;
 import com.wzkris.usercenter.mapper.ConfigInfoMapper;
 import com.wzkris.usercenter.service.ConfigInfoService;
@@ -49,16 +50,16 @@ public class ConfigInfoServiceImpl
 
     @Override
     public String getValueByKey(String configkey) {
-        Object value = redisTemplate.opsForHash().get(DICT_KEY, configkey);
-        if (value instanceof String && StringUtil.isNotBlank((String) value)) {
-            return (String) value;
+        String value = RedisJsonUtil.parse(redisTemplate.opsForHash().get(DICT_KEY, configkey), String.class);
+        if (StringUtil.isNotBlank(value)) {
+            return value;
         }
-        value = this.getObjByObj(ConfigInfoDO::getConfigValue,
+        String dbValue = this.getObjByObj(ConfigInfoDO::getConfigValue,
                 ConfigInfoDO::getConfigKey, configkey);
-        if (value != null) {
-            redisTemplate.opsForHash().put(DICT_KEY, configkey, value);
+        if (dbValue != null) {
+            redisTemplate.opsForHash().put(DICT_KEY, configkey, dbValue);
         }
-        return value != null ? value.toString() : null;
+        return dbValue;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.usercenter.domain.DictionaryInfoDO;
 import com.wzkris.usercenter.mapper.DictionaryInfoMapper;
 import com.wzkris.usercenter.service.DictionaryInfoService;
@@ -41,12 +42,11 @@ public class DictionaryInfoServiceImpl
 
     @Override
     public DictionaryInfoDO.DictData[] getValueByKey(String dictKey) {
-        Object value = redisTemplate.opsForHash().get(DICT_KEY, dictKey);
-        if (value instanceof DictionaryInfoDO.DictData[]) {
-            return (DictionaryInfoDO.DictData[]) value;
+        DictionaryInfoDO.DictData[] dictValue = RedisJsonUtil.parse(redisTemplate.opsForHash().get(DICT_KEY, dictKey), DictionaryInfoDO.DictData[].class);
+        if (dictValue != null) {
+            return dictValue;
         }
-        DictionaryInfoDO dict = this.getOneByObj(
-                DictionaryInfoDO::getDictKey, dictKey);
+        DictionaryInfoDO dict = this.getOneByObj(DictionaryInfoDO::getDictKey, dictKey);
         if (dict == null) {
             return new DictionaryInfoDO.DictData[0];
         }
@@ -84,9 +84,10 @@ public class DictionaryInfoServiceImpl
 
     @Override
     public boolean checkUsedByDictKey(Long dictId, String dictKey) {
+        // 新增(dictId 为空)时只按 dictKey 判重；修改时排除自身
         LambdaQueryWrapper<DictionaryInfoDO> lqw = new LambdaQueryWrapper<DictionaryInfoDO>()
-                .eq(DictionaryInfoDO::getId, dictId)
-                .ne(Objects.nonNull(dictId), DictionaryInfoDO::getDictKey, dictKey);
+                .eq(DictionaryInfoDO::getDictKey, dictKey)
+                .ne(Objects.nonNull(dictId), DictionaryInfoDO::getId, dictId);
         return baseMapper.exists(lqw);
     }
 

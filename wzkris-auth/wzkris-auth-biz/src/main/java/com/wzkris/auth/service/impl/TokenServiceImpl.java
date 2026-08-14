@@ -9,6 +9,7 @@ import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.ServletUtil;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -154,8 +155,8 @@ public class TokenServiceImpl implements TokenService {
             }
         });
 
-        DefaultLoginUser loginUser = results.get(0) instanceof DefaultLoginUser u ? u : null;
-        RoleContext roleContext = results.get(1) instanceof RoleContext r ? r : null;
+        DefaultLoginUser loginUser = RedisJsonUtil.parse(results.get(0), DefaultLoginUser.class);
+        RoleContext roleContext = RedisJsonUtil.parse(results.get(1), RoleContext.class);
         return new UserContext(loginUser, roleContext);
     }
 
@@ -179,8 +180,8 @@ public class TokenServiceImpl implements TokenService {
 
         // sid 在会话索引中（score 存在）则未撤销，否则已撤销
         boolean revoked = !(results.get(0) instanceof Number);
-        DefaultLoginUser loginUser = results.get(1) instanceof DefaultLoginUser u ? u : null;
-        RoleContext roleContext = results.get(2) instanceof RoleContext r ? r : null;
+        DefaultLoginUser loginUser = RedisJsonUtil.parse(results.get(1), DefaultLoginUser.class);
+        RoleContext roleContext = RedisJsonUtil.parse(results.get(2), RoleContext.class);
         return new UserSessionContext(revoked, new UserContext(loginUser, roleContext));
     }
 
@@ -228,7 +229,7 @@ public class TokenServiceImpl implements TokenService {
         List<Object> dirtySids = new ArrayList<>();
         for (int i = 0; i < sids.size(); i++) {
             String sid = sids.get(i);
-            OnlineSession session = (OnlineSession) (sessions != null ? sessions.get(i) : null);
+            OnlineSession session = RedisJsonUtil.parse(sessions != null ? sessions.get(i) : null, OnlineSession.class);
             if (session != null) {
                 result.put(sid, session);
             } else {

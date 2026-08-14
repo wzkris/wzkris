@@ -3,6 +3,7 @@ package com.wzkris.captcha.store.impl;
 import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
 import com.wzkris.captcha.properties.ChallengeCaptchaProperties;
 import com.wzkris.captcha.store.ChallengeCaptchaStore;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,7 @@ public class RedisChallengeCaptchaStore extends AbstractRedisCaptchaStore implem
 
     @Override
     public ChallengeCaptchaInfo removeChallenge(String token) {
-        return (ChallengeCaptchaInfo) redisTemplate.opsForValue().getAndDelete(captchaProperties.getChallengePrefix() + token);
+        return RedisJsonUtil.parse(redisTemplate.opsForValue().getAndDelete(captchaProperties.getChallengePrefix() + token), ChallengeCaptchaInfo.class);
     }
 
 }

@@ -8,11 +8,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.wzkris.common.core.exception.request.TooManyRequestException;
-import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.redis.annotation.Idempotent;
 import com.wzkris.common.redis.enums.IdempotentStatusEnum;
 import com.wzkris.common.redis.model.IdempotentRecord;
-import lombok.extern.slf4j.Slf4j;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,15 +31,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-@Slf4j
 @Aspect
 public class IdempotentAspect {
 
     private static final String IDEMPOTENT_KEY_PREFIX = "idem:";
 
     private final RedisTemplate<String, Object> redisTemplate;
-
-    private final ObjectMapper objectMapper;
 
     private final ObjectMapper canonicalMapper;
 
@@ -50,18 +46,28 @@ public class IdempotentAspect {
 
     public IdempotentAspect(RedisTemplate<String, Object> redisTemplate, ObjectMapper objectMapper) {
         this.redisTemplate = redisTemplate;
-        this.objectMapper = objectMapper;
-        this.canonicalMapper = objectMapper.copy().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true).configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        this.canonicalMapper = objectMapper.copy()
+                .configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true)
+                .configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
     }
 
     @Around("@annotation(idempotent)")
     public Object around(ProceedingJoinPoint joinPoint, Idempotent idempotent) throws Throwable {
-        final String key = buildIdempotentKey(joinPoint, idempotent);
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        final String key = buildIdempotentKey(joinPoint, signature, idempotent);
         Duration ttl = Duration.ofSeconds(idempotent.ttlSeconds());
         ValueOperations<String, Object> valueOperations = redisTemplate.opsForValue();
-        Boolean created = valueOperations.setIfAbsent(key, IdempotentRecord.processing(), ttl);
-        if (Boolean.FALSE.equals(created)) {
-            return idempotentHandle(valueOperations, key);
+
+        // 抢占幂等执行权：成功则执行业务；失败则按记录状态回放结果或拒绝请求
+        while (!Boolean.TRUE.equals(valueOperations.setIfAbsent(key, IdempotentRecord.processing(), ttl))) {
+            IdempotentRecord record = RedisJsonUtil.parse(valueOperations.get(key), IdempotentRecord.class);
+            if (record == null) {
+                continue; // 旧记录恰在 setIfAbsent 与 get 之间过期（竞态窗口），视为新请求重新抢占
+            }
+            if (IdempotentStatusEnum.DONE == record.getStatus()) {
+                return RedisJsonUtil.parse(record.getResult(), signature.getReturnType());
+            }
+            throw new TooManyRequestException();
         }
 
         Object result;
@@ -75,16 +81,7 @@ public class IdempotentAspect {
         return result;
     }
 
-    private Object idempotentHandle(ValueOperations<String, Object> valueOperations, String key) {
-        IdempotentRecord record = JsonUtil.convertValue(valueOperations.get(key), IdempotentRecord.class);
-        if (IdempotentStatusEnum.DONE == record.getStatus()) {
-            return record.getResult();
-        }
-        throw new TooManyRequestException();
-    }
-
-    private String buildIdempotentKey(ProceedingJoinPoint joinPoint, Idempotent idempotent) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+    private String buildIdempotentKey(ProceedingJoinPoint joinPoint, MethodSignature signature, Idempotent idempotent) {
         String businessKey = evaluateBusinessKey(joinPoint, signature, idempotent);
         String argsHash = DigestUtils.md5DigestAsHex(toCanonicalPayload(joinPoint.getArgs()).getBytes(StandardCharsets.UTF_8));
         return IDEMPOTENT_KEY_PREFIX + businessKey + ":" + argsHash;

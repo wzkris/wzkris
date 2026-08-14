@@ -1,8 +1,7 @@
 package com.wzkris.common.redis.config;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.redis.aspect.IdempotentAspect;
 import com.wzkris.common.redis.util.DistLockTemplate;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -18,16 +17,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisAutoConfiguration {
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory, ObjectMapper objectMapper) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
 
         template.setDefaultSerializer(new StringRedisSerializer());
 
-        ObjectMapper redisObjectMapper = createRedisObjectMapper(objectMapper);
-
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(redisObjectMapper);
+        GenericJackson2JsonRedisSerializer jackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer(createRedisObjectMapper());
         template.setKeySerializer(stringRedisSerializer);
         template.setValueSerializer(jackson2JsonRedisSerializer);
 
@@ -44,14 +41,15 @@ public class RedisAutoConfiguration {
         return new IdempotentAspect(redisTemplate, objectMapper);
     }
 
-    private ObjectMapper createRedisObjectMapper(ObjectMapper objectMapper) {
-        // 创建专门用于 Redis 的 ObjectMapper，启用类型信息
-        ObjectMapper redisObjectMapper = objectMapper.copy();
-        redisObjectMapper.activateDefaultTyping(
-                LaissezFaireSubTypeValidator.instance,
-                ObjectMapper.DefaultTyping.NON_FINAL,
-                JsonTypeInfo.As.PROPERTY
-        );
+    /**
+     * 创建专门用于 Redis 的 ObjectMapper。
+     * <p>
+     * 不启用 DefaultTyping：值以 clean JSON 存储（无 @class 类型标识），
+     * 避免类重命名/移动后旧数据因类型标识失效而反序列化失败；读取时由
+     * {@link com.wzkris.common.redis.util.RedisJsonUtil} 显式指定目标类型。
+     */
+    private ObjectMapper createRedisObjectMapper() {
+        ObjectMapper redisObjectMapper = JsonUtil.getObjectMapper().copy();
         return redisObjectMapper;
     }
 

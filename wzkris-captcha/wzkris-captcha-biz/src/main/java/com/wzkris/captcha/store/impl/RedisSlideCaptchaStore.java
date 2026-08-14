@@ -3,6 +3,7 @@ package com.wzkris.captcha.store.impl;
 import com.wzkris.captcha.domain.SlideCaptchaInfo;
 import com.wzkris.captcha.properties.SlideCaptchaProperties;
 import com.wzkris.captcha.store.SlideCaptchaStore;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.concurrent.TimeUnit;
@@ -38,7 +39,7 @@ public class RedisSlideCaptchaStore extends AbstractRedisCaptchaStore implements
 
     @Override
     public SlideCaptchaInfo removeCaptcha(String token) {
-        return (SlideCaptchaInfo) redisTemplate.opsForValue().getAndDelete(captchaProperties.getCaptchaPrefix() + token);
+        return RedisJsonUtil.parse(redisTemplate.opsForValue().getAndDelete(captchaProperties.getCaptchaPrefix() + token), SlideCaptchaInfo.class);
     }
 
 }

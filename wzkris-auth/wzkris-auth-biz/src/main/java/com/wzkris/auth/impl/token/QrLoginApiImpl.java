@@ -11,6 +11,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.model.RoleContext;
 import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,8 +45,7 @@ public class QrLoginApiImpl implements QrLoginApi {
     public Result<Void> scan(QrCodeIdRequest request) {
         String qrcodeId = request.getQrcodeId();
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        Object value = redisTemplate.opsForValue().get(key);
-        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        QrTokenResponse qrTokenResponse = RedisJsonUtil.parse(redisTemplate.opsForValue().get(key), QrTokenResponse.class);
         if (Objects.isNull(qrTokenResponse)) {
             return Result.requestFail("二维码已过期");
         }
@@ -61,8 +61,7 @@ public class QrLoginApiImpl implements QrLoginApi {
     public Result<Void> confirm(QrCodeIdRequest request) {
         String qrcodeId = request.getQrcodeId();
         String key = QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId;
-        Object value = redisTemplate.opsForValue().get(key);
-        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        QrTokenResponse qrTokenResponse = RedisJsonUtil.parse(redisTemplate.opsForValue().get(key), QrTokenResponse.class);
         if (Objects.isNull(qrTokenResponse)) {
             return Result.requestFail("二维码已过期");
         }
@@ -84,8 +83,7 @@ public class QrLoginApiImpl implements QrLoginApi {
     @Override
     public Result<QrTokenResponse> pollstatus(QrCodeIdRequest request) {
         String qrcodeId = request.getQrcodeId();
-        Object value = redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId);
-        QrTokenResponse qrTokenResponse = value instanceof QrTokenResponse ? (QrTokenResponse) value : null;
+        QrTokenResponse qrTokenResponse = RedisJsonUtil.parse(redisTemplate.opsForValue().get(QrCodeConstant.LOGIN_QRCODE_CACHE + qrcodeId), QrTokenResponse.class);
         if (Objects.isNull(qrTokenResponse)) {
             return Result.ok(QrTokenResponse.OVERDUE());
         }

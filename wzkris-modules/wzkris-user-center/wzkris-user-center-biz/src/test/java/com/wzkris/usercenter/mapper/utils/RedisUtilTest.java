@@ -2,6 +2,7 @@ package com.wzkris.usercenter.mapper.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.DefaultLoginUser;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.usercenter.UserCenterApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class RedisUtilTest {
         redisTemplate.opsForValue().set("1", loginUser, Duration.ofSeconds(100));
 
         Object value = redisTemplate.opsForValue().get("1");
-        DefaultLoginUser loginUser1 = value instanceof DefaultLoginUser ? (DefaultLoginUser) value : null;
+        DefaultLoginUser loginUser1 = RedisJsonUtil.parse(value, DefaultLoginUser.class);
         System.out.println(loginUser1);
     }
 

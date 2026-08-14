@@ -3,6 +3,7 @@ package com.wzkris.common.core.utils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,6 +52,18 @@ public abstract class JsonUtil {
     public static <T> T convertValue(Object obj, Class<T> clazz) {
         try {
             return objectMapper.convertValue(obj, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    /**
+     * 支持泛型类型（如 List&lt;X&gt;、Map&lt;K,V&gt;）的转换
+     */
+    public static <T> T convertValue(Object obj, TypeReference<T> type) {
+        try {
+            return objectMapper.convertValue(obj, type);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");
@@ -163,6 +176,18 @@ public abstract class JsonUtil {
     public static <T> T parseObject(String str, Class<T> clazz) {
         try {
             return objectMapper.readValue(str, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    /**
+     * 支持泛型类型（如 List&lt;X&gt;、Map&lt;K,V&gt;）的字符串解析
+     */
+    public static <T> T parseObject(String str, TypeReference<T> type) {
+        try {
+            return objectMapper.readValue(str, type);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");
