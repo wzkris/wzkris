@@ -16,6 +16,7 @@ import com.wzkris.payment.enums.refund.RefundStatusEnum;
 import com.wzkris.payment.exception.PaymentConfigException;
 import com.wzkris.payment.provider.PayChannelProvider;
 import com.wzkris.payment.provider.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -42,6 +43,7 @@ import java.util.Map;
  *
  * @author wzkris
  */
+@Slf4j
 @Component
 public class AlipayChannelProvider implements PayChannelProvider {
 
@@ -211,10 +213,14 @@ public class AlipayChannelProvider implements PayChannelProvider {
     }
 
     @Override
-    public boolean verifyNotify(String body, Map<String, String> headers, PaymentProviderContext ctx) throws AlipayApiException {
-        // 支付宝异步通知为表单POST(application/x-www-form-urlencoded)，验签报文参数
-        Map<String, String> params = parseFormBody(body);
-        return AlipaySignature.rsaCheckV1(params, ctx.config().getPublicCert(), "UTF-8", SIGN_TYPE);
+    public boolean verifyNotify(String body, Map<String, String> headers, PaymentProviderContext ctx) {
+        try {
+            Map<String, String> params = parseFormBody(body);
+            return AlipaySignature.rsaCheckV1(params, ctx.config().getPublicCert(), "UTF-8", SIGN_TYPE);
+        } catch (Exception e) {
+            log.warn("支付宝异步通知验签异常", e);
+            return false;
+        }
     }
 
     @Override

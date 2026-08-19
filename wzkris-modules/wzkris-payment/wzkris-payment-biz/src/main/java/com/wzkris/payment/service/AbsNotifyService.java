@@ -10,6 +10,7 @@ import com.wzkris.payment.provider.model.AbsNotifyResult;
 import com.wzkris.payment.provider.model.ChannelResult;
 import com.wzkris.payment.provider.model.PaymentProviderContext;
 import com.wzkris.payment.provider.model.ProcessResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
 
 import java.time.OffsetDateTime;
@@ -17,11 +18,12 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * 渠道回调编排模板（Service 层）：resolve 配对渠道+商户配置 → 落库 → 验签 → 解析 → 幂等 → 锁内状态机，
+ * 渠道回调编排模板（Service 层）：resolve 配对渠道+商户配置 → 落库 → 验真+解析（provider 内合并完成） → 幂等 → 锁内状态机，
  * ACK 由渠道 provider 决定。
  *
  * @author wzkris
  */
+@Slf4j
 public abstract class AbsNotifyService<T extends AbsNotifyResult> {
 
     protected final PaymentProviderRouter router;
@@ -56,22 +58,14 @@ public abstract class AbsNotifyService<T extends AbsNotifyResult> {
         current.setProcessed(false);
         channelNotifyLogService.save(current);
 
-        // 3. 验签回调来源（resolve 后已配对商户配置，验签依赖商户密钥）
-        try {
-            boolean verified = provider.verifyNotify(body, headers, ctx);
-
-            if (!verified) {
-                current.setErrorMsg("验签失败");
-                channelNotifyLogService.updateById(current);
-                return provider.buildNotifyAck(false);
-            }
-        } catch (Exception e) {
-            current.setErrorMsg("回调验签异常:" + e.getMessage());
+        // 3. 前置验签回调来源（resolve 后已配对商户配置，验签依赖商户密钥）；验签失败回 NACK
+        if (!provider.verifyNotify(body, headers, ctx)) {
+            current.setErrorMsg("回调验签失败");
             channelNotifyLogService.updateById(current);
             return provider.buildNotifyAck(false);
         }
 
-        // 4. 解析回调（验签已前置，仅解析业务字段），解析失败则返回 NACK
+        // 4. 解析回调（验签已前置，仅解析业务字段，无需 headers），失败以返回结果的 errorMsg 表达
         T parsed;
         try {
             parsed = switch (notifyType()) {
@@ -79,7 +73,14 @@ public abstract class AbsNotifyService<T extends AbsNotifyResult> {
                 case REFUND -> (T) provider.parseRefundNotify(body, ctx);
             };
         } catch (Exception e) {
+            // 契约上不应走到这里；兜底打印异常并回 NACK，不向上传播
+            log.error("{}回调解析发生不可预期异常", config.getChannel(), e);
             current.setErrorMsg("回调解析异常:" + e.getMessage());
+            channelNotifyLogService.updateById(current);
+            return provider.buildNotifyAck(false);
+        }
+        if (parsed.getErrorMsg() != null) {
+            current.setErrorMsg(parsed.getErrorMsg());
             channelNotifyLogService.updateById(current);
             return provider.buildNotifyAck(false);
         }

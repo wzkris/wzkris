@@ -40,7 +40,6 @@ public class CustomerBalanceInfoServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean incryBalance(Long customerId, BigDecimal amount, String bizNo, String bizType, String remark) {
-        amount = amount.abs();
         BigDecimal after = baseMapper.incryBalance(customerId, amount);
         if (after == null) {
             return false;
@@ -61,7 +60,6 @@ public class CustomerBalanceInfoServiceImpl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean decryBalance(Long customerId, BigDecimal amount, String bizNo, String bizType, String remark) {
-        amount = amount.abs();
         BigDecimal after = baseMapper.decryBalance(customerId, amount);
         if (after == null) {
             return false;

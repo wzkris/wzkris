@@ -25,6 +25,7 @@ import com.wzkris.payment.enums.refund.RefundStatusEnum;
 import com.wzkris.payment.exception.PaymentConfigException;
 import com.wzkris.payment.provider.PayChannelProvider;
 import com.wzkris.payment.provider.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -43,6 +44,7 @@ import java.util.Map;
  *
  * @author wzkris
  */
+@Slf4j
 @Component
 public class WxpayChannelProvider implements PayChannelProvider {
 
@@ -184,19 +186,29 @@ public class WxpayChannelProvider implements PayChannelProvider {
 
     @Override
     public boolean verifyNotify(String body, Map<String, String> headers, PaymentProviderContext ctx) {
-        WxPayService service = wxPayService(ctx.config());
-        SignatureHeader h = sigHeader(headers);
-        // 微信v3验签体：时间戳\n随机串\n报文\n，用平台证书公钥 RSA 验签
-        String message = h.getTimeStamp() + "\n" + h.getNonce() + "\n" + body + "\n";
-        return service.getConfig().getVerifier()
-                .verify(h.getSerial(), message.getBytes(StandardCharsets.UTF_8), h.getSignature());
+        try {
+            WxPayService service = wxPayService(ctx.config());
+            SignatureHeader h = sigHeader(headers);
+            String message = h.getTimeStamp() + "\n" + h.getNonce() + "\n" + body + "\n";
+            return service.getConfig().getVerifier()
+                    .verify(h.getSerial(), message.getBytes(StandardCharsets.UTF_8), h.getSignature());
+        } catch (Exception e) {
+            log.error("微信异步通知验签异常", e);
+            return false;
+        }
     }
 
     @Override
-    public PayNotifyResult parsePayNotify(String body, PaymentProviderContext ctx)
-            throws Exception {
-        ObjectNode data = decryptResource(resourceOf(body), ctx.config().getApiKey());
+    public PayNotifyResult parsePayNotify(String body, PaymentProviderContext ctx) {
         PayNotifyResult r = new PayNotifyResult();
+        ObjectNode data;
+        try {
+            data = decryptResource(resourceOf(body), ctx.config().getApiKey());
+        } catch (Exception e) {
+            log.error("微信异步通知报文解析异常", e);
+            r.setErrorMsg("微信回调报文解析异常");
+            return r;
+        }
         r.setRawBody(body);
         r.setOutTradeNo(data.path("out_trade_no").asText());
         r.setChannelNo(data.path("transaction_id").asText());
@@ -209,10 +221,16 @@ public class WxpayChannelProvider implements PayChannelProvider {
     }
 
     @Override
-    public RefundNotifyResult parseRefundNotify(String body, PaymentProviderContext ctx)
-            throws Exception {
-        ObjectNode data = decryptResource(resourceOf(body), ctx.config().getApiKey());
+    public RefundNotifyResult parseRefundNotify(String body, PaymentProviderContext ctx) {
         RefundNotifyResult r = new RefundNotifyResult();
+        ObjectNode data;
+        try {
+            data = decryptResource(resourceOf(body), ctx.config().getApiKey());
+        } catch (Exception e) {
+            log.error("微信异步通知报文解析异常", e);
+            r.setErrorMsg("微信回调报文解析异常");
+            return r;
+        }
         r.setRawBody(body);
         r.setOutRefundNo(data.path("out_refund_no").asText());
         r.setChannelNo(data.path("refund_id").asText());
@@ -236,7 +254,7 @@ public class WxpayChannelProvider implements PayChannelProvider {
     }
 
     /**
-     * 用 APIv3 密钥解密 resource 密文为明文业务字段。不验签（验签已由 {@link #verifyNotify} 前置）。
+     * 用 APIv3 密钥解密 resource 密文为明文业务字段（验签已由 {@link #verifyNotify} 前置）。
      */
     private ObjectNode decryptResource(ObjectNode resource, String apiV3Key) throws Exception {
         String plain = AesUtils.decryptToString(

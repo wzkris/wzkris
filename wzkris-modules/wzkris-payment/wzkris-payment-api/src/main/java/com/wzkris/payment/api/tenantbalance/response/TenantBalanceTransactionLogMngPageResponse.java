@@ -26,4 +26,5 @@ public class TenantBalanceTransactionLogMngPageResponse {
     private OffsetDateTime createAt;
 
     private String remark;
+
 }

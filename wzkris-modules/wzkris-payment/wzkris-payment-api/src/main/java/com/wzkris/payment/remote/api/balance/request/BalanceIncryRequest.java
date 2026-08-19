@@ -27,7 +27,7 @@ public class BalanceIncryRequest {
     private BigDecimal amount;
 
     @NotBlank(message = "业务编号不能为空")
-    @Schema(description = "业务编号（幂等键）")
+    @Schema(description = "业务编号")
     private String bizNo;
 
     @Schema(description = "业务类型")

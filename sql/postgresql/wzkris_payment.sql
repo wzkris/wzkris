@@ -809,10 +809,10 @@ CREATE INDEX idx_notify_task_retry ON biz.notify_task USING btree (status, next_
 
 
 --
--- Name: idx_pay_order_chno; Type: INDEX; Schema: biz; Owner: postgres
+-- Name: uk_pay_order_channel_order_no; Type: INDEX; Schema: biz; Owner: postgres
 --
 
-CREATE INDEX idx_pay_order_chno ON biz.pay_order USING btree (channel_order_no) WHERE ((deleted = false) AND (channel_order_no IS NOT NULL));
+CREATE UNIQUE INDEX uk_pay_order_channel_order_no ON biz.pay_order USING btree (channel_order_no);
 
 
 --
