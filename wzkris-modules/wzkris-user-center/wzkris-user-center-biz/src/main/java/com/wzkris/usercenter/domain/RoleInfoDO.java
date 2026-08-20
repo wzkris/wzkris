@@ -1,8 +1,9 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.role.DataScopeEnum;
+import com.wzkris.usercenter.enums.role.RoleStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,26 +18,23 @@ import lombok.NoArgsConstructor;
 @TableName(schema = "biz", value = "role_info", autoResultMap = true)
 public class RoleInfoDO extends BaseEntity {
 
-    @TableId
-    private Long roleId;
-
-    @Schema(description = "数据范围（1=所有数据权限，2=自定义数据权限，3=本部门数据权限，4=本部门及以下数据权限，5=仅本人数据权限）")
-    private String dataScope;
+    @Schema(description = "数据范围")
+    private DataScopeEnum dataScope;
 
     @Schema(description = "角色名称")
     private String roleName;
 
-    @Schema(description = "状态（0 代表正常 1 代表停用）")
-    private String status;
+    @Schema(description = "状态")
+    private RoleStatusEnum status;
 
     @Schema(description = "角色排序")
     private Integer roleSort;
 
-    public RoleInfoDO(Long roleId) {
-        this.roleId = roleId;
+    public RoleInfoDO(Long id) {
+        this.setId(id);
     }
 
-    public RoleInfoDO(String status) {
+    public RoleInfoDO(RoleStatusEnum status) {
         this.status = status;
     }
 

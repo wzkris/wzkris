@@ -1,6 +1,6 @@
 #web
 server:
-  port: 8080
+  port: 10001
   http2:
     enabled: true
 

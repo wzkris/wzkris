@@ -1,26 +1,26 @@
 package com.wzkris.usercenter.controller.customer;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.log.annotation.OperateLog;
 import com.wzkris.common.log.enums.OperateTypeEnum;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.common.security.annotation.CheckAdminPerms;
+import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.common.security.annotation.CheckPerms;
 import com.wzkris.usercenter.api.customer.CustomerMngApi;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.customer.CustomerMngQueryRequest;
-import com.wzkris.usercenter.response.customer.CustomerMngResponse;
+import com.wzkris.usercenter.api.customer.request.CustomerMngPageRequest;
+import com.wzkris.usercenter.api.customer.response.CustomerMngPageResponse;
+import com.wzkris.usercenter.api.customer.response.CustomerMngQueryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 客户管理
- *
- * @author wzkris
- */
 @Tag(name = "客户管理")
 @Validated
 @RestController
@@ -28,35 +28,29 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CustomerMngController {
 
+    private static final String PERM_PREFIX = "user-mod:customer-mng:";
+
     private final CustomerMngApi customerMngApi;
 
     @Operation(summary = "客户分页列表")
     @GetMapping("/query-page")
-    @CheckAdminPerms("user-mod:customer-mng:page")
-    public Result<Page<CustomerMngResponse>> queryPage(CustomerMngQueryRequest request) {
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "page")
+    public Result<Page<CustomerMngPageResponse>> queryPage(@ParameterObject CustomerMngPageRequest request) {
         return customerMngApi.queryPage(request);
     }
 
     @Operation(summary = "客户详细信息")
-    @GetMapping("/query-info/{customerId}")
-    @CheckAdminPerms("user-mod:customer-mng:query")
-    public Result<CustomerMngResponse> queryInfo(@PathVariable Long customerId) {
-        return customerMngApi.queryInfo(customerId);
-    }
-
-    @Operation(summary = "状态修改")
-    @OperateLog(title = "客户管理", subTitle = "状态修改", type = OperateTypeEnum.UPDATE)
-    @PostMapping("/update-status")
-    @CheckAdminPerms("user-mod:customer-mng:edit")
-    public Result<Void> updateStatus(@RequestBody StatusUpdateRequest request) {
-        return customerMngApi.updateStatus(request);
+    @GetMapping("/query-id/{id}")
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "query")
+    public Result<CustomerMngQueryResponse> queryById(@ParameterObject IdRequest request) {
+        return customerMngApi.queryById(request);
     }
 
     @Operation(summary = "导出")
-    @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT)
+    @OperateLog(title = "客户管理", type = OperateTypeEnum.EXPORT_IMPORT)
     @GetMapping("/export")
-    @CheckAdminPerms("user-mod:customer-mng:export")
-    public void export(HttpServletResponse response, CustomerMngQueryRequest request) {
+    @CheckPerms(checkTypes = AuthTypeEnum.ADMIN, prefix = PERM_PREFIX, value = "export")
+    public void export(HttpServletResponse response, @ParameterObject CustomerMngPageRequest request) {
         customerMngApi.export(response, request);
     }
 

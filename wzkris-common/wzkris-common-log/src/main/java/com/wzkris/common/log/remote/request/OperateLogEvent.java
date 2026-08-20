@@ -1,8 +1,9 @@
 package com.wzkris.common.log.remote.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 操作事件
@@ -29,19 +30,19 @@ public class OperateLogEvent {
     private String operType;
 
     /**
-     * 请求方法
+     * 方法
      */
     private String method;
 
     /**
-     * 请求方式
+     * http方法
      */
-    private String requestMethod;
+    private String httpMethod;
 
     /**
      * 认证类型
      */
-    private String authType;
+    private AuthTypeEnum authType;
 
     /**
      * 操作人员ID
@@ -56,7 +57,7 @@ public class OperateLogEvent {
     /**
      * 请求url
      */
-    private String operUrl;
+    private String httpUrl;
 
     /**
      * 操作地址
@@ -91,11 +92,21 @@ public class OperateLogEvent {
     /**
      * 操作时间
      */
-    private Date operTime;
+    private OffsetDateTime operTime;
+
+    /**
+     * 耗时（毫秒）
+     */
+    private Long costTime;
 
     /**
      * 租户ID
      */
     private Long tenantId;
+
+    /**
+     * 链路追踪ID
+     */
+    private String traceId;
 
 }

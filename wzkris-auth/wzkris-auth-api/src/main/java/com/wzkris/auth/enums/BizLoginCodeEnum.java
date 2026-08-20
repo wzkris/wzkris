@@ -1,10 +1,13 @@
 package com.wzkris.auth.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * 业务登录状态码
  */
+@Getter
 @AllArgsConstructor
 public enum BizLoginCodeEnum {
 
@@ -21,16 +24,9 @@ public enum BizLoginCodeEnum {
     TENANT_EXPIRED(40_234, "所属租户已过期, 请联系管理员"),
     TENANT_PACKAGE_EXPIRED(40_235, "租户套餐已过期, 请联系管理员续费");
 
+    @JsonValue
     private final int code;
 
     private final String desc;
-
-    public final int value() {
-        return this.code;
-    }
-
-    public final String desc() {
-        return this.desc;
-    }
 
 }

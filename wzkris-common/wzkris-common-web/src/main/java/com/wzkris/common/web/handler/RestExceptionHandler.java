@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -79,6 +81,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
         return ResponseEntity.status(ex.getHttpStatusCode())
                 .body(Result.init(ex.getBiz(), null, ex.getMessage()));
+    }
+
+    @Override
+    protected @org.jspecify.annotations.Nullable ResponseEntity<Object> handleNoResourceFoundException(
+            NoResourceFoundException ex, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        return new ResponseEntity<>(Result.init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, ex.getMessage()), headers, statusCode);
+    }
+
+    @Override
+    protected @org.jspecify.annotations.Nullable ResponseEntity<Object> handleNoHandlerFoundException(
+            NoHandlerFoundException ex, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
+        return new ResponseEntity<>(Result.init(BizBaseCodeEnum.API_REQUEST_ERROR.value(), null, ex.getMessage()), headers, statusCode);
     }
 
     /**

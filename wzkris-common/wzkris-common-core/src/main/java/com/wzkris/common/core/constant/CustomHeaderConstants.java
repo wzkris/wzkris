@@ -13,6 +13,16 @@ public class CustomHeaderConstants {
     public static final String X_TENANT_ID = "X-Tenant-Id";
 
     /**
+     * 风控验证码头
+     */
+    public static final String RISK_PASS_HEADER = "X-Risk-Pass";
+
+    /**
+     * 网关侧解析的客户端IP
+     */
+    public static final String X_GATEWAY_CLIENT_IP = "X-Gateway-Client-IP";
+
+    /**
      * tracing_id
      */
     public static final String X_TRACING_ID = "X-Tracing-Id";
@@ -33,8 +43,8 @@ public class CustomHeaderConstants {
     public static final String X_USER_CONTEXT = "X-User-Context";
 
     /**
-     * 权限信息
+     * 角色上下文信息
      */
-    public static final String X_PERMISSIONS = "X-Permissions";
+    public static final String X_ROLE_CONTEXT = "X-Role-Context";
 
 }

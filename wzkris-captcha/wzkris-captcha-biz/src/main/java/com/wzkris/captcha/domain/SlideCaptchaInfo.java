@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +18,6 @@ public class SlideCaptchaInfo implements Serializable {
 
     private Integer targetX;
 
-    private Date expires;
+    private OffsetDateTime expires;
 
 }

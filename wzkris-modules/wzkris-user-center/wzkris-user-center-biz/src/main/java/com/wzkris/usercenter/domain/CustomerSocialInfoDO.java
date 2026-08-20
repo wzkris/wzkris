@@ -1,10 +1,11 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.wzkris.usercenter.enums.IdentifierTypeEnum;
+import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.social.SocialTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 客户第三方信息
@@ -12,19 +13,20 @@ import lombok.Data;
  * @author wzkris
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @TableName(schema = "biz", value = "customer_social_info")
-public class CustomerSocialInfoDO {
+public class CustomerSocialInfoDO extends BaseEntity {
 
-    @TableId
+    @Schema(description = "客户ID")
     private Long customerId;
 
-    @Schema(description = "第三方唯一标识")
-    private String identifier;
+    @Schema(description = "三方平台用户唯一标识")
+    private String socialUid;
 
-    /**
-     * {@link IdentifierTypeEnum}
-     */
     @Schema(description = "渠道类型")
-    private String identifierType;
+    private SocialTypeEnum socialType;
+
+    @Schema(description = "渠道应用标识(小程序/公众号appid)")
+    private String appid;
 
 }

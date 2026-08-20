@@ -1,8 +1,9 @@
 package com.wzkris.usercenter.service;
 
-import com.wzkris.usercenter.response.permission.AdminPermissionResponse;
-import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
+import com.wzkris.common.core.model.UserRole;
 import jakarta.annotation.Nullable;
+
+import java.util.List;
 
 /**
  * 系统权限信息 服务层
@@ -18,16 +19,16 @@ public interface PermissionService {
      * @param deptId  部门ID
      * @return 权限
      */
-    AdminPermissionResponse getAdminPermission(Long adminId, @Nullable Long deptId);
+    List<UserRole> getAdminPermission(Long adminId, @Nullable Long deptId);
 
     /**
      * 返回已授权码及数据权限
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @param tenantId 租户ID
      * @return 权限
      */
-    MemberPermissionResponse getTenantPermission(Long memberId, Long tenantId);
+    List<UserRole> getTenantPermission(Long tenantUserId, Long tenantId);
 
 }
 

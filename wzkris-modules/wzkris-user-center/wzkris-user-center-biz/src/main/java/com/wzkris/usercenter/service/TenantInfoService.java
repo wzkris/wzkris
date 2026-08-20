@@ -1,9 +1,7 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.TenantInfoDO;
-import com.wzkris.usercenter.response.SelectResponse;
-import org.springframework.lang.Nullable;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,14 +11,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface TenantInfoService extends IService<TenantInfoDO> {
-
-    /**
-     * 租户选择列表
-     *
-     * @param tenantName 租户名称
-     */
-    List<SelectResponse> listSelect(@Nullable String tenantName);
+public interface TenantInfoService extends IServicePlus<TenantInfoDO> {
 
     /**
      * 添加租户, 会创建租户管理员账号
@@ -47,22 +38,22 @@ public interface TenantInfoService extends IService<TenantInfoDO> {
     boolean checkAccountLimit(Long tenantId);
 
     /**
-     * 校验租户职位数量
+     * 校验租户角色数量
      *
      * @param tenantId 租户ID
      * @return true通过 false不通过
      */
-    boolean checkPostLimit(Long tenantId);
+    boolean checkRoleLimit(Long tenantId);
 
     /**
      * 校验是否租户超管
      *
-     * @param memberIds 用户ID
+     * @param tenantUserIds 用户ID
      */
-    boolean checkAdministrator(List<Long> memberIds);
+    boolean checkAdministrator(List<Long> tenantUserIds);
 
-    default boolean checkAdministrator(Long memberId) {
-        return this.checkAdministrator(Collections.singletonList(memberId));
+    default boolean checkAdministrator(Long tenantUserId) {
+        return this.checkAdministrator(Collections.singletonList(tenantUserId));
     }
 
 }

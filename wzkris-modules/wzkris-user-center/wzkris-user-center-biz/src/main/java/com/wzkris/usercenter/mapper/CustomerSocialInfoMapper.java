@@ -3,14 +3,10 @@ package com.wzkris.usercenter.mapper;
 import com.wzkris.common.orm.plus.BaseMapperPlus;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
 @Mapper
 @Repository
 public interface CustomerSocialInfoMapper extends BaseMapperPlus<CustomerSocialInfoDO> {
-
-    @Select("SELECT * FROM biz.customer_social_info WHERE identifier = #{identifier}")
-    CustomerSocialInfoDO selectByIdentifier(String identifier);
 
 }

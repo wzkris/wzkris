@@ -1,10 +1,9 @@
 package com.wzkris.usercenter.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.usercenter.domain.OAuth2ClientDO;
 import com.wzkris.usercenter.mapper.OAuth2ClientMapper;
 import com.wzkris.usercenter.service.OAuth2ClientService;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,9 +12,8 @@ import org.springframework.stereotype.Service;
  * @author wzkris
  */
 @Service
-@AllArgsConstructor
 public class OAuth2ClientServiceImpl
-        extends ServiceImpl<OAuth2ClientMapper, OAuth2ClientDO>
+        extends ServiceImplPlus<OAuth2ClientMapper, OAuth2ClientDO>
         implements OAuth2ClientService {
 
 }

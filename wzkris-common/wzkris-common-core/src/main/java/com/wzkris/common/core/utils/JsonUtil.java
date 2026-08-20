@@ -3,12 +3,14 @@ package com.wzkris.common.core.utils;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.json.JsonReadFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.wzkris.common.core.exception.util.UtilException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +37,7 @@ public abstract class JsonUtil {
      * 配置MAPPER提升兼容性
      */
     static {
+        objectMapper.registerModule(new JavaTimeModule());
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false); // 允许空Bean序列化
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false); // 允许不存在的属性反序列化
         objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true); // 允许使用无引号字段
@@ -44,6 +47,27 @@ public abstract class JsonUtil {
         objectMapper.configure(JsonReadFeature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER.mappedFeature(), true); // 允许反斜杠
         objectMapper.configure(JsonReadFeature.ALLOW_UNESCAPED_CONTROL_CHARS.mappedFeature(), true); // 允许出现特殊字符和转义符
         objectMapper.configure(JsonReadFeature.ALLOW_SINGLE_QUOTES.mappedFeature(), true); // 允许出现单引号
+    }
+
+    public static <T> T convertValue(Object obj, Class<T> clazz) {
+        try {
+            return objectMapper.convertValue(obj, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    /**
+     * 支持泛型类型（如 List&lt;X&gt;、Map&lt;K,V&gt;）的转换
+     */
+    public static <T> T convertValue(Object obj, TypeReference<T> type) {
+        try {
+            return objectMapper.convertValue(obj, type);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
     }
 
     /**
@@ -152,6 +176,18 @@ public abstract class JsonUtil {
     public static <T> T parseObject(String str, Class<T> clazz) {
         try {
             return objectMapper.readValue(str, clazz);
+        } catch (Exception e) {
+            log.error("convert error, errorMsg:{}", e.getMessage(), e);
+            throw new UtilException("utilError.jsonSerialize.error");
+        }
+    }
+
+    /**
+     * 支持泛型类型（如 List&lt;X&gt;、Map&lt;K,V&gt;）的字符串解析
+     */
+    public static <T> T parseObject(String str, TypeReference<T> type) {
+        try {
+            return objectMapper.readValue(str, type);
         } catch (Exception e) {
             log.error("convert error, errorMsg:{}", e.getMessage(), e);
             throw new UtilException("utilError.jsonSerialize.error");

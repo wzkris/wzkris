@@ -1,10 +1,13 @@
 package com.wzkris.auth.security.core;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
+import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,8 +22,6 @@ import java.util.stream.Collectors;
  */
 public abstract class CommonAuthenticationConverter
         implements AuthenticationConverter {
-
-    private final String LOGIN_TYPE = "login_type";
 
     /**
      * 是否支持此convert
@@ -40,7 +41,7 @@ public abstract class CommonAuthenticationConverter
     @Override
     public final Authentication convert(HttpServletRequest request) {
         // login_type (REQUIRED)
-        LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(LOGIN_TYPE));
+        LoginTypeEnum loginTypeEnum = LoginTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.LOGIN_TYPE));
         if (loginTypeEnum == null || !this.support(loginTypeEnum)) {
             return null;
         }
@@ -48,7 +49,8 @@ public abstract class CommonAuthenticationConverter
         // auth_type (REQUIRED)
         AuthTypeEnum authTypeEnum = AuthTypeEnum.fromValue(request.getParameter(OAuth2ParameterConstant.AUTH_TYPE));
         if (authTypeEnum == null) {
-            return null;
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.unsupport.logintype");
         }
 
         MultiValueMap<String, String> parameters = getParameters(request);
@@ -57,7 +59,8 @@ public abstract class CommonAuthenticationConverter
 
         // 扩展信息
         Map<String, Object> additionalParameters = parameters.entrySet().stream()
-                .filter(e -> !e.getKey().equals(LOGIN_TYPE) && !e.getKey().equals(OAuth2ParameterConstant.AUTH_TYPE))
+                .filter(e -> !e.getKey().equals(OAuth2ParameterConstant.LOGIN_TYPE)
+                        && !e.getKey().equals(OAuth2ParameterConstant.AUTH_TYPE))
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().get(0)));
 
         // 创建待认证token
@@ -77,6 +80,7 @@ public abstract class CommonAuthenticationConverter
                 parameters.add(key, value);
             }
         });
+
         return parameters;
     }
 

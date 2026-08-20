@@ -26,7 +26,7 @@ class TraceIdUtilTest {
     void testSet() {
         String traceId = "test-trace-id-12345";
         TraceIdUtil.set(traceId);
-        
+
         assertEquals(traceId, MDC.get(CustomHeaderConstants.X_TRACING_ID));
     }
 
@@ -36,7 +36,7 @@ class TraceIdUtilTest {
         String originalTraceId = "original-trace-id";
         TraceIdUtil.set(originalTraceId);
         TraceIdUtil.set("");
-        
+
         // 空字符串不应该设置
         assertEquals(originalTraceId, MDC.get(CustomHeaderConstants.X_TRACING_ID));
     }
@@ -47,7 +47,7 @@ class TraceIdUtilTest {
         String originalTraceId = "original-trace-id";
         TraceIdUtil.set(originalTraceId);
         TraceIdUtil.set(null);
-        
+
         // null值不应该设置
         assertEquals(originalTraceId, MDC.get(CustomHeaderConstants.X_TRACING_ID));
     }
@@ -57,7 +57,7 @@ class TraceIdUtilTest {
     void testSetHint() {
         String hint = "test-hint-12345";
         TraceIdUtil.setHint(hint);
-        
+
         assertEquals(hint, MDC.get(CustomHeaderConstants.X_ROUTE_HINT));
     }
 
@@ -67,7 +67,7 @@ class TraceIdUtilTest {
         String originalHint = "original-hint";
         TraceIdUtil.setHint(originalHint);
         TraceIdUtil.setHint("");
-        
+
         // 空字符串不应该设置
         assertEquals(originalHint, MDC.get(CustomHeaderConstants.X_ROUTE_HINT));
     }
@@ -78,7 +78,7 @@ class TraceIdUtilTest {
         String originalHint = "original-hint";
         TraceIdUtil.setHint(originalHint);
         TraceIdUtil.setHint(null);
-        
+
         // null值不应该设置
         assertEquals(originalHint, MDC.get(CustomHeaderConstants.X_ROUTE_HINT));
     }
@@ -88,9 +88,9 @@ class TraceIdUtilTest {
     void testClear() {
         TraceIdUtil.set("test-trace-id");
         TraceIdUtil.setHint("test-hint");
-        
+
         TraceIdUtil.clear();
-        
+
         assertNull(MDC.get(CustomHeaderConstants.X_TRACING_ID));
         assertNull(MDC.get(CustomHeaderConstants.X_ROUTE_HINT));
     }
@@ -100,7 +100,7 @@ class TraceIdUtilTest {
     void testGet() {
         String traceId = "test-trace-id-12345";
         TraceIdUtil.set(traceId);
-        
+
         assertEquals(traceId, TraceIdUtil.get());
     }
 
@@ -108,7 +108,7 @@ class TraceIdUtilTest {
     @DisplayName("测试获取TraceId - 不存在时返回null")
     void testGet_NotExists() {
         TraceIdUtil.clear();
-        
+
         assertNull(TraceIdUtil.get());
     }
 
@@ -117,9 +117,9 @@ class TraceIdUtilTest {
     void testGetOrGenerate_Exists() {
         String traceId = "existing-trace-id";
         TraceIdUtil.set(traceId);
-        
+
         String result = TraceIdUtil.getOrGenerate();
-        
+
         assertEquals(traceId, result);
     }
 
@@ -127,9 +127,9 @@ class TraceIdUtilTest {
     @DisplayName("测试获取或生成TraceId - 不存在时生成")
     void testGetOrGenerate_NotExists() {
         TraceIdUtil.clear();
-        
+
         String result = TraceIdUtil.getOrGenerate();
-        
+
         assertNotNull(result);
         assertFalse(result.isEmpty());
         // 生成的TraceId应该符合格式：yyyyMMddHHmmssSSS-sequence-random
@@ -141,11 +141,11 @@ class TraceIdUtilTest {
     void testGenerate() {
         String traceId1 = TraceIdUtil.generate();
         String traceId2 = TraceIdUtil.generate();
-        
+
         assertNotNull(traceId1);
         assertNotNull(traceId2);
         assertNotEquals(traceId1, traceId2);
-        
+
         // 验证格式：yyyyMMddHHmmssSSS-sequence-random
         assertTrue(traceId1.matches("^\\d{17}-\\d+-\\d+$"));
         assertTrue(traceId2.matches("^\\d{17}-\\d+-\\d+$"));
@@ -158,11 +158,11 @@ class TraceIdUtilTest {
         for (int i = 0; i < 100; i++) {
             traceIds[i] = TraceIdUtil.generate();
         }
-        
+
         // 验证所有生成的TraceId都是唯一的
         for (int i = 0; i < traceIds.length; i++) {
             for (int j = i + 1; j < traceIds.length; j++) {
-                assertNotEquals(traceIds[i], traceIds[j], 
+                assertNotEquals(traceIds[i], traceIds[j],
                     "TraceId should be unique, but found duplicate at index " + i + " and " + j);
             }
         }
@@ -172,18 +172,18 @@ class TraceIdUtilTest {
     @DisplayName("测试生成TraceId - 格式验证")
     void testGenerate_Format() {
         String traceId = TraceIdUtil.generate();
-        
+
         // 格式：yyyyMMddHHmmssSSS-sequence-random
         String[] parts = traceId.split("-");
         assertEquals(3, parts.length);
-        
+
         // 第一部分应该是17位数字（时间戳）
         assertEquals(17, parts[0].length());
         assertTrue(parts[0].matches("^\\d+$"));
-        
+
         // 第二部分应该是序列号（数字）
         assertTrue(parts[1].matches("^\\d+$"));
-        
+
         // 第三部分应该是随机数（7位数字）
         assertTrue(parts[2].matches("^\\d+$"));
         assertTrue(parts[2].length() <= 7);
@@ -195,24 +195,24 @@ class TraceIdUtilTest {
         // 1. 生成TraceId
         String traceId = TraceIdUtil.generate();
         assertNotNull(traceId);
-        
+
         // 2. 设置TraceId
         TraceIdUtil.set(traceId);
         assertEquals(traceId, TraceIdUtil.get());
-        
+
         // 3. 设置Hint
         String hint = "test-hint";
         TraceIdUtil.setHint(hint);
         assertEquals(hint, MDC.get(CustomHeaderConstants.X_ROUTE_HINT));
-        
+
         // 4. 获取或生成（应该返回已存在的）
         String result = TraceIdUtil.getOrGenerate();
         assertEquals(traceId, result);
-        
+
         // 5. 清除
         TraceIdUtil.clear();
         assertNull(TraceIdUtil.get());
-        
+
         // 6. 清除后获取或生成（应该生成新的）
         String newTraceId = TraceIdUtil.getOrGenerate();
         assertNotNull(newTraceId);

@@ -1,0 +1,101 @@
+package com.wzkris.usercenter.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.common.redis.util.RedisJsonUtil;
+import com.wzkris.usercenter.domain.ConfigInfoDO;
+import com.wzkris.usercenter.mapper.ConfigInfoMapper;
+import com.wzkris.usercenter.service.ConfigInfoService;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * 参数配置 服务层实现
+ *
+ * @author wzkris
+ */
+@Service
+@RequiredArgsConstructor
+public class ConfigInfoServiceImpl
+        extends ServiceImplPlus<ConfigInfoMapper, ConfigInfoDO>
+        implements ConfigInfoService, SmartInitializingSingleton {
+
+    private static final String DICT_KEY = "system-config";
+
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        loadingConfigCache();
+    }
+
+    @Override
+    public void loadingConfigCache() {
+        Map<String, String> map = baseMapper.selectList(null).stream()
+                .collect(Collectors.toMap(ConfigInfoDO::getConfigKey, ConfigInfoDO::getConfigValue));
+        redisTemplate.delete(DICT_KEY);
+        if (!map.isEmpty()) {
+            redisTemplate.opsForHash().putAll(DICT_KEY, map);
+        }
+    }
+
+    @Override
+    public String getValueByKey(String configkey) {
+        String value = RedisJsonUtil.parse(redisTemplate.opsForHash().get(DICT_KEY, configkey), String.class);
+        if (StringUtil.isNotBlank(value)) {
+            return value;
+        }
+        String dbValue = this.getObjByObj(ConfigInfoDO::getConfigValue,
+                ConfigInfoDO::getConfigKey, configkey);
+        if (dbValue != null) {
+            redisTemplate.opsForHash().put(DICT_KEY, configkey, dbValue);
+        }
+        return dbValue;
+    }
+
+    @Override
+    public boolean insertConfig(ConfigInfoDO config) {
+        boolean success = baseMapper.insert(config) > 0;
+        if (success) {
+            redisTemplate.opsForHash().put(DICT_KEY, config.getConfigKey(), config.getConfigValue());
+        }
+        return success;
+    }
+
+    @Override
+    public boolean updateConfig(ConfigInfoDO config) {
+        boolean success = baseMapper.updateById(config) > 0;
+        if (success) {
+            redisTemplate.opsForHash().put(DICT_KEY, config.getConfigKey(), config.getConfigValue());
+        }
+        return success;
+    }
+
+    @Override
+    public boolean deleteById(Long configId) {
+        ConfigInfoDO config = baseMapper.selectById(configId);
+        boolean success = baseMapper.deleteById(configId) > 0;
+        if (success) {
+            redisTemplate.opsForHash().delete(DICT_KEY, config.getConfigKey());
+        }
+        return success;
+    }
+
+    @Override
+    public boolean checkUsedByConfigKey(@Nullable Long configId, @Nonnull String configKey) {
+        LambdaQueryWrapper<ConfigInfoDO> lqw = new LambdaQueryWrapper<ConfigInfoDO>()
+                .eq(ConfigInfoDO::getConfigKey, configKey)
+                .ne(Objects.nonNull(configId), ConfigInfoDO::getId, configId);
+        return baseMapper.exists(lqw);
+    }
+
+}

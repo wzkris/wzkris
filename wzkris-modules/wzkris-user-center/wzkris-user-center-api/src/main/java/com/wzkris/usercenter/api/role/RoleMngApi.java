@@ -2,34 +2,32 @@ package com.wzkris.usercenter.api.role;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.role.RoleMngQueryRequest;
-import com.wzkris.usercenter.request.role.RoleMngSaveRequest;
-import com.wzkris.usercenter.request.role.RoleMngUpdateRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.usercenter.api.role.request.RoleMngPageRequest;
+import com.wzkris.usercenter.api.role.request.RoleMngSaveRequest;
+import com.wzkris.usercenter.api.role.request.RoleMngUpdateRequest;
+import com.wzkris.usercenter.api.role.response.RoleMngQueryResponse;
+import com.wzkris.usercenter.api.role.response.RoleMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.role.RoleInfoResponse;
-
-import java.util.List;
 
 public interface RoleMngApi {
 
-    Result<Page<RoleInfoResponse>> queryPage(RoleMngQueryRequest request);
+    Result<Page<RoleMngPageResponse>> queryPage(RoleMngPageRequest request);
 
-    Result<RoleInfoResponse> queryInfo(Long roleId);
+    Result<RoleMngQueryResponse> queryById(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryRoleMenuSelectTree(Long roleId);
+    Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryRoleDeptSelectTree(Long roleId);
+    Result<CheckedSelectTreeResponse> queryDeptSelectTree(IdRequest request);
 
-    Result<CheckedSelectResponse> queryRoleInheritedSelect(Long roleId);
+    Result<CheckedSelectResponse> queryRoleInheritedSelect(IdRequest request);
 
     Result<Void> save(RoleMngSaveRequest request);
 
     Result<Void> update(RoleMngUpdateRequest request);
 
-    Result<Void> updateStatus(StatusUpdateRequest request);
-
-    Result<Void> remove(List<Long> roleIds);
+    Result<Void> remove(IdListRequest request);
 
 }

@@ -2,7 +2,7 @@ package com.wzkris.captcha.store;
 
 import com.wzkris.captcha.domain.SlideCaptchaInfo;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 public interface SlideCaptchaStore {
 
@@ -10,8 +10,8 @@ public interface SlideCaptchaStore {
 
     SlideCaptchaInfo removeCaptcha(String token);
 
-    void putToken(String tokenKey, Date expires);
+    void putToken(String tokenKey, OffsetDateTime expires);
 
-    Date removeToken(String tokenKey);
+    OffsetDateTime removeToken(String tokenKey);
 
 }

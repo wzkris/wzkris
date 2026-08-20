@@ -1,7 +1,8 @@
 package com.wzkris.usercenter.mapper.utils;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.AbsBaseLoginUser;
+import com.wzkris.common.core.model.DefaultLoginUser;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import com.wzkris.usercenter.UserCenterApplication;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,35 +19,15 @@ public class RedisUtilTest {
 
     @Test
     public void test1() {
-        TestLoginUser loginUser = new TestLoginUser();
+        DefaultLoginUser loginUser = new DefaultLoginUser();
         loginUser.setUid(1L);
         loginUser.setAuthType(AuthTypeEnum.ADMIN);
-        loginUser.setUsername("admin");
+        loginUser.setName("admin");
         redisTemplate.opsForValue().set("1", loginUser, Duration.ofSeconds(100));
 
         Object value = redisTemplate.opsForValue().get("1");
-        TestLoginUser loginUser1 = value instanceof TestLoginUser ? (TestLoginUser) value : null;
+        DefaultLoginUser loginUser1 = RedisJsonUtil.parse(value, DefaultLoginUser.class);
         System.out.println(loginUser1);
-    }
-
-    private static final class TestLoginUser extends AbsBaseLoginUser {
-
-        private String username;
-
-        @Override
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        @Override
-        public String getName() {
-            return username;
-        }
-
     }
 
 }

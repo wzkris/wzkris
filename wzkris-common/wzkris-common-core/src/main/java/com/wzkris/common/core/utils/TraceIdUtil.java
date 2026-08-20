@@ -1,12 +1,12 @@
 package com.wzkris.common.core.utils;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.slf4j.MDC;
 import org.springframework.lang.Nullable;
 
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class TraceIdUtil {
 
-    static final FastDateFormat df = FastDateFormat.getInstance("yyyyMMddHHmmssSSS", TimeZone.getTimeZone("GMT+8"), null);
+    static final DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS").withZone(ZoneId.of("GMT+8"));
 
     static final AtomicLong SEQUENCE = new AtomicLong(0);
 
@@ -47,7 +47,7 @@ public abstract class TraceIdUtil {
     }
 
     public static String generate() {
-        return df.format(new Date()) + "-" + SEQUENCE.getAndIncrement() +
+        return df.format(Instant.now()) + "-" + SEQUENCE.getAndIncrement() +
                 "-" + ThreadLocalRandom.current().nextInt(9_999_999);
     }
 

@@ -1,6 +1,6 @@
 package com.wzkris.captcha.service;
 
-import com.wzkris.captcha.response.ImageCaptchaDataResponse;
+import com.wzkris.captcha.api.captcha.response.ImageCaptchaDataResponse;
 
 public interface ImageCaptchaService {
 

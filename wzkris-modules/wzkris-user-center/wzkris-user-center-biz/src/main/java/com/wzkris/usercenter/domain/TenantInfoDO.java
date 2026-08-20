@@ -1,14 +1,15 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 租户表
@@ -20,14 +21,11 @@ import java.util.Date;
 @TableName(schema = "biz", value = "tenant_info")
 public class TenantInfoDO extends BaseEntity {
 
-    @TableId
-    private Long tenantId;
-
     @Schema(description = "管理员ID")
     private Long administrator;
 
-    @Schema(description = "租户类型 0-个人 1-企业")
-    private String tenantType;
+    @Schema(description = "租户类型")
+    private TenantTypeEnum tenantType;
 
     @Schema(description = "联系电话")
     private String contactPhone;
@@ -40,7 +38,7 @@ public class TenantInfoDO extends BaseEntity {
     private String operPwd;
 
     @Schema(description = "租户状态")
-    private String status;
+    private TenantStatusEnum status;
 
     @Schema(description = "域名")
     private String domain;
@@ -52,16 +50,10 @@ public class TenantInfoDO extends BaseEntity {
     private Long packageId;
 
     @Schema(description = "过期时间")
-    private Date expireTime;
+    private OffsetDateTime expireTime;
 
-    @Schema(description = "账号数量（-1不限制）")
-    private Integer accountLimit;
-
-    @Schema(description = "职位数量（-1不限制）")
-    private Integer postLimit;
-
-    public TenantInfoDO(Long tenantId) {
-        this.tenantId = tenantId;
+    public TenantInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

@@ -2,17 +2,11 @@ package com.wzkris.auth.security.core.password;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
-import com.wzkris.auth.remote.interfaces.captchachallenge.ICaptchaChallengeRemote;
-import com.wzkris.auth.remote.interfaces.captchachallenge.request.ValidateChallengeRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
-import com.wzkris.common.core.model.Result;
-import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -30,19 +24,15 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
     private final List<LoginUserService> loginUserServices;
 
-    private final ICaptchaChallengeRemote captchaChallengeRemote;
-
     public PasswordAuthenticationProvider(
             TokenService tokenService,
-            List<LoginUserService> loginUserServices,
-            ICaptchaChallengeRemote captchaChallengeRemote) {
+            List<LoginUserService> loginUserServices) {
         super(tokenService);
         this.loginUserServices = loginUserServices;
-        this.captchaChallengeRemote = captchaChallengeRemote;
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         PasswordAuthenticationToken authenticationToken = (PasswordAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -51,30 +41,21 @@ public final class PasswordAuthenticationProvider extends CommonAuthenticationPr
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
-        Result<Boolean> booleanResult = captchaChallengeRemote.validateChallenge(new ValidateChallengeRequest(authenticationToken.getCaptchaId()));
-        boolean pass = ResultUtil.check(booleanResult) && Boolean.TRUE.equals(booleanResult.getData());
-
-        if (!pass) {
-            OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
-                    "invalidParameter.captcha.error");
-        }
-
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadByUsernameAndPassword(
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get().loadByUsernameAndPassword(
                 authenticationToken.getUsername(), authenticationToken.getPassword());
 
-        if (token == null) {
-            // 抛出异常
+        if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.passlogin.fail");
         }
 
-        return token;
+        return authenticated;
     }
 
     @Override

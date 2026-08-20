@@ -2,28 +2,27 @@ package com.wzkris.usercenter.api.admin;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.usercenter.api.admin.request.*;
+import com.wzkris.usercenter.api.admin.response.AdminMngQueryResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
 import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.admin.AdminMngGrantRequest;
-import com.wzkris.usercenter.request.admin.AdminMngQueryRequest;
-import com.wzkris.usercenter.request.admin.AdminMngSaveRequest;
-import com.wzkris.usercenter.request.admin.AdminMngUpdateRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
-import com.wzkris.usercenter.response.admin.AdminMngResponse;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
 public interface AdminMngApi {
 
-    Result<Page<AdminMngResponse>> queryPage(AdminMngQueryRequest request);
+    Result<Page<AdminMngPageResponse>> queryPage(AdminMngPageRequest request);
 
-    Result<List<SelectTreeResponse>> queryDeptSelectTree(String deptName);
+    Result<List<SelectTreeResponse>> queryDeptSelectTree(AdminMngDeptSelectRequest request);
 
-    Result<CheckedSelectResponse> queryRoleSelect(Long adminId, String roleName);
+    Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request);
 
-    Result<AdminMngResponse> queryInfo(Long adminId);
+    Result<AdminMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(AdminMngSaveRequest request);
 
@@ -31,12 +30,10 @@ public interface AdminMngApi {
 
     Result<Void> grantRoles(AdminMngGrantRequest request);
 
-    Result<Void> remove(List<Long> userIds);
+    Result<Void> remove(IdListRequest request);
 
     Result<Void> resetPwd(PwdResetRequest request);
 
-    Result<Void> updateStatus(StatusUpdateRequest request);
-
-    void export(HttpServletResponse response, AdminMngQueryRequest request);
+    void export(HttpServletResponse response, AdminMngPageRequest request);
 
 }

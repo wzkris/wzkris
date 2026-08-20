@@ -1,7 +1,6 @@
 package com.wzkris.auth.remote.api.loginuser.request;
 
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.validator.annotation.EnumsCheck;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,8 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class LoginUserQueryRequest implements Serializable {
 
-    @EnumsCheck(value = AuthTypeEnum.class, property = "value", message = "认证类型不正确")
-    private String authType;
+    @NotNull(message = "认证类型不能为空")
+    private AuthTypeEnum authType;
 
     @NotNull(message = "用户ID不能为空")
     private Long uid;

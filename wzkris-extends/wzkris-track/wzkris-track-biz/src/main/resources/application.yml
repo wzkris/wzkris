@@ -1,0 +1,19 @@
+# Public path: DNS -> nginx -> this app. Use nginx for TLS, limit_req, client_max_body_size,
+# X-Forwarded-For / X-Real-IP. In-app rate limit is a per-process fallback.
+server:
+  port: 9102
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: wzkris-track
+  profiles:
+    active: @profiles.active@
+
+wzkris:
+  track:
+    apps:
+      dev: dev-secret
+    max-events-per-batch: 500
+    rate-limit:
+      requests-per-minute: 3000

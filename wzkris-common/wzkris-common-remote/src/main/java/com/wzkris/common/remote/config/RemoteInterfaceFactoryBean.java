@@ -3,6 +3,7 @@ package com.wzkris.common.remote.config;
 import com.wzkris.common.remote.fallback.RemoteInterfaceFallback;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
+import org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
@@ -41,7 +42,6 @@ public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, Initializi
     @Override
     public void afterPropertiesSet() {
         Assert.notNull(type, "必须提供 RemoteInterface 接口类型");
-        // 验证：必须提供 url 或 serviceId 中的一个
         boolean hasUrl = StringUtils.hasText(url);
         boolean hasServiceId = StringUtils.hasText(serviceId);
         Assert.isTrue(hasUrl || hasServiceId,
@@ -52,16 +52,18 @@ public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, Initializi
     }
 
     private RestClient.Builder getRestClientBuilder() {
-        return applicationContext.getBean("customRestClientBuilder", RestClient.Builder.class);
+        return applicationContext.getBean(
+                CustomRestClientAutoConfiguration.REMOTE_REST_CLIENT_BUILDER_BEAN_NAME,
+                RestClient.Builder.class
+        );
     }
 
     private String buildBaseUrl() {
-        // 优先使用 url
+        String basePath = path == null ? "" : path;
         if (StringUtils.hasText(url)) {
-            return url + path;
+            return url + basePath;
         }
-        // 否则使用 serviceId（服务发现）
-        return "http://" + serviceId + path;
+        return "http://" + serviceId + basePath;
     }
 
     private T wrapWithFallbackIfNecessary(T target) {
@@ -91,7 +93,8 @@ public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, Initializi
     }
 
     private T createProxy() {
-        RestClient.Builder builder = getRestClientBuilder();
+        RestClient.Builder builder = getRestClientBuilder().clone();
+        applyLoadBalancerIfNecessary(builder);
         RestClient restClient = builder.baseUrl(buildBaseUrl()).build();
 
         HttpServiceProxyFactory proxyFactory = HttpServiceProxyFactory
@@ -100,6 +103,17 @@ public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, Initializi
 
         T target = proxyFactory.createClient(type);
         return wrapWithFallbackIfNecessary(target);
+    }
+
+    private void applyLoadBalancerIfNecessary(RestClient.Builder builder) {
+        if (!StringUtils.hasText(serviceId)) {
+            return;
+        }
+        ObjectProvider<DeferringLoadBalancerInterceptor> provider =
+                applicationContext.getBeanProvider(DeferringLoadBalancerInterceptor.class);
+        DeferringLoadBalancerInterceptor interceptor = provider.getIfAvailable();
+        Assert.state(interceptor != null, "未找到负载均衡拦截器，无法按 serviceId 调用远程服务");
+        builder.requestInterceptor(interceptor);
     }
 
     @Override
@@ -144,30 +158,22 @@ public class RemoteInterfaceFactoryBean<T> implements FactoryBean<T>, Initializi
         this.applicationContext = applicationContext;
     }
 
-    private static class FallbackInvocationHandler<T> implements InvocationHandler {
-
-        private final T target;
-
-        private final RemoteInterfaceFallback<T> fallbackFactory;
-
-        private FallbackInvocationHandler(T target, RemoteInterfaceFallback<T> fallbackFactory) {
-            this.target = target;
-            this.fallbackFactory = fallbackFactory;
-        }
+    private record FallbackInvocationHandler<T>(T target,
+                                                RemoteInterfaceFallback<T> fallbackFactory) implements InvocationHandler {
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            try {
-                return method.invoke(target, args);
-            } catch (Throwable ex) {
-                Throwable cause = ex instanceof InvocationTargetException && ex.getCause() != null
-                        ? ex.getCause()
-                        : ex;
-                T fallback = fallbackFactory.create(cause);
-                return method.invoke(fallback, args);
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                try {
+                    return method.invoke(target, args);
+                } catch (Throwable ex) {
+                    Throwable cause = ex instanceof InvocationTargetException && ex.getCause() != null
+                            ? ex.getCause()
+                            : ex;
+                    T fallback = fallbackFactory.create(cause);
+                    return method.invoke(fallback, args);
+                }
             }
-        }
 
-    }
+        }
 
 }

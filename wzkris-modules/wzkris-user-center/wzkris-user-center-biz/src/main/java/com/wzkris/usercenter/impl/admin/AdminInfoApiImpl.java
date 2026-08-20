@@ -1,28 +1,27 @@
 package com.wzkris.usercenter.impl.admin;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.UserRole;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.security.utils.SecurityUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminInfoApi;
+import com.wzkris.usercenter.api.admin.request.AdminInfoBasicUpdateRequest;
+import com.wzkris.usercenter.api.admin.response.AdminInfoQueryResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.mapper.DeptInfoMapper;
+import com.wzkris.usercenter.domain.DeptInfoDO;
 import com.wzkris.usercenter.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.usercenter.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.usercenter.request.PasswordUpdateRequest;
 import com.wzkris.usercenter.request.PhoneNumberUpdateRequest;
-import com.wzkris.usercenter.request.admin.AdminInfoBasicUpdateRequest;
-import com.wzkris.usercenter.response.admin.AdminInfoResponse;
-import com.wzkris.usercenter.response.admin.ChatPersonResponse;
 import com.wzkris.usercenter.service.AdminInfoService;
+import com.wzkris.usercenter.service.DeptInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,22 +32,18 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
 
     private final RoleInfoService roleInfoService;
 
-    private final DeptInfoMapper deptInfoMapper;
+    private final DeptInfoService deptInfoService;
 
     private final ICaptchaRemote captchaRemote;
 
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public Result<AdminInfoResponse> queryInfo() {
-        final Long uid = SecurityUtil.getUid();
-        boolean issuper = SecurityUtil.isSuper();
-        AdminInfoDO adminInfoDO = adminInfoService.getById(uid);
-        if (adminInfoDO == null) {
-            adminInfoDO = new AdminInfoDO();
-        }
-        AdminInfoResponse adminInfoVO = new AdminInfoResponse();
-        adminInfoVO.setAdmin(issuper);
+    public Result<AdminInfoQueryResponse> query() {
+        LoginUser loginUser = SecurityUtil.getLoginUser();
+        AdminInfoDO adminInfoDO = adminInfoService.getById(loginUser.getUid());
+        AdminInfoQueryResponse adminInfoVO = new AdminInfoQueryResponse();
+        adminInfoVO.setAdmin(SecurityUtil.isSuperUser());
         adminInfoVO.setUsername(adminInfoDO.getUsername());
         adminInfoVO.setAuthorities(SecurityUtil.getPermission());
         adminInfoVO.setAvatar(adminInfoDO.getAvatar());
@@ -57,23 +52,11 @@ public class AdminInfoApiImpl extends AbstractApi implements AdminInfoApi {
         adminInfoVO.setPhoneNumber(adminInfoDO.getPhoneNumber());
         adminInfoVO.setGender(adminInfoDO.getGender());
         adminInfoVO.setLoginDate(adminInfoDO.getLoginDate());
-        adminInfoVO.setDeptName(deptInfoMapper.selectDeptNameById(adminInfoDO.getDeptId()));
-        adminInfoVO.setRoleGroup(issuper ? SecurityConstants.SUPER_ADMIN_NAME : roleInfoService.getRoleGroup(uid));
+        DeptInfoDO deptInfoDO = deptInfoService.getById(adminInfoDO.getDeptId());
+        adminInfoVO.setDeptName(deptInfoDO == null ? "" : deptInfoDO.getDeptName());
+        adminInfoVO.setRoleGroup(SecurityUtil.getRoleContext().getRoles().stream()
+                .map(UserRole::getName).collect(Collectors.joining(",")));
         return ok(adminInfoVO);
-    }
-
-    @Override
-    public Result<List<ChatPersonResponse>> queryChatPersonList() {
-        List<AdminInfoDO> adminInfoDOS = adminInfoService.list(Wrappers.lambdaQuery(AdminInfoDO.class)
-                .select(AdminInfoDO::getAdminId, AdminInfoDO::getNickname, AdminInfoDO::getAvatar)
-                .ne(AdminInfoDO::getAdminId, SecurityUtil.getUid()));
-        return ok(cast2ChatVO(adminInfoDOS));
-    }
-
-    private List<ChatPersonResponse> cast2ChatVO(List<AdminInfoDO> adminInfoDOS) {
-        return adminInfoDOS.stream().map(userInfoDO ->
-                        new ChatPersonResponse(userInfoDO.getAdminId(), userInfoDO.getNickname(), userInfoDO.getAvatar()))
-                .collect(Collectors.toList());
     }
 
     @Override

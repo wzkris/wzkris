@@ -2,25 +2,19 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.wzkris.common.core.constant.SecurityConstants;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.domain.DeptInfoDO;
-import com.wzkris.usercenter.domain.PostInfoDO;
-import com.wzkris.usercenter.domain.RoleInfoDO;
+import com.wzkris.common.core.model.DataIdentity;
+import com.wzkris.common.core.model.UserRole;
+import com.wzkris.usercenter.domain.*;
+import com.wzkris.usercenter.enums.role.DataScopeEnum;
 import com.wzkris.usercenter.mapper.DeptInfoMapper;
 import com.wzkris.usercenter.mapper.RoleToDeptMapper;
-import com.wzkris.usercenter.mapper.TenantInfoMapper;
-import com.wzkris.usercenter.response.permission.AdminPermissionResponse;
-import com.wzkris.usercenter.response.permission.MemberPermissionResponse;
-import com.wzkris.usercenter.service.MenuInfoService;
-import com.wzkris.usercenter.service.PermissionService;
-import com.wzkris.usercenter.service.PostInfoService;
-import com.wzkris.usercenter.service.RoleInfoService;
+import com.wzkris.usercenter.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -32,26 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PermissionServiceImpl implements PermissionService {
 
-    /**
-     * 全部数据权限
-     */
-    public static final String DATA_SCOPE_ALL = "1";
-
-    /**
-     * 自定数据权限
-     */
-    public static final String DATA_SCOPE_CUSTOM = "2";
-
-    /**
-     * 部门数据权限
-     */
-    public static final String DATA_SCOPE_DEPT = "3";
-
-    /**
-     * 部门及以下数据权限
-     */
-    public static final String DATA_SCOPE_DEPT_AND_CHILD = "4";
-
     private final RoleInfoService roleInfoService;
 
     private final MenuInfoService menuInfoService;
@@ -60,92 +34,91 @@ public class PermissionServiceImpl implements PermissionService {
 
     private final RoleToDeptMapper roleToDeptMapper;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     @Override
-    public AdminPermissionResponse getAdminPermission(Long adminId, Long deptId) {
-        List<RoleInfoDO> roles;
-        List<String> grantedAuthority;
-        List<Long> deptScopes = Collections.emptyList();
+    public List<UserRole> getAdminPermission(Long adminId, Long deptId) {
+        // 超管：加载全部真实权限码 + 虚拟 ALL 角色跳过数据权限
         if (AdminInfoDO.isSuperAdmin(adminId)) {
-            grantedAuthority = Collections.singletonList(SecurityConstants.SUPER_PERMISSION);
-        } else {
-            // 查询角色
-            roles = roleInfoService.listInheritedByAdminId(adminId);
-            // 菜单权限
-            List<Long> roleIds = roles.stream().map(RoleInfoDO::getRoleId).collect(Collectors.toList());
-            grantedAuthority = menuInfoService.listPermsByRoleIds(roleIds);
-            // 数据权限
-            deptScopes = this.listDeptScope(roles, deptId);
+            return List.of(
+                    new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, DataScopeEnum.ALL.getValue(),
+                            Collections.emptyList(), menuInfoService.listPermsByMenuIds(null))
+            );
         }
-        return new AdminPermissionResponse(grantedAuthority, deptScopes);
+
+        // 普通用户：查角色 -> 查菜单权限 -> 构建角色数据权限
+        List<RoleInfoDO> roleList = roleInfoService.listByAdminId(adminId, true);
+
+        return roleList.stream()
+                .map(role -> new UserRole(
+                        role.getId(),
+                        role.getRoleName(),
+                        role.getDataScope().getValue(),
+                        computeDataIdentities(role, deptId),
+                        menuInfoService.listPermsByRoleIds(List.of(role.getId()))
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public MemberPermissionResponse getTenantPermission(Long memberId, Long tenantId) {
-        List<PostInfoDO> posts;
-        List<String> grantedAuthority;
-        boolean administrator = false;
+    public List<UserRole> getTenantPermission(Long tenantUserId, Long tenantId) {
+        List<UserRole> roles;
         // 租户最高管理员特殊处理
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
-            // 租户最高管理员查出所有租户角色
-            administrator = true;
-            grantedAuthority = menuInfoService.listPermsByTenantPackageId(tenantPackageId);
+            roles = List.of(new UserRole(0L, SecurityConstants.SUPER_ADMIN_NAME, null, null,
+                    menuInfoService.listPermsByTenantPackageId(tenantPackageId)));
         } else {
-            // 否则为普通用户
-            posts = postInfoService.listByMemberId(memberId);
-            // 菜单权限
-            List<Long> postIds = posts.stream().map(PostInfoDO::getPostId).collect(Collectors.toList());
-            grantedAuthority = menuInfoService.listPermsByPostIds(postIds);
+            List<TenantRoleDO> roleList = tenantRoleService.listByTenantUserId(tenantUserId);
+            roles = roleList.stream()
+                    .map(role -> new UserRole(role.getId(), role.getRoleName(), null, null,
+                            menuInfoService.listPermsByTenantRoleIds(List.of(role.getId()))))
+                    .collect(Collectors.toList());
         }
-        return new MemberPermissionResponse(administrator, grantedAuthority);
+        return roles;
     }
 
     /**
-     * 根据角色集合查询数据权限（可访问的部门id集合）
-     *
-     * @param roles  角色集合
-     * @param deptId 自身归属的部门id
-     * @return 部门id集合
+     * 根据角色数据范围计算可访问的数据标识列表
      */
-    private List<Long> listDeptScope(List<RoleInfoDO> roles, Long deptId) {
-        // 若部门id为空或者无角色，则代表不存在数据权限
-        if (deptId == null || CollectionUtils.isEmpty(roles)) {
-            return Collections.singletonList(-999L);
+    private List<DataIdentity> computeDataIdentities(RoleInfoDO role, Long deptId) {
+        DataScopeEnum scope = role.getDataScope();
+        if (scope == null) {
+            return Collections.emptyList();
         }
-        Set<Long> deptIds = new HashSet<>();
-        // 循环每一个角色，拼接所有可访问的部门id
-        Map<String, List<Long>> datascopeMap = roles.stream()
-                // 根据权限作用域分组
-                .collect(Collectors.groupingBy(
-                        RoleInfoDO::getDataScope, Collectors.mapping(RoleInfoDO::getRoleId, Collectors.toList())));
-        for (Map.Entry<String, List<Long>> entry : datascopeMap.entrySet()) {
-            if (StringUtil.equals(DATA_SCOPE_ALL, entry.getKey())) {
-                deptIds = deptInfoMapper
-                        .selectList(Wrappers.lambdaQuery(DeptInfoDO.class).select(DeptInfoDO::getDeptId))
-                        .stream()
-                        .map(DeptInfoDO::getDeptId)
-                        .collect(Collectors.toSet());
-                break;
-            } else if (StringUtil.equals(DATA_SCOPE_CUSTOM, entry.getKey())) {
-                // 自定义部门权限
-                deptIds.addAll(roleToDeptMapper.listDeptIdByRoleIds(entry.getValue()));
-            } else if (StringUtil.equals(DATA_SCOPE_DEPT, entry.getKey())) {
-                // 部门自身数据权限
-                deptIds.add(deptId);
-            } else if (StringUtil.equals(DATA_SCOPE_DEPT_AND_CHILD, entry.getKey())) {
-                // 部门及以下数据权限
-                deptIds.addAll(deptInfoMapper.listSubDeptIdById(deptId));
-            } else {
-                // 本人数据权限
-                deptIds.add(-999L);
-            }
+
+        return switch (scope) {
+            case ALL -> Collections.emptyList();
+            case CUSTOM -> toDataIdentities(
+                    roleToDeptMapper.listDeptIdByRoleIds(List.of(role.getId()))
+            );
+            case DEPT -> deptId != null
+                    ? toDataIdentities(List.of(deptId))
+                    : Collections.emptyList();
+            case DEPT_AND_CHILD -> deptId != null
+                    ? toDataIdentities(deptInfoMapper.listSubDeptIdById(deptId))
+                    : Collections.emptyList();
+            case ONLY_SELF -> List.of(new DataIdentity(-999L, "本人"));
+        };
+    }
+
+    /**
+     * 批量查询部门名称，转换为 DataIdentity 列表
+     */
+    private List<DataIdentity> toDataIdentities(List<Long> deptIds) {
+        if (CollectionUtils.isEmpty(deptIds)) {
+            return Collections.emptyList();
         }
-        return deptIds.stream().toList();
+        return deptInfoMapper.selectList(
+                        Wrappers.lambdaQuery(DeptInfoDO.class)
+                                .select(DeptInfoDO::getId, DeptInfoDO::getDeptName)
+                                .in(DeptInfoDO::getId, deptIds)
+                ).stream()
+                .map(d -> new DataIdentity(d.getId(), d.getDeptName()))
+                .collect(Collectors.toList());
     }
 
 }
-

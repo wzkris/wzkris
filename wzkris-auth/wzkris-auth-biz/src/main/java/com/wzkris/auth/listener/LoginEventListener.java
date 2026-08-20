@@ -1,30 +1,24 @@
 package com.wzkris.auth.listener;
 
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
+import com.wzkris.auth.remote.interfaces.admin.IAdminRemote;
 import com.wzkris.auth.remote.interfaces.admin.request.LoginInfoUpdateRequest;
-import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.ILoginLogRemote;
 import com.wzkris.auth.remote.interfaces.loginlog.request.LoginLogEvent;
-import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
-import com.wzkris.auth.service.LoginRiskAnalyzeService;
+import com.wzkris.auth.remote.interfaces.tenantuser.ITenantUserRemote;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.IpUtil;
-import com.wzkris.common.core.utils.JsonUtil;
 import com.wzkris.common.core.utils.ResultUtil;
-import com.wzkris.common.security.model.AdminLoginUser;
-import com.wzkris.common.security.model.CustomerLoginUser;
-import com.wzkris.common.security.model.TenantLoginUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nl.basjes.parse.useragent.UserAgent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.Collections;
-import java.util.Date;
 
 /**
  * @author : wzkris
@@ -39,18 +33,16 @@ public class LoginEventListener {
 
     private final ILoginLogRemote loginLogRemote;
 
-    private final LoginRiskAnalyzeService loginRiskAnalyzeService;
+    private final IAdminRemote adminRemote;
 
-    private final IAdminInfoRemote adminInfoRemote;
+    private final ITenantUserRemote memberRemote;
 
-    private final IMemberInfoRemote memberInfoRemote;
-
-    private final ICustomerInfoRemote customerInfoRemote;
+    private final ICustomerRemote customerRemote;
 
     @Async
     @EventListener
     public void loginEvent(LoginEvent event) {
-        final BaseLoginUser loginUser = event.getLoginUser();
+        final LoginUser loginUser = event.getLoginUser();
         log.info("'{}' 发生登录事件", loginUser);
 
         AuthTypeEnum authType = loginUser.getAuthType();
@@ -59,25 +51,22 @@ public class LoginEventListener {
         }
     }
 
-    private void handleLogin(LoginEvent event, BaseLoginUser loginUser) {
+    private void handleLogin(LoginEvent event, LoginUser loginUser) {
         final String loginType = event.getLoginType();
         final String errorMsg = event.getErrorMsg();
         String ipAddr = event.getIpAddr();
-        UserAgent userAgent = event.getUserAgent();
-        String userAgentText = JsonUtil.toJsonString(userAgent.getHeaders());
+        String userAgentText = event.getUserAgentText();
         String loginLocation = IpUtil.parseIp(ipAddr);
         String traceId = event.getTraceId();
-        Date now = new Date();
-        LoginRiskAnalyzeService.RiskResult riskResult =
-                loginRiskAnalyzeService.analyze(loginUser, ipAddr, userAgentText, event.getSuccess(), now);
+        OffsetDateTime now = OffsetDateTime.now();
 
         updateLoginInfoIfSuccess(loginUser, ipAddr, event.getSuccess(), now);
 
         LoginLogEvent loginLogEvent = new LoginLogEvent();
-        loginLogEvent.setAuthType(loginUser.getAuthType().getValue());
+        loginLogEvent.setAuthType(loginUser.getAuthType());
         loginLogEvent.setOperatorId(loginUser.getUid());
-        loginLogEvent.setUsername(resolveUsername(loginUser));
-        loginLogEvent.setTenantId(resolveTenantId(loginUser));
+        loginLogEvent.setUsername(loginUser.getName());
+        loginLogEvent.setTenantId(loginUser.getTenantId());
         loginLogEvent.setLoginTime(now);
         loginLogEvent.setLoginIp(ipAddr);
         loginLogEvent.setLoginType(loginType);
@@ -86,14 +75,10 @@ public class LoginEventListener {
         loginLogEvent.setLoginLocation(loginLocation);
         loginLogEvent.setTraceId(traceId);
         loginLogEvent.setUserAgent(userAgentText);
-        loginLogEvent.setAbnormalTags(riskResult.abnormalTags());
-        loginLogEvent.setRiskLevel(riskResult.riskLevel().getValue());
-        loginLogEvent.setRiskScore(riskResult.riskScore());
         loginLogRemote.save(Collections.singletonList(loginLogEvent));
-        reportRiskAlertIfNecessary(loginUser, loginLogEvent, riskResult);
     }
 
-    private void updateLoginInfoIfSuccess(BaseLoginUser loginUser, String ipAddr, Boolean success, Date loginDate) {
+    private void updateLoginInfoIfSuccess(LoginUser loginUser, String ipAddr, Boolean success, OffsetDateTime loginDate) {
         if (!Boolean.TRUE.equals(success)) {
             return;
         }
@@ -102,41 +87,12 @@ public class LoginEventListener {
         LoginInfoUpdateRequest.setLoginDate(loginDate);
         AuthTypeEnum authType = loginUser.getAuthType();
         if (authType == AuthTypeEnum.ADMIN) {
-            ResultUtil.checkNoData(adminInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(adminRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.TENANT) {
-            ResultUtil.checkNoData(memberInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(memberRemote.updateLoginInfo(LoginInfoUpdateRequest));
         } else if (authType == AuthTypeEnum.CUSTOMER) {
-            ResultUtil.checkNoData(customerInfoRemote.updateLoginInfo(LoginInfoUpdateRequest));
+            ResultUtil.checkNoData(customerRemote.updateLoginInfo(LoginInfoUpdateRequest));
         }
-    }
-
-    private String resolveUsername(BaseLoginUser loginUser) {
-        if (loginUser instanceof AdminLoginUser admin) {
-            return admin.getUsername();
-        }
-        if (loginUser instanceof TenantLoginUser tenant) {
-            return tenant.getUsername();
-        }
-        if (loginUser instanceof CustomerLoginUser customer) {
-            return customer.getPhoneNumber();
-        }
-        return String.valueOf(loginUser.getUid());
-    }
-
-    private Long resolveTenantId(BaseLoginUser loginUser) {
-        if (loginUser instanceof TenantLoginUser tenant) {
-            return tenant.getTenantId();
-        }
-        return null;
-    }
-
-    private void reportRiskAlertIfNecessary(BaseLoginUser loginUser, LoginLogEvent event, LoginRiskAnalyzeService.RiskResult riskResult) {
-        if (!loginRiskAnalyzeService.shouldAlert(loginUser, riskResult)) {
-            return;
-        }
-        log.warn("登录风险告警 authType={}, uid={}, riskLevel={}, score={}, tags={}, ip={}, traceId={}",
-                loginUser.getAuthType(), loginUser.getUid(), riskResult.riskLevel(), riskResult.riskScore(),
-                riskResult.abnormalTags(), event.getLoginIp(), event.getTraceId());
     }
 
 }

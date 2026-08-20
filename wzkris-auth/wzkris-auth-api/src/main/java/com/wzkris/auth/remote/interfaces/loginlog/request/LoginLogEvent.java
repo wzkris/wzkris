@@ -1,8 +1,9 @@
 package com.wzkris.auth.remote.interfaces.loginlog.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 登录日志事件
@@ -13,7 +14,7 @@ public class LoginLogEvent {
     /**
      * 认证类型
      */
-    private String authType;
+    private AuthTypeEnum authType;
 
     /**
      * 登录用户ID
@@ -68,21 +69,6 @@ public class LoginLogEvent {
     /**
      * 登录时间
      */
-    private Date loginTime;
-
-    /**
-     * 异常标签
-     */
-    private String abnormalTags;
-
-    /**
-     * 风险等级（LOW/MEDIUM/HIGH）
-     */
-    private String riskLevel;
-
-    /**
-     * 风险分（0-100）
-     */
-    private Integer riskScore;
+    private OffsetDateTime loginTime;
 
 }

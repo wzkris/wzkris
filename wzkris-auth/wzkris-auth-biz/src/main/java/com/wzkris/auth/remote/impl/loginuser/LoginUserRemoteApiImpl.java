@@ -1,12 +1,16 @@
 package com.wzkris.auth.remote.impl.loginuser;
 
+import com.wzkris.auth.domain.UserSessionContext;
 import com.wzkris.auth.remote.api.loginuser.LoginUserRemoteApi;
 import com.wzkris.auth.remote.api.loginuser.request.LoginUserQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.request.OAuth2TokenQueryRequest;
 import com.wzkris.auth.remote.api.loginuser.response.LoginUserResponse;
 import com.wzkris.auth.service.TokenService;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.enums.AuthTypeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
@@ -15,7 +19,8 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -30,25 +35,21 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
     public Result<LoginUserResponse> queryInfo(LoginUserQueryRequest request) {
         final Long uid = request.getUid();
         final String sid = request.getSid();
-        final String authType = request.getAuthType();
+        final AuthTypeEnum authType = request.getAuthType();
 
-        if (uid == null || authType == null || sid == null) {
-            return Result.unauth("Invalid token: missing subject");
-        }
+        // 一次 Redis 往返读取会话校验 + 用户信息 + 权限，避免三段独立读取的多往返开销
+        UserSessionContext ctx = tokenService.loadUserSessionContext(authType.getValue(), uid, sid);
 
         // 检查 sid 是否不在会话中
-        if (tokenService.isRevoked(authType, uid, sid)) {
+        if (ctx.revoked()) {
             return Result.unauth("Token has been revoked");
         }
 
-        // 通过 uid 获取用户信息和权限
-        BaseLoginUser loginUser = tokenService.loadLoginUserByUid(authType, uid);
-        if (loginUser == null) {
+        if (ctx.userContext().loginUser() == null) {
             return Result.unauth("Token has been expired");
         }
 
-        Set<String> permissions = tokenService.loadPermissionsByUid(authType, uid);
-        return Result.ok(new LoginUserResponse(loginUser, permissions));
+        return Result.ok(new LoginUserResponse(ctx.userContext().loginUser(), ctx.userContext().roleContext()));
     }
 
     @Override
@@ -66,9 +67,9 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
         }
 
         // 提取权限信息（从authorizedScopes）
-        Set<String> permissions = authorization.getAuthorizedScopes() != null
-                ? authorization.getAuthorizedScopes()
-                : Set.of();
+        List<String> permissions = authorization.getAuthorizedScopes() != null
+                ? new ArrayList<>(authorization.getAuthorizedScopes())
+                : new ArrayList<>();
 
         // 从OAuth2Authorization中提取Principal
         Principal principal = authorization.getAttribute(Principal.class.getName());
@@ -76,8 +77,10 @@ public class LoginUserRemoteApiImpl implements LoginUserRemoteApi {
             return Result.unauth("Principal not found in authorization");
         }
 
-        if (principal instanceof BaseLoginUser loginUser) {
-            return Result.ok(new LoginUserResponse(loginUser, permissions));
+        if (principal instanceof DefaultLoginUser loginUser) {
+            RoleContext roleContext = new RoleContext(
+                    List.of(new UserRole(0L, "oauth2_client", null, null, permissions)));
+            return Result.ok(new LoginUserResponse(loginUser, roleContext));
         } else {
             // 尝试从Principal中提取信息构造LoginUser
             // 这里可以根据实际需求扩展，比如从UserDetails转换

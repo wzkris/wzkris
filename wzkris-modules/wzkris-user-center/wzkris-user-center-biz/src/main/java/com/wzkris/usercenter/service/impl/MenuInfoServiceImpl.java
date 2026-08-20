@@ -2,23 +2,27 @@ package com.wzkris.usercenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.usercenter.domain.AdminInfoDO;
-import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.enums.MenuScopeEnum;
-import com.wzkris.usercenter.enums.MenuTypeEnum;
-import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.MetaResponse;
-import com.wzkris.usercenter.response.RouterResponse;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
+import com.wzkris.usercenter.api.menu.response.MetaResponse;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
+import com.wzkris.usercenter.domain.*;
+import com.wzkris.usercenter.enums.menu.MenuScopeEnum;
+import com.wzkris.usercenter.enums.menu.MenuStatusEnum;
+import com.wzkris.usercenter.enums.menu.MenuTypeEnum;
+import com.wzkris.usercenter.mapper.MenuInfoMapper;
+import com.wzkris.usercenter.mapper.TenantRoleToMenuMapper;
+import com.wzkris.usercenter.mapper.RoleToMenuMapper;
+import com.wzkris.usercenter.mapper.TenantPackageInfoMapper;
 import com.wzkris.usercenter.response.SelectTreeResponse;
 import com.wzkris.usercenter.service.MenuInfoService;
-import com.wzkris.usercenter.service.PostInfoService;
+import com.wzkris.usercenter.service.TenantRoleService;
 import com.wzkris.usercenter.service.RoleInfoService;
+import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -36,10 +40,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class MenuInfoServiceImpl
-        extends ServiceImpl<MenuInfoMapper, MenuInfoDO>
+        extends ServiceImplPlus<MenuInfoMapper, MenuInfoDO>
         implements MenuInfoService {
 
-    private final TenantInfoMapper tenantInfoMapper;
+    private final TenantInfoService tenantInfoService;
 
     private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
@@ -47,9 +51,9 @@ public class MenuInfoServiceImpl
 
     private final RoleToMenuMapper roleToMenuMapper;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
 
-    private final PostToMenuMapper postToMenuMapper;
+    private final TenantRoleToMenuMapper tenantRoleToMenuMapper;
 
     /**
      * url query参数转map
@@ -114,33 +118,33 @@ public class MenuInfoServiceImpl
             return Collections.emptyList();
         }
         List<Long> menuIds = roleToMenuMapper.listMenuIdByRoleIds(roleIds);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return this.listPermsByMenuIds(menuIds);
     }
 
     @Override
-    public List<String> listPermsByPostIds(List<Long> postIds) {
-        if (CollectionUtils.isEmpty(postIds)) {
+    public List<String> listPermsByTenantRoleIds(List<Long> tenantRoleIds) {
+        if (CollectionUtils.isEmpty(tenantRoleIds)) {
             return Collections.emptyList();
         }
-        List<Long> menuIds = postToMenuMapper.listMenuIdByPostIds(postIds);
+        List<Long> menuIds = tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(tenantRoleIds);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return this.listPermsByMenuIds(menuIds);
     }
 
     @Override
     public List<String> listPermsByMenuIds(@Nullable List<Long> menuIds) {
-        if (CollectionUtils.isEmpty(menuIds)) {
-            return Collections.emptyList();
-        }
-
-        return this.lambdaQuery()
-                .select(MenuInfoDO::getPerms)
-                .in(MenuInfoDO::getMenuId, menuIds)
-                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
-                .list()
+        return this.listObjs(Wrappers.lambdaQuery(this.getEntityClass())
+                        .select(MenuInfoDO::getPerms)
+                        .in(ObjectUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                        .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE), Object::toString)
                 .stream()
-                .filter(Objects::nonNull)
-                .map(MenuInfoDO::getPerms)
                 .filter(StringUtil::isNotBlank)
+                .distinct()
                 .toList();
     }
 
@@ -148,6 +152,9 @@ public class MenuInfoServiceImpl
     public List<String> listPermsByTenantPackageId(Long tenantPackageId) {
         // 查出套餐绑定的所有菜单
         List<Long> menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
+        if (CollectionUtils.isEmpty(menuIds)) {
+            return Collections.emptyList();
+        }
         return listPermsByMenuIds(menuIds);
     }
 
@@ -161,40 +168,41 @@ public class MenuInfoServiceImpl
             }
         }
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
-                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.SYSTEM.getValue())
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
     @Override
-    public List<SelectTreeResponse> listTenantSelectTree(Long memberId) {
+    public List<SelectTreeResponse> listTenantSelectTree(Long tenantUserId) {
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
             // 租户最高管理员，去查套餐绑定菜单
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByMemberId(memberId);
+            menuIds = this.listMenuIdByTenantUserId(tenantUserId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
-                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
-                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getMenuId, menuIds)
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
     @Override
     public List<SelectTreeResponse> listAllTenantSelectTree() {
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class)
-                .eq(MenuInfoDO::getStatus, CommonConstants.STATUS_ENABLE)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
                 .eq(MenuInfoDO::getScope, MenuScopeEnum.TENANT.getValue())
-                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getMenuId);
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId);
         return this.buildSelectTree(baseMapper.selectList(lqw));
     }
 
@@ -207,26 +215,44 @@ public class MenuInfoServiceImpl
                 return Collections.emptyList();
             }
         }
-        List<MenuInfoDO> list = baseMapper.listMenuRoutes(menuIds, MenuScopeEnum.SYSTEM.getValue());
+        List<MenuInfoDO> list = listVisibleMenus(menuIds, MenuScopeEnum.SYSTEM);
         return this.buildRouterTree(list);
     }
 
     @Override
-    public List<RouterResponse> listTenantRoutes(Long memberId) {
+    public List<RouterResponse> listTenantRoutes(Long tenantUserId) {
         // 去关联表中查绑定的菜单ID
         List<Long> menuIds;
-        Long tenantPackageId = tenantInfoMapper.selectPackageIdByMemberId(memberId);
+        Long tenantPackageId = tenantInfoService.getObjByObj(TenantInfoDO::getPackageId,
+                TenantInfoDO::getAdministrator, tenantUserId);
         if (tenantPackageId != null) {
             // 户最高管理员，去查套餐绑定菜单租
             menuIds = tenantPackageInfoMapper.listMenuIdByPackageId(tenantPackageId);
         } else {
-            menuIds = this.listMenuIdByMemberId(memberId);
+            menuIds = this.listMenuIdByTenantUserId(tenantUserId);
         }
         if (CollectionUtils.isEmpty(menuIds)) {
             return Collections.emptyList();
         }
-        List<MenuInfoDO> list = baseMapper.listMenuRoutes(menuIds, MenuScopeEnum.TENANT.getValue());
+        List<MenuInfoDO> list = listVisibleMenus(menuIds, MenuScopeEnum.TENANT);
         return this.buildRouterTree(list);
+    }
+
+    /**
+     * 查询前端可见的菜单路由（按钮除外）
+     *
+     * @param menuIds 菜单ID列表，null表示不限制
+     * @param scope   菜单域
+     * @return 菜单列表
+     */
+    private List<MenuInfoDO> listVisibleMenus(List<Long> menuIds, MenuScopeEnum scope) {
+        return baseMapper.selectList(Wrappers.lambdaQuery(MenuInfoDO.class)
+                .in(MenuInfoDO::getMenuType, MenuTypeEnum.DIR, MenuTypeEnum.MENU, MenuTypeEnum.INNERLINK, MenuTypeEnum.OUTLINK)
+                .eq(MenuInfoDO::getStatus, MenuStatusEnum.ENABLE)
+                .eq(MenuInfoDO::getScope, scope)
+                .eq(MenuInfoDO::getVisible, true)
+                .in(CollectionUtils.isNotEmpty(menuIds), MenuInfoDO::getId, menuIds)
+                .orderByDesc(MenuInfoDO::getMenuSort, MenuInfoDO::getId));
     }
 
     /**
@@ -234,7 +260,8 @@ public class MenuInfoServiceImpl
      */
     @Override
     public List<Long> listMenuIdByAdminId(Long adminId) {
-        List<Long> roleIds = roleInfoService.listInheritedIdByAdminId(adminId);
+        List<Long> roleIds = roleInfoService.listByAdminId(adminId, true).stream()
+                .map(RoleInfoDO::getId).toList();
         if (CollectionUtils.isEmpty(roleIds)) {
             return Collections.emptyList();
         }
@@ -242,12 +269,13 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<Long> listMenuIdByMemberId(Long memberId) {
-        List<Long> postIds = postInfoService.listIdByMemberId(memberId);
-        if (CollectionUtils.isEmpty(postIds)) {
+    public List<Long> listMenuIdByTenantUserId(Long tenantUserId) {
+        List<Long> tenantRoleIds = tenantRoleService.listByTenantUserId(tenantUserId).stream()
+                .map(TenantRoleDO::getId).toList();
+        if (CollectionUtils.isEmpty(tenantRoleIds)) {
             return Collections.emptyList();
         }
-        return postToMenuMapper.listMenuIdByPostIds(postIds);
+        return tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(tenantRoleIds);
     }
 
     @Override
@@ -259,11 +287,11 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public List<Long> listMenuIdByPostId(@Nullable Long postId) {
-        if (postId == null) {
+    public List<Long> listMenuIdByTenantRoleId(@Nullable Long tenantRoleId) {
+        if (tenantRoleId == null) {
             return Collections.emptyList();
         }
-        return postToMenuMapper.listMenuIdByPostIds(Collections.singletonList(postId));
+        return tenantRoleToMenuMapper.listMenuIdByTenantRoleIds(Collections.singletonList(tenantRoleId));
     }
 
     /**
@@ -281,7 +309,7 @@ public class MenuInfoServiceImpl
         Map<Long, List<MenuInfoDO>> childMap = new HashMap<>(menus.size());
 
         for (MenuInfoDO menu : menus) {
-            allMenuIds.add(menu.getMenuId());
+            allMenuIds.add(menu.getId());
             childMap.computeIfAbsent(menu.getParentId(), k -> new ArrayList<>())
                     .add(menu);
         }
@@ -310,7 +338,7 @@ public class MenuInfoServiceImpl
         // 排序菜单
         List<MenuInfoDO> sortedMenus = menus.stream()
                 .sorted(Comparator.comparing(MenuInfoDO::getMenuSort, Comparator.reverseOrder())
-                        .thenComparing(MenuInfoDO::getMenuId, Comparator.reverseOrder()))
+                        .thenComparing(MenuInfoDO::getId, Comparator.reverseOrder()))
                 .toList();
 
         for (MenuInfoDO menu : sortedMenus) {
@@ -329,11 +357,11 @@ public class MenuInfoServiceImpl
             );
 
             // 处理菜单类型
-            if (StringUtil.equals(MenuTypeEnum.DIR.getValue(), menu.getMenuType())) {
-                List<MenuInfoDO> children = childMap.get(menu.getMenuId());
+            if (Objects.equals(MenuTypeEnum.DIR, menu.getMenuType())) {
+                List<MenuInfoDO> children = childMap.get(menu.getId());
                 router.setChildren(this.buildRouter(children, childMap));
-            } else if (StringUtil.equalsAny(
-                    menu.getMenuType(), MenuTypeEnum.INNERLINK.getValue(), MenuTypeEnum.OUTLINK.getValue())) {
+            } else if (Objects.equals(menu.getMenuType(), MenuTypeEnum.INNERLINK)
+                    || Objects.equals(menu.getMenuType(), MenuTypeEnum.OUTLINK)) {
                 meta.setLink(menu.getPath());
                 router.setPath(menu.getMenuName());
             }
@@ -354,7 +382,7 @@ public class MenuInfoServiceImpl
         Map<Long, List<MenuInfoDO>> childMap = new HashMap<>(menus.size());
 
         for (MenuInfoDO menu : menus) {
-            allMenuIds.add(menu.getMenuId());
+            allMenuIds.add(menu.getId());
             childMap.computeIfAbsent(menu.getParentId(), k -> new ArrayList<>())
                     .add(menu);
         }
@@ -370,10 +398,10 @@ public class MenuInfoServiceImpl
 
     private SelectTreeResponse convertToSelectTreeResp(MenuInfoDO menu, Map<Long, List<MenuInfoDO>> childMap) {
         SelectTreeResponse response = new SelectTreeResponse();
-        response.setId(menu.getMenuId());
+        response.setId(menu.getId());
         response.setLabel(menu.getMenuName());
 
-        List<MenuInfoDO> children = childMap.get(menu.getMenuId());
+        List<MenuInfoDO> children = childMap.get(menu.getId());
         // 递归转换子节点
         if (children != null && !children.isEmpty()) {
             List<SelectTreeResponse> childrenResp = children.stream()
@@ -385,7 +413,7 @@ public class MenuInfoServiceImpl
     }
 
     @Override
-    public boolean existSubMenu(Long menuId) {
+    public boolean existChildren(Long menuId) {
         LambdaQueryWrapper<MenuInfoDO> lqw = Wrappers.lambdaQuery(MenuInfoDO.class).eq(MenuInfoDO::getParentId, menuId);
         return baseMapper.exists(lqw);
     }
@@ -395,8 +423,10 @@ public class MenuInfoServiceImpl
     public boolean removeMenu(Long menuId) {
         boolean success = baseMapper.deleteById(menuId) > 0;
         if (success) {
-            roleToMenuMapper.deleteByMenuId(menuId);
-            postToMenuMapper.deleteByMenuId(menuId);
+            roleToMenuMapper.delete(Wrappers.lambdaQuery(RoleToMenuDO.class)
+                    .eq(RoleToMenuDO::getMenuId, menuId));
+            tenantRoleToMenuMapper.delete(Wrappers.lambdaQuery(TenantRoleToMenuDO.class)
+                    .eq(TenantRoleToMenuDO::getMenuId, menuId));
         }
         return success;
     }

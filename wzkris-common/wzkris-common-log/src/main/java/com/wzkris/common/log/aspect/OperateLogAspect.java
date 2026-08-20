@@ -3,26 +3,31 @@ package com.wzkris.common.log.aspect;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.support.LoginUser;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.utils.*;
 import com.wzkris.common.log.annotation.OperateLog;
-import com.wzkris.common.security.model.TenantLoginUser;
-import com.wzkris.common.security.utils.SecurityUtil;
 import com.wzkris.common.log.remote.request.OperateLogEvent;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.core.annotation.Order;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -32,13 +37,10 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Aspect
+@Order(-1)
 public class OperateLogAspect {
 
-    private static final int MAX_PARAM_LENGTH = 1000;
-
     private static final int MAX_ERROR_LENGTH = 1000;
-
-    private static final int MAX_URL_LENGTH = 150;
 
     /**
      * 敏感属性字段
@@ -49,28 +51,44 @@ public class OperateLogAspect {
 
     private final ObjectMapper objectMapper = JsonUtil.getObjectMapper().copy();
 
-    public OperateLogAspect() {
+    private final UserContextHelper userContextHelper;
+
+    public OperateLogAspect(UserContextHelper userContextHelper) {
+        this.userContextHelper = userContextHelper;
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
     /**
-     * 处理完请求后执行
+     * 环绕拦截：采集操作耗时，并保留原语义（正常返回/Exception 记录，Error 不记录）
      */
-    @AfterReturning(pointcut = "@annotation(operateLog)", returning = "jsonResult")
-    public void doAfterReturning(JoinPoint joinPoint, OperateLog operateLog, Object jsonResult) {
-        handleLog(joinPoint, operateLog, jsonResult, null);
+    @Around("@annotation(operateLog)")
+    public Object doAround(ProceedingJoinPoint joinPoint, OperateLog operateLog) throws Throwable {
+        long startNanos = System.nanoTime();
+        Object jsonResult = null;
+        Exception exception = null;
+        boolean shouldLog = true;
+        try {
+            jsonResult = joinPoint.proceed();
+            return jsonResult;
+        } catch (Exception e) {
+            exception = e;
+            throw e;
+        } catch (Error e) {
+            // 与原 @AfterThrowing(Exception) 一致：Error 不记日志
+            shouldLog = false;
+            throw e;
+        } finally {
+            if (shouldLog) {
+                long costTime = (System.nanoTime() - startNanos) / 1_000_000L;
+                handleLog(joinPoint, operateLog, jsonResult, exception, costTime);
+            }
+        }
     }
 
-    /**
-     * 拦截异常操作
-     */
-    @AfterThrowing(pointcut = "@annotation(operateLog)", throwing = "exception")
-    public void doAfterThrowing(JoinPoint joinPoint, OperateLog operateLog, Exception exception) {
-        handleLog(joinPoint, operateLog, null, exception);
-    }
-
-    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog, Object jsonResult, Exception exception) {
-        OperateLogEvent operateLogEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception);
+    protected void handleLog(final JoinPoint joinPoint, OperateLog operateLog,
+                             Object jsonResult, Exception exception, long costTime) {
+        OperateLogEvent operateLogEvent = buildOperateEvent(joinPoint, operateLog, jsonResult, exception, costTime);
 
         SpringUtil.getContext().publishEvent(operateLogEvent);
     }
@@ -79,24 +97,24 @@ public class OperateLogAspect {
      * 构建操作事件 - 不依赖HTTP请求
      */
     private OperateLogEvent buildOperateEvent(JoinPoint joinPoint, OperateLog operateLog,
-                                              Object jsonResult, Exception exception) {
+                                              Object jsonResult, Exception exception, long costTime) {
         OperateLogEvent operateLogEvent = new OperateLogEvent();
 
         // 设置用户信息
-        operateLogEvent.setOperatorId(SecurityUtil.getUid());
-        AuthTypeEnum authType = SecurityUtil.getAuthType();
-        operateLogEvent.setAuthType(authType.getValue());
-        operateLogEvent.setOperName(SecurityUtil.getLoginUser().getName());
-
-        // 设置租户ID
-        if (authType == AuthTypeEnum.TENANT) {
-            operateLogEvent.setTenantId(SecurityUtil.getLoginUser(TenantLoginUser.class).getTenantId());
+        LoginUser loginUser = userContextHelper.getLoginUser();
+        if (loginUser != null) {
+            operateLogEvent.setOperatorId(loginUser.getUid());
+            operateLogEvent.setAuthType(loginUser.getAuthType());
+            operateLogEvent.setOperName(loginUser.getName());
+            operateLogEvent.setTenantId(loginUser.getTenantId());
         }
 
         // 设置操作信息
         operateLogEvent.setOperType(operateLog.type().getValue());
         operateLogEvent.setSuccess(true);
-        operateLogEvent.setOperTime(new Date());
+        operateLogEvent.setOperTime(OffsetDateTime.now());
+        operateLogEvent.setTraceId(TraceIdUtil.getOrGenerate());
+        operateLogEvent.setCostTime(costTime);
 
         // 设置方法信息
         String className = joinPoint.getTarget().getClass().getName();
@@ -104,13 +122,13 @@ public class OperateLogAspect {
         operateLogEvent.setMethod(className + StringUtil.DOT + methodName + "()");
 
         // 对于Web环境，尝试获取请求信息；非Web环境则为空
-        setRequestParams(operateLogEvent);
+        setHttpParams(operateLogEvent);
 
         // 处理异常情况
         if (exception != null) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(exception.getMessage(), 0, MAX_ERROR_LENGTH));
-        } else if (jsonResult instanceof Result<?> result && ResultUtil.checkNoData(result)) {
+        } else if (jsonResult instanceof Result<?> result && !ResultUtil.checkNoData(result)) {
             operateLogEvent.setSuccess(false);
             operateLogEvent.setErrorMsg(StringUtil.substring(result.getMessage(), 0, MAX_ERROR_LENGTH));
         }
@@ -122,11 +140,11 @@ public class OperateLogAspect {
 
         // 处理参数和结果
         try {
-            setRequestValue(joinPoint, operateLog.excludeRequestParam(), operateLogEvent);
+            String operParams = handleRequestValue(joinPoint, operateLog.excludeRequestParam());
+            operateLogEvent.setOperParam(operParams);
 
             if (jsonResult != null) {
-                operateLogEvent.setJsonResult(StringUtil.substring(
-                        objectMapper.writeValueAsString(jsonResult), 0, MAX_PARAM_LENGTH));
+                operateLogEvent.setJsonResult(objectMapper.writeValueAsString(jsonResult));
             }
         } catch (JsonProcessingException e) {
             log.error("日志参数转换发生异常：{}", e.getMessage(), e);
@@ -138,24 +156,27 @@ public class OperateLogAspect {
     /**
      * 设置Web环境信息（如果存在）
      */
-    private void setRequestParams(OperateLogEvent operateLogEvent) {
-        try {
-            ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
-                    RequestContextHolder.getRequestAttributes();
+    private void setHttpParams(OperateLogEvent operateLogEvent) {
+        ServletRequestAttributes requestAttributes = (ServletRequestAttributes)
+                RequestContextHolder.getRequestAttributes();
 
-            HttpServletRequest request = requestAttributes.getRequest();
+        if (requestAttributes == null) {
+            return;
+        }
+        HttpServletRequest request = requestAttributes.getRequest();
 
-            String ip = ServletUtil.getClientIP(request);
-            operateLogEvent.setRequestMethod(request.getMethod());
-            operateLogEvent.setOperIp(ip);
-            operateLogEvent.setOperUrl(StringUtil.substring(request.getRequestURI(), 0, MAX_URL_LENGTH));
+        operateLogEvent.setHttpMethod(request.getMethod());
+        operateLogEvent.setHttpUrl(request.getRequestURI());
 
-        } catch (Exception e) {
-            log.info("非Web环境，跳过设置请求信息");
+        // getClientIP 在异常代理/enableLookups 等场景可能返回非 IP 值，
+        // 而 oper_ip 为 inet 列，非法值会导致整批 saveBatch 失败，故置空
+        String clientIp = ServletUtil.getClientIP(request);
+        if (StringUtil.isNotBlank(clientIp) && !"unknown".equalsIgnoreCase(clientIp.trim())) {
+            operateLogEvent.setOperIp(clientIp);
         }
     }
 
-    private void setRequestValue(JoinPoint joinPoint, String[] excludeRequestParam, OperateLogEvent operateLogEvent)
+    private String handleRequestValue(JoinPoint joinPoint, String[] excludeRequestParam)
             throws JsonProcessingException {
         String operParams = argsArrayToString(joinPoint.getArgs());
 
@@ -168,21 +189,15 @@ public class OperateLogAspect {
                                 HashMap.class, String.class, Object.class));
                 if (!paramsMap.isEmpty()) {
                     fuzzyParams(paramsMap, excludeRequestParam);
-                    operParams = StringUtil.substring(
-                            objectMapper.writeValueAsString(paramsMap), 0, MAX_PARAM_LENGTH);
+                    operParams = objectMapper.writeValueAsString(paramsMap);
                 }
-            } else {
-                operParams = StringUtil.substring(operParams, 0, MAX_PARAM_LENGTH);
             }
         }
-
-        operateLogEvent.setOperParam(operParams);
+        return operParams;
     }
 
     private void fuzzyParams(Map<String, String> paramsMap, String[] excludeRequestParam) {
-        Stream.concat(
-                        Arrays.stream(EXCLUDE_PROPERTIES),
-                        Arrays.stream(excludeRequestParam != null ? excludeRequestParam : new String[0]))
+        Stream.concat(Arrays.stream(EXCLUDE_PROPERTIES), Arrays.stream(excludeRequestParam))
                 .forEach(property -> {
                     if (paramsMap.containsKey(property)) {
                         paramsMap.put(property, "*");
@@ -190,7 +205,7 @@ public class OperateLogAspect {
                 });
     }
 
-    private String argsArrayToString(Object[] paramsArray) {
+    private String argsArrayToString(Object[] paramsArray) throws JsonProcessingException {
         if (paramsArray == null || paramsArray.length == 0) {
             return StringUtil.EMPTY;
         }
@@ -198,13 +213,8 @@ public class OperateLogAspect {
         StringBuilder params = new StringBuilder();
         for (Object o : paramsArray) {
             if (o != null && !isFilterObject(o)) {
-                try {
-                    String jsonObj = objectMapper.writeValueAsString(o);
-                    params.append(jsonObj).append(StringUtil.SPACE);
-                } catch (Exception ignored) {
-                    // 序列化失败，使用toString方法
-                    params.append(o).append(StringUtil.SPACE);
-                }
+                String jsonObj = objectMapper.writeValueAsString(o);
+                params.append(jsonObj).append(StringUtil.SPACE);
             }
         }
         return params.toString().trim();

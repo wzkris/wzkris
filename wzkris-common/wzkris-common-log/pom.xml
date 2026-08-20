@@ -18,12 +18,6 @@
 
     <dependencies>
 
-        <!-- wzkris Common Security -->
-        <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-security</artifactId>
-        </dependency>
-
         <!-- mvc依赖-->
         <dependency>
             <groupId>org.springframework</groupId>

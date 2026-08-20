@@ -32,4 +32,19 @@ public interface OAuth2ParameterConstant {
      */
     String WXXCX_PHONE_CODE = "phone_code";
 
+    /**
+     * 渠道应用标识(小程序/公众号appid)
+     */
+    String APPID = "appid";
+
+    /**
+     * 切换登录态目标租户ID
+     */
+    String TENANT_ID = "tenant_id";
+
+    /**
+     * 自定义登录类型
+     */
+    String LOGIN_TYPE = "login_type";
+
 }

@@ -69,7 +69,7 @@ public final class DeviceClientAuthenticationConverter implements Authentication
         String clientId = request.getParameter(OAuth2ParameterNames.CLIENT_ID);
         if (!StringUtils.hasText(clientId) || request.getParameterValues(OAuth2ParameterNames.CLIENT_ID).length != 1) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.OAUTH_CLIENT_ERROR.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
+                    BizLoginCodeEnum.OAUTH_CLIENT_ERROR.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.client.invalid");
         }
 
         return new DeviceClientAuthenticationToken(

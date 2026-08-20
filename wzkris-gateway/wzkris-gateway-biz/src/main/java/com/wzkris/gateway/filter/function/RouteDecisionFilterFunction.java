@@ -1,7 +1,7 @@
 package com.wzkris.gateway.filter.function;
 
 import com.wzkris.common.core.constant.CustomHeaderConstants;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.loadbalancer.enums.RoutePolicyEnum;
 import com.wzkris.common.security.utils.SecurityUtil;
@@ -48,11 +48,11 @@ public class RouteDecisionFilterFunction implements HandlerFilterFunction<Server
 
     private ServerResponse handleOpen(ServerRequest request, HandlerFunction<ServerResponse> next) throws Exception {
         try {
-            if (!SecurityUtil.isAuth()) {
+            if (!SecurityUtil.isLogin()) {
                 return next.handle(request);
             }
 
-            BaseLoginUser loginUser = SecurityUtil.getLoginUser();
+            LoginUser loginUser = SecurityUtil.getLoginUser();
 
             String userHint = loginUser.getHint();
             String hint = StringUtil.isNotBlank(userHint)

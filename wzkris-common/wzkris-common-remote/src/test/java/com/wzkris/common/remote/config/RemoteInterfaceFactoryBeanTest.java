@@ -8,13 +8,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.cloud.client.loadbalancer.DeferringLoadBalancerInterceptor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.HttpExchange;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * RemoteInterfaceFactoryBean 单测
@@ -32,13 +37,19 @@ class RemoteInterfaceFactoryBeanTest {
     private BeanFactory beanFactory;
 
     @Mock
-    private ListableBeanFactory listableBeanFactory;
-
-    @Mock
-    private RestClient.Builder restClientBuilder;
+    private RestClient.Builder sourceRestClientBuilder;
 
     @Mock
     private RestClient restClient;
+
+    @Mock
+    private RestClient.Builder clonedRestClientBuilder;
+
+    @Mock
+    private ObjectProvider<DeferringLoadBalancerInterceptor> loadBalancerInterceptorProvider;
+
+    @Mock
+    private DeferringLoadBalancerInterceptor loadBalancerInterceptor;
 
     private RemoteInterfaceFactoryBean<TestService> factoryBean;
 
@@ -134,35 +145,39 @@ class RemoteInterfaceFactoryBeanTest {
         factoryBean.setUrl("http://test.com");
         factoryBean.afterPropertiesSet();
 
-        lenient().when(applicationContext.getBean(RestClient.Builder.class)).thenReturn(restClientBuilder);
-        lenient().when(restClientBuilder.baseUrl(anyString())).thenReturn(restClientBuilder);
-        lenient().when(restClientBuilder.build()).thenReturn(restClient);
+        mockBuilderSelection();
 
-        // 由于RestClient和HttpServiceProxyFactory的复杂性，这里主要测试不会抛出异常
-        // 实际创建代理需要真实的Spring上下文
-        // 注意：getObject()方法需要完整的Spring上下文和RestClient配置，这里仅测试基本逻辑
-        assertDoesNotThrow(() -> {
-            // 这里不实际调用getObject()，因为需要完整的Spring上下文
-            // 在实际集成测试中需要完整的Spring上下文
-        });
+        TestService proxy = factoryBean.getObject();
+
+        assertNotNull(proxy);
+        verify(applicationContext).getBean(
+                CustomRestClientAutoConfiguration.REMOTE_REST_CLIENT_BUILDER_BEAN_NAME,
+                RestClient.Builder.class
+        );
+        verifyNoInteractions(loadBalancerInterceptorProvider);
     }
 
     @Test
-    @DisplayName("测试 getObject - 使用NoOp fallback")
-    void testGetObject_WithNoOpFallback() {
-        factoryBean.setUrl("http://test.com");
-        factoryBean.setFallbackFactory(RemoteInterfaceFallback.NoOp.class);
+    @DisplayName("测试 getObject - serviceId追加负载均衡拦截器")
+    void testGetObject_WithServiceIdUsesLoadBalancedBuilder() {
+        factoryBean.setServiceId("test-service");
         factoryBean.afterPropertiesSet();
 
-        lenient().when(applicationContext.getBean(RestClient.Builder.class)).thenReturn(restClientBuilder);
-        lenient().when(restClientBuilder.baseUrl(anyString())).thenReturn(restClientBuilder);
-        lenient().when(restClientBuilder.build()).thenReturn(restClient);
+        mockBuilderSelection();
+        when(applicationContext.getBeanProvider(DeferringLoadBalancerInterceptor.class))
+                .thenReturn(loadBalancerInterceptorProvider);
+        when(loadBalancerInterceptorProvider.getIfAvailable()).thenReturn(loadBalancerInterceptor);
+        when(clonedRestClientBuilder.requestInterceptor(loadBalancerInterceptor))
+                .thenReturn(clonedRestClientBuilder);
 
-        // NoOp fallback应该等同于无fallback
-        // 注意：getObject()方法需要完整的Spring上下文和RestClient配置，这里仅测试基本逻辑
-        assertDoesNotThrow(() -> {
-            // 这里不实际调用getObject()，因为需要完整的Spring上下文
-        });
+        TestService proxy = factoryBean.getObject();
+
+        assertNotNull(proxy);
+        verify(applicationContext).getBean(
+                CustomRestClientAutoConfiguration.REMOTE_REST_CLIENT_BUILDER_BEAN_NAME,
+                RestClient.Builder.class
+        );
+        verify(clonedRestClientBuilder).requestInterceptor(loadBalancerInterceptor);
     }
 
     @Test
@@ -179,8 +194,21 @@ class RemoteInterfaceFactoryBeanTest {
     /**
      * 测试用的服务接口
      */
+    private void mockBuilderSelection() {
+        when(applicationContext.getBean(
+                CustomRestClientAutoConfiguration.REMOTE_REST_CLIENT_BUILDER_BEAN_NAME,
+                RestClient.Builder.class
+        ))
+                .thenReturn(sourceRestClientBuilder);
+        when(sourceRestClientBuilder.clone()).thenReturn(clonedRestClientBuilder);
+        when(clonedRestClientBuilder.baseUrl(anyString())).thenReturn(clonedRestClientBuilder);
+        when(clonedRestClientBuilder.build()).thenReturn(restClient);
+    }
+
+    @HttpExchange("/test")
     interface TestService {
 
+        @GetExchange
         String testMethod();
 
     }

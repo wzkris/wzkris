@@ -15,8 +15,8 @@ import java.util.List;
  * 登录日志Feign
  */
 @RemoteInterface(
-        serviceId = ServiceIdConstant.SYSTEM,
-        path = ServiceContextPathConstant.SYSTEM
+        serviceId = ServiceIdConstant.USER_CENTER,
+        path = ServiceContextPathConstant.USER_CENTER
 )
 @HttpExchange(url = "/login-log-remote")
 public interface ILoginLogRemote {

@@ -3,23 +3,34 @@ package com.wzkris.captcha.store.impl;
 import com.wzkris.captcha.domain.ImageCaptchaInfo;
 import com.wzkris.captcha.properties.ImageCaptchaProperties;
 import com.wzkris.captcha.store.ImageCaptchaStore;
-import lombok.RequiredArgsConstructor;
+import com.wzkris.common.redis.util.RedisJsonUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-@RequiredArgsConstructor
-public class RedisImageCaptchaStore implements ImageCaptchaStore {
-
-    private final RedisTemplate<String, Object> redisTemplate;
+public class RedisImageCaptchaStore extends AbstractRedisCaptchaStore implements ImageCaptchaStore {
 
     private final ImageCaptchaProperties captchaProperties;
+
+    public RedisImageCaptchaStore(RedisTemplate<String, Object> redisTemplate, ImageCaptchaProperties captchaProperties) {
+        super(redisTemplate);
+        this.captchaProperties = captchaProperties;
+    }
+
+    @Override
+    protected String getTokenPrefix() {
+        return captchaProperties.getTokenPrefix();
+    }
+
+    @Override
+    protected long getTokenExpiresMs() {
+        return captchaProperties.getTokenExpiresMs();
+    }
 
     @Override
     public void putCaptcha(String token, ImageCaptchaInfo captchaInfo) {
         redisTemplate.opsForValue().set(
-                makeupCaptchaKey(token),
+                captchaProperties.getCaptchaPrefix() + token,
                 captchaInfo,
                 captchaProperties.getCaptchaExpiresMs(),
                 TimeUnit.MILLISECONDS
@@ -28,30 +39,7 @@ public class RedisImageCaptchaStore implements ImageCaptchaStore {
 
     @Override
     public ImageCaptchaInfo removeCaptcha(String token) {
-        return (ImageCaptchaInfo) redisTemplate.opsForValue().getAndDelete(makeupCaptchaKey(token));
-    }
-
-    @Override
-    public void putToken(String tokenKey, Date expires) {
-        redisTemplate.opsForValue().set(
-                makeupTokenKey(tokenKey),
-                expires,
-                captchaProperties.getTokenExpiresMs(),
-                TimeUnit.MILLISECONDS
-        );
-    }
-
-    @Override
-    public Date removeToken(String tokenKey) {
-        return (Date) redisTemplate.opsForValue().getAndDelete(makeupTokenKey(tokenKey));
-    }
-
-    private String makeupCaptchaKey(String token) {
-        return captchaProperties.getCaptchaPrefix() + token;
-    }
-
-    private String makeupTokenKey(String token) {
-        return captchaProperties.getTokenPrefix() + token;
+        return RedisJsonUtil.parse(redisTemplate.opsForValue().getAndDelete(captchaProperties.getCaptchaPrefix() + token), ImageCaptchaInfo.class);
     }
 
 }

@@ -12,6 +12,7 @@ import com.wzkris.auth.security.oauth2.customize.CustomTokenClaimsCustomizer;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationConverter;
 import com.wzkris.auth.security.oauth2.device.DeviceClientAuthenticationProvider;
 import com.wzkris.auth.security.utils.JwkUtils;
+import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.security.handler.AccessDeniedHandlerImpl;
 import com.wzkris.common.security.handler.AuthenticationEntryPointImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -132,14 +133,6 @@ public class AuthorizationServerConfig {
 
     /**
      * 缓存的 JWK Set Bean（支持密钥轮换）
-     * <p>
-     * 刷新策略：
-     * <ol>
-     *   <li>JwtSecretProperties 使用 @RefreshScope，配置中心刷新时其属性会更新。</li>
-     *   <li>本 Bean 使用 @RefreshScope，配置刷新时会重新创建，自动加载新的密钥。</li>
-     *   <li>请求路径上大部分时间只是在内存中基于缓存的 JWKSet 做 select，性能开销可控。</li>
-     * </ol>
-     * </p>
      *
      * @param properties JWT 密钥配置
      * @return 缓存的 JWK Set
@@ -149,10 +142,11 @@ public class AuthorizationServerConfig {
     public JWKSet jwkSet(JwtSecretProperties properties) {
         String publicKey = properties.getPublicKey();
         String privateKey = properties.getPrivateKey();
+        Assert.isTrue(StringUtil.isNoneBlank(privateKey, publicKey), "JWT 密钥配置不完整：publicKey 和 privateKey 必须配置");
+
         String previousPublicKey = properties.getPreviousPublicKey();
         String previousPrivateKey = properties.getPreviousPrivateKey();
 
-        Assert.isTrue(publicKey != null && privateKey != null, "JWT 密钥配置不完整：publicKey 和 privateKey 必须配置");
 
         try {
             List<JWK> keys = new ArrayList<>();
@@ -160,7 +154,7 @@ public class AuthorizationServerConfig {
             RSAKey currentKey = JwkUtils.load(publicKey, privateKey);
             keys.add(currentKey);
 
-            if (previousPublicKey != null && previousPrivateKey != null) {
+            if (StringUtil.isNoneBlank(previousPublicKey, previousPrivateKey)) {
                 RSAKey previousKey = JwkUtils.load(previousPublicKey, previousPrivateKey);
                 keys.add(previousKey);
             }

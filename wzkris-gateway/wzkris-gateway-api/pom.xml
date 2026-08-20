@@ -19,7 +19,12 @@
     <dependencies>
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-core</artifactId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-validator</artifactId>
         </dependency>
 
         <dependency>
@@ -28,9 +33,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
+            <groupId>com.baizhukui</groupId>
+            <artifactId>knife4j-gateway-webmvc-spring-boot-starter</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

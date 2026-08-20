@@ -3,10 +3,10 @@ package com.wzkris.auth.security.core.wexcx;
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,7 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         WexcxAuthenticationToken authenticationToken = (WexcxAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -41,23 +41,23 @@ public final class WexcxAuthenticationProvider extends CommonAuthenticationProvi
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
             return null; // never run this line
         }
 
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional
-                .get()
-                .loadUserByWxXcx(authenticationToken.getWxCode(), authenticationToken.getPhoneCode());
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
+                .loadUserBySocial(authenticationToken.getSocialType(), authenticationToken.getWxCode(),
+                        authenticationToken.getPhoneCode(), authenticationToken.getAppid());
 
-        if (token == null) {
+        if (authenticated == null) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.wxlogin.fail");
         }
 
-        return token;
+        return authenticated;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.wzkris.auth.security.oauth2.customize;
 
 import com.wzkris.common.core.constant.JwtClaimConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.model.BaseLoginUser;
+import com.wzkris.common.core.support.LoginUser;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
@@ -23,18 +23,18 @@ public class CustomTokenClaimsCustomizer implements OAuth2TokenCustomizer<JwtEnc
             return;
         }
         JwtClaimsSet.Builder claims = context.getClaims();
-        String authType = null;
+        AuthTypeEnum authType = null;
         var principal = context.getPrincipal();
 
         // OAuth2 客户端（例如 client_credentials）
         if (principal instanceof OAuth2ClientAuthenticationToken) {
-            authType = AuthTypeEnum.CLIENT.getValue();
-        } else if (principal != null && principal.getPrincipal() instanceof BaseLoginUser baseLoginUser) {
-            authType = baseLoginUser.getAuthType().getValue();
+            authType = AuthTypeEnum.CLIENT;
+        } else if (principal != null && principal.getPrincipal() instanceof LoginUser loginUser) {
+            authType = loginUser.getAuthType();
         }
 
         if (authType != null) {
-            claims.claim(JwtClaimConstants.AUTH_TYPE, authType);
+            claims.claim(JwtClaimConstants.AUTH_TYPE, authType.getValue());
         }
     }
 

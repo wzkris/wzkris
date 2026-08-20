@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.wzkris</groupId>
+        <artifactId>wzkris-payment</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>wzkris-payment-api</artifactId>
+
+    <description>支付网关契约层：渠道无关模型、对外接口、枚举、远程通知契约</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-swagger</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-validator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-remote</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-orm</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

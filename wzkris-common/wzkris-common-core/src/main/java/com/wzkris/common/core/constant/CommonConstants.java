@@ -1,7 +1,6 @@
 package com.wzkris.common.core.constant;
 
-import java.time.Instant;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 通用常量信息
@@ -23,7 +22,7 @@ public class CommonConstants {
     /**
      * 不过期时间
      */
-    public static final Date NEVER_EXPIRED_TIME = Date.from(Instant.parse("2099-12-31T23:59:59.999Z"));
+    public static final OffsetDateTime NEVER_EXPIRED_TIME = OffsetDateTime.parse("2099-12-31T23:59:59.999Z");
 
     /**
      * 状态 启用

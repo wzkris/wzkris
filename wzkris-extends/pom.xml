@@ -20,6 +20,7 @@
     <modules>
         <module>wzkris-monitor-admin</module>
         <module>wzkris-mqtt-server</module>
+        <module>wzkris-track</module>
     </modules>
 
 

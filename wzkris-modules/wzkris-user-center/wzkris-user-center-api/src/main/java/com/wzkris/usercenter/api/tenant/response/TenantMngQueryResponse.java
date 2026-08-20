@@ -1,0 +1,65 @@
+package com.wzkris.usercenter.api.tenant.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.wzkris.usercenter.enums.tenant.TenantStatusEnum;
+import com.wzkris.usercenter.enums.tenant.TenantTypeEnum;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.OffsetDateTime;
+
+/**
+ * 租户详情响应（Mng 轨单对象 -> {域}MngQueryResponse）
+ *
+ * <p>queryById 走 {@code selectMngVOById} 跨表 SQL，已包含套餐/钱包展示字段。
+ *
+ * @author wzkris
+ */
+@Data
+@NoArgsConstructor
+public class TenantMngQueryResponse {
+
+    private Long id;
+
+    @Schema(description = "管理员ID")
+    private Long administrator;
+
+    @Schema(description = "租户类型")
+    private TenantTypeEnum tenantType;
+
+    @Schema(description = "联系电话")
+    private String contactPhone;
+
+    @Schema(description = "租户名称")
+    private String tenantName;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(description = "操作密码")
+    private String operPwd;
+
+    @Schema(description = "租户状态")
+    private TenantStatusEnum status;
+
+    @Schema(description = "域名")
+    private String domain;
+
+    @Schema(description = "备注")
+    private String remark;
+
+    @Schema(description = "租户套餐编号")
+    private Long packageId;
+
+    @Schema(description = "过期时间")
+    private OffsetDateTime expireTime;
+
+    @Schema(description = "账号数量（-1不限制）")
+    private Integer accountNumLimit;
+
+    @Schema(description = "角色数量（-1不限制）")
+    private Integer roleNumLimit;
+
+    @Schema(description = "套餐名称")
+    private String packageName;
+
+}

@@ -1,36 +1,29 @@
 package com.wzkris.auth.service;
 
 import com.wzkris.auth.domain.OnlineSession;
-import com.wzkris.auth.domain.TokenClaims;
-import com.wzkris.common.core.model.BaseLoginUser;
-import jakarta.annotation.Nullable;
+import com.wzkris.auth.domain.TokenPair;
+import com.wzkris.auth.domain.UserContext;
+import com.wzkris.auth.domain.UserSessionContext;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.support.LoginUser;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Set;
 
 public interface TokenService {
 
-    @Nullable
-    String generateAccessToken(BaseLoginUser baseLoginUser, String sid);
+    TokenPair loginCreate(LoginUser loginUser, RoleContext roleContext);
 
-    @Nullable
-    String generateRefreshToken(BaseLoginUser baseLoginUser, String sid);
+    TokenPair loginReuse(LoginUser loginUser, RoleContext roleContext, Serializable sid);
 
-    void save(BaseLoginUser baseLoginUser, String sid, Set<String> permissions);
+    TokenPair loginRefresh(LoginUser loginUser, RoleContext roleContext, String refreshToken);
 
-    @Nullable
-    BaseLoginUser loadLoginUserByUid(String type, Serializable uid);
+    UserContext loadUserContext(String type, Serializable uid);
 
-    @Nullable
-    Set<String> loadPermissionsByUid(String type, Serializable uid);
-
-    void revoke(String type, Serializable uid, String sid);
-
-    boolean isRevoked(String type, Long uid, String sid);
+    UserSessionContext loadUserSessionContext(String type, Serializable uid, Serializable sid);
 
     Map<String, OnlineSession> loadSessionCache(String type, Serializable uid);
 
-    TokenClaims parseJwt(String token);
+    void revoke(String type, Serializable uid, Serializable sid);
 
 }

@@ -2,29 +2,27 @@ package com.wzkris.usercenter.api.tenantpackage;
 
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.orm.model.Page;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngQueryRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngSaveRequest;
-import com.wzkris.usercenter.request.tenantpackage.TenantPackageMngUpdateRequest;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngPageRequest;
+import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngSaveRequest;
+import com.wzkris.usercenter.api.tenantpackage.request.TenantPackageMngUpdateRequest;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngQueryResponse;
+import com.wzkris.usercenter.api.tenantpackage.response.TenantPackageMngPageResponse;
 import com.wzkris.usercenter.response.CheckedSelectTreeResponse;
-import com.wzkris.usercenter.response.tenantpackage.TenantPackageInfoResponse;
-
-import java.util.List;
 
 public interface TenantPackageMngApi {
 
-    Result<Page<TenantPackageInfoResponse>> queryPage(TenantPackageMngQueryRequest request);
+    Result<Page<TenantPackageMngPageResponse>> queryPage(TenantPackageMngPageRequest request);
 
-    Result<TenantPackageInfoResponse> queryInfo(Long packageId);
+    Result<TenantPackageMngQueryResponse> queryById(IdRequest request);
 
-    Result<CheckedSelectTreeResponse> queryMenuSelectTree(Long packageId);
+    Result<CheckedSelectTreeResponse> queryMenuSelectTree(IdRequest request);
 
     Result<Void> save(TenantPackageMngSaveRequest request);
 
     Result<Void> update(TenantPackageMngUpdateRequest request);
 
-    Result<Void> updateStatus(StatusUpdateRequest request);
-
-    Result<Void> remove(List<Long> packageIds);
+    Result<Void> remove(IdListRequest request);
 
 }

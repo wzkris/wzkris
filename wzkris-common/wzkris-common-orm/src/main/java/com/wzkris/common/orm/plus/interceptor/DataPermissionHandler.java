@@ -1,110 +1,172 @@
 package com.wzkris.common.orm.plus.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
-import com.wzkris.common.core.utils.StringUtil;
-import com.wzkris.common.orm.annotation.DataColumn;
+import com.wzkris.common.core.support.UserContextHelper;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.orm.annotation.DataPermission;
 import com.wzkris.common.orm.annotation.DataScope;
-import com.wzkris.common.orm.utils.DataScopeUtil;
+import com.wzkris.common.orm.rule.DataColumnConfig;
+import com.wzkris.common.orm.rule.DataPermissionRule;
+import com.wzkris.common.orm.rule.DataPermissionType;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.BooleanValue;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.LongValue;
-import net.sf.jsqlparser.expression.StringValue;
 import net.sf.jsqlparser.expression.operators.conditional.AndExpression;
-import net.sf.jsqlparser.expression.operators.relational.EqualsTo;
-import net.sf.jsqlparser.expression.operators.relational.InExpression;
-import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionList;
-import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
-import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
- * @author : wzkris
- * @version : V1.0.0
- * @description : 数据权限处理器
- * @date : 2024/1/11 14:32
+ * 数据权限处理器
+ * <p>
+ * 策略模式驱动：通过反射解析 {@link DataScope} 注解，
+ * 将每条 {@link DataPermission} 委托给对应的 {@link DataPermissionRule} 生成 SQL 表达式。
+ * <p>
+ * 支持多表感知：当 {@link DataPermission#alias()} 指定表别名时，
+ * 仅对 SQL 中别名匹配的表生成条件，避免 JOIN 查询中条件重复拼接。
+ *
+ * @author wzkris
  */
 @Slf4j
 public class DataPermissionHandler implements MultiDataPermissionHandler {
 
-    @Override
-    public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
-        DataScope dataScope = DataScopeUtil.getDataScope(mappedStatementId);
-        if (dataScope != null) {
-            return handleDataScope(mappedStatementId, dataScope);
+    /**
+     * 注解缓存中代表"无注解"的哨兵，避免 ConcurrentHashMap 不支持 null 值
+     */
+    private static final DataScope EMPTY_SCOPE = new DataScope() {
+        @Override
+        public DataPermission[] value() {
+            return new DataPermission[0];
         }
-        return null;
+
+        @Override
+        public Class<? extends java.lang.annotation.Annotation> annotationType() {
+            return DataScope.class;
+        }
+    };
+
+    private final Map<DataPermissionType, DataPermissionRule> ruleMap;
+
+    private final Map<String, DataScope> annotationCache = new ConcurrentHashMap<>();
+
+    private final UserContextHelper userContextHelper;
+
+    public DataPermissionHandler(List<DataPermissionRule> rules, UserContextHelper userContextHelper) {
+        this.ruleMap = rules.stream()
+                .collect(Collectors.toMap(DataPermissionRule::getType, r -> r));
+        this.userContextHelper = userContextHelper;
+        log.info("DataPermissionHandler initialized with rules: {}", ruleMap.keySet());
     }
 
-    private Expression handleDataScope(String mappedStatementId, DataScope dataScope) {
-        Expression resultExpression = null;
+    @Override
+    public Expression getSqlSegment(Table table, Expression where, String mappedStatementId) {
+        DataScope dataScope = resolveAnnotation(mappedStatementId);
+        if (dataScope == null || dataScope.value().length == 0) {
+            return null;
+        }
 
-        for (DataColumn dataColumn : dataScope.value()) {
-            String column = StringUtil.isBlank(dataColumn.alias())
-                    ? dataColumn.column()
-                    : dataColumn.alias() + StringUtil.DOT + dataColumn.column();
-            Object value = DataScopeUtil.getParameter(column);
-            if (Objects.isNull(value)) {
-                log.warn("method: {}, didn't put parameter: {}", mappedStatementId, column);
+        RoleContext roleContext = userContextHelper.getRoleContext();
+
+        // 无角色上下文（如定时任务等无登录场景）时，不应用任何数据权限规则
+        if (roleContext == null) {
+            return null;
+        }
+
+        Expression result = null;
+        boolean hasMatchedRule = false;
+
+        for (DataPermission dp : dataScope.value()) {
+            if (!matchesTable(dp, table)) {
                 continue;
             }
 
-            Expression currentExpression = handleExpression(column, value);
+            DataPermissionRule rule = ruleMap.get(dp.type());
+            if (rule == null) {
+                log.warn("No DataPermissionRule found for type: {}", dp.type());
+                continue;
+            }
 
-            // 组合表达式，使用 AND 连接
-            if (resultExpression == null) {
-                resultExpression = currentExpression;
-            } else {
-                resultExpression = new AndExpression(resultExpression, currentExpression);
+            if (!rule.isApplicable(roleContext)) {
+                continue;
+            }
+
+            hasMatchedRule = true;
+            DataColumnConfig config = DataColumnConfig.of(dp);
+            Expression expr = rule.getExpression(table, where, config, roleContext);
+            if (expr == null) {
+                continue;
+            }
+
+            result = (result == null) ? expr : new AndExpression(result, expr);
+        }
+
+        // 有匹配当前表的规则但无表达式生成 -> 拦截（安全优先）
+        if (result == null && hasMatchedRule) {
+            return new BooleanValue(false);
+        }
+
+        return result;
+    }
+
+    /**
+     * 判断注解配置的 alias 是否匹配当前解析的表
+     * <p>
+     * - alias 为空：匹配所有表（单表查询场景）
+     * - alias 不为空：仅匹配 SQL 中别名相同的表（JOIN 查询场景）
+     */
+    private boolean matchesTable(DataPermission dp, Table table) {
+        String alias = dp.alias();
+        if (alias == null || alias.isBlank()) {
+            return true;
+        }
+        Alias tableAlias = table.getAlias();
+        return tableAlias != null && alias.equals(tableAlias.getName());
+    }
+
+    /**
+     * 通过 mappedStatementId 反射获取 @DataScope 注解，带缓存
+     */
+    private DataScope resolveAnnotation(String mappedStatementId) {
+        return annotationCache.computeIfAbsent(mappedStatementId, id -> {
+            DataScope scope = doResolveAnnotation(id);
+            return scope != null ? scope : EMPTY_SCOPE;
+        });
+    }
+
+    private DataScope doResolveAnnotation(String mappedStatementId) {
+        int lastDot = mappedStatementId.lastIndexOf('.');
+        if (lastDot < 0) {
+            return null;
+        }
+
+        String className = mappedStatementId.substring(0, lastDot);
+        String methodName = mappedStatementId.substring(lastDot + 1);
+
+        Class<?> mapperClass;
+        try {
+            mapperClass = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+
+        // 优先方法级注解
+        for (Method method : mapperClass.getMethods()) {
+            if (method.getName().equals(methodName)) {
+                DataScope methodScope = AnnotatedElementUtils.findMergedAnnotation(method, DataScope.class);
+                if (methodScope != null) {
+                    return methodScope;
+                }
             }
         }
 
-        return resultExpression;
-    }
-
-    private Expression handleExpression(String column, Object value) {
-        Expression expression;
-        if (value instanceof Collection<?> collection) {
-            if (CollectionUtils.isEmpty(collection)) {
-                expression = new BooleanValue(true);
-            } else {
-                expression = handleCollectionParameter(column, collection);
-            }
-        } else {
-            expression = new EqualsTo(new Column(column), handleSingleParameter(value));
-        }
-        return expression;
-    }
-
-    private InExpression handleCollectionParameter(String column, Collection<?> collection) {
-        InExpression inExpression = new InExpression();
-        inExpression.setLeftExpression(new Column(column));
-        ParenthesedExpressionList<Expression> expressions = new ParenthesedExpressionList<>();
-        for (Object val : collection) {
-            Expression exp = handleSingleParameter(val);
-            expressions.add(exp);
-        }
-        inExpression.setRightExpression(expressions);
-        return inExpression;
-    }
-
-    private Expression handleSingleParameter(Object value) {
-        Expression expression;
-        if (value instanceof Long longValue) {
-            expression = new LongValue(longValue);
-        } else if (value instanceof Integer intValue) {
-            expression = new LongValue(intValue.longValue());
-        } else if (value instanceof Short shortValue) {
-            expression = new LongValue(shortValue.longValue());
-        } else if (value instanceof Byte byteValue) {
-            expression = new LongValue(byteValue.longValue());
-        } else {
-            expression = new StringValue(value.toString());
-        }
-        return expression;
+        // 回退类级注解
+        return AnnotatedElementUtils.findMergedAnnotation(mapperClass, DataScope.class);
     }
 
 }

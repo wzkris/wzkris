@@ -5,7 +5,6 @@ import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.remote.interfaces.captcha.ICaptchaRemote;
 import com.wzkris.auth.remote.interfaces.captcha.request.CaptchaCheckRequest;
 import com.wzkris.auth.security.core.CommonAuthenticationProvider;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.auth.service.TokenService;
 import com.wzkris.common.core.enums.BizCaptchaCodeEnum;
@@ -13,6 +12,7 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.ResultUtil;
 import com.wzkris.common.security.exception.CustomErrorCodes;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
     }
 
     @Override
-    public CommonAuthenticationToken doAuthenticate(Authentication authentication) {
+    public UsernamePasswordAuthenticationToken doAuthenticate(Authentication authentication) {
         SmsAuthenticationToken authenticationToken = (SmsAuthenticationToken) authentication;
 
         Optional<LoginUserService> templateOptional = loginUserServices.stream()
@@ -51,12 +51,29 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
 
         if (templateOptional.isEmpty()) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.PARAMETER_ERROR.value(),
+                    BizLoginCodeEnum.PARAMETER_ERROR.getCode(),
                     OAuth2ErrorCodes.INVALID_REQUEST,
                     "invalidParameter.param.invalid",
                     OAuth2ParameterConstant.AUTH_TYPE);
         }
 
+        checkCaptcha(authenticationToken);
+
+        UsernamePasswordAuthenticationToken authenticated = templateOptional.get()
+                .loadUserByPhoneNumber(
+                        authenticationToken.getPhoneNumber(),
+                        authenticationToken.getWxCode(),
+                        authenticationToken.getAppid());
+
+        if (authenticated == null) {
+            OAuth2ExceptionUtil.throwErrorI18n(
+                    BizLoginCodeEnum.USER_NOT_EXIST.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
+        }
+
+        return authenticated;
+    }
+
+    private void checkCaptcha(SmsAuthenticationToken authenticationToken) {
         CaptchaCheckRequest request = new CaptchaCheckRequest();
         request.setKey(authenticationToken.getPhoneNumber());
         request.setValue(authenticationToken.getSmsCode());
@@ -67,15 +84,6 @@ public final class SmsAuthenticationProvider extends CommonAuthenticationProvide
             OAuth2ExceptionUtil.throwErrorI18n(BizCaptchaCodeEnum.CAPTCHA_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR,
                     "invalidParameter.captcha.error");
         }
-
-        CommonAuthenticationToken token = (CommonAuthenticationToken) templateOptional.get().loadUserByPhoneNumber(authenticationToken.getPhoneNumber());
-
-        if (token == null) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_NOT_EXIST.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.smslogin.fail");
-        }
-
-        return token;
     }
 
     @Override

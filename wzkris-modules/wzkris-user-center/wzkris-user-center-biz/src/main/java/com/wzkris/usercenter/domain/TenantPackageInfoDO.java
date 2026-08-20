@@ -1,9 +1,9 @@
 package com.wzkris.usercenter.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.tenantpackage.TenantPackageStatusEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,24 +21,27 @@ import org.apache.ibatis.type.ArrayTypeHandler;
 @TableName(schema = "biz", value = "tenant_package_info", autoResultMap = true)
 public class TenantPackageInfoDO extends BaseEntity {
 
-    @TableId
-    private Long packageId;
-
     @Schema(description = "套餐名称")
     private String packageName;
 
-    @Schema(description = "状态（0正常 1停用）")
-    private String status;
+    @Schema(description = "状态")
+    private TenantPackageStatusEnum status;
 
     @TableField(typeHandler = ArrayTypeHandler.class)
     @Schema(description = "套餐绑定的菜单")
     private Long[] menuIds;
 
+    @Schema(description = "账号数量（-1不限制）")
+    private Integer accountNumLimit;
+
+    @Schema(description = "角色数量（-1不限制）")
+    private Integer roleNumLimit;
+
     @Schema(description = "备注")
     private String remark;
 
-    public TenantPackageInfoDO(Long packageId) {
-        this.packageId = packageId;
+    public TenantPackageInfoDO(Long id) {
+        this.setId(id);
     }
 
 }

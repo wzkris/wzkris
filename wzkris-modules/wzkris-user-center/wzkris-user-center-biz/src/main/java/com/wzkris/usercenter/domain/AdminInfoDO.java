@@ -1,15 +1,16 @@
 package com.wzkris.usercenter.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.orm.model.BaseEntity;
+import com.wzkris.usercenter.enums.admin.AdminStatusEnum;
+import com.wzkris.usercenter.enums.user.GenderEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 管理员DO
@@ -20,9 +21,6 @@ import java.util.Date;
 @NoArgsConstructor
 @TableName(schema = "biz", value = "admin_info")
 public class AdminInfoDO extends BaseEntity {
-
-    @TableId
-    private Long adminId;
 
     @Schema(description = "部门ID")
     private Long deptId;
@@ -40,10 +38,10 @@ public class AdminInfoDO extends BaseEntity {
     private String phoneNumber;
 
     @Schema(description = "用户状态")
-    private String status;
+    private AdminStatusEnum status;
 
     @Schema(description = "用户性别")
-    private String gender;
+    private GenderEnum gender;
 
     @Schema(description = "用户头像")
     private String avatar;
@@ -56,17 +54,17 @@ public class AdminInfoDO extends BaseEntity {
     private String loginIp;
 
     @Schema(description = "最近登录日期")
-    private Date loginDate;
+    private OffsetDateTime loginDate;
 
     @Schema(description = "用户额外信息")
     private String remark;
 
-    public AdminInfoDO(Long adminId) {
-        this.adminId = adminId;
+    public AdminInfoDO(Long id) {
+        this.setId(id);
     }
 
-    public static boolean isSuperAdmin(Long adminId) {
-        return SecurityConstants.SUPER_ADMIN_ID.equals(adminId);
+    public static boolean isSuperAdmin(Long id) {
+        return SecurityConstants.SUPER_ADMIN_ID.equals(id);
     }
 
 }

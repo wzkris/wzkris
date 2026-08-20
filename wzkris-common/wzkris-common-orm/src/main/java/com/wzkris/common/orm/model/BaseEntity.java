@@ -2,11 +2,13 @@ package com.wzkris.common.orm.model;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * Entity基类 审计字段
@@ -18,10 +20,16 @@ import java.util.Date;
 public class BaseEntity implements Serializable {
 
     /**
+     * 主键
+     */
+    @TableId
+    private Long id;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    private Date createAt;
+    private OffsetDateTime createAt;
 
     /**
      * 创建者
@@ -33,7 +41,7 @@ public class BaseEntity implements Serializable {
      * 更新时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date updateAt;
+    private OffsetDateTime updateAt;
 
     /**
      * 更新者
@@ -46,5 +54,11 @@ public class BaseEntity implements Serializable {
      */
     @TableField(fill = FieldFill.INSERT)
     private String hint;
+
+    /**
+     * 逻辑删除标志
+     */
+    @TableLogic
+    private Boolean deleted;
 
 }

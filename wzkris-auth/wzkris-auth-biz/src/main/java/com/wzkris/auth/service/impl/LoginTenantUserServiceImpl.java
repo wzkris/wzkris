@@ -2,27 +2,32 @@ package com.wzkris.auth.service.impl;
 
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.enums.SocialTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.member.IMemberInfoRemote;
-import com.wzkris.auth.remote.interfaces.member.request.MemberPermsQueryRequest;
-import com.wzkris.auth.remote.interfaces.member.response.MemberInfoResponse;
-import com.wzkris.auth.remote.interfaces.member.response.MemberPermissionResponse;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.remote.interfaces.tenantuser.ITenantUserRemote;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserPermissionQueryRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserQueryRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.request.TenantUserSocialUpdateRequest;
+import com.wzkris.auth.remote.interfaces.tenantuser.response.TenantUserQueryResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
+import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.enums.IdentityTypeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.*;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.TenantLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -30,45 +35,81 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.OffsetDateTime;
+import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginTenantUserServiceImpl implements LoginUserService {
 
-    private final IMemberInfoRemote memberInfoRemote;
+    private final ITenantUserRemote memberRemote;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByPhoneNumber(phoneNumber);
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
+        TenantUserQueryRequest request = new TenantUserQueryRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<List<TenantUserQueryResponse>> memberResult = memberRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
-        MemberInfoResponse memberResp = memberResult.getData();
+
+        if (CollectionUtils.isEmpty(memberResult.getData()) || memberResult.getData().size() > 1) {
+            return null;
+        }
+
+        TenantUserQueryResponse memberResp = memberResult.getData().getFirst();
 
         try {
-            return this.buildAuthenticationToken(memberResp, LoginTypeEnum.SMS);
+            if (StringUtil.isNotBlank(wxCode)) {
+                this.bindWeXcxOpenid(memberResp.getId(), wxCode, appid);
+            }
+            return this.buildAuthenticationToken(memberResp);
         } catch (Exception e) {
             this.recordFailedLog(memberResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
         }
     }
 
+    /**
+     * 绑定当前微信openid到租户用户，失败仅记录日志不阻断登录
+     */
+    private void bindWeXcxOpenid(Long tenantUserId, String wxCode, String appid) {
+        try {
+            TenantUserSocialUpdateRequest bindRequest = new TenantUserSocialUpdateRequest();
+            bindRequest.setTenantUserId(tenantUserId);
+            bindRequest.setSocialType(SocialTypeEnum.WE_XCX.getValue());
+            bindRequest.setWxCode(wxCode);
+            bindRequest.setAppid(appid);
+            Result<Void> bindResult = memberRemote.updateSocialInfo(bindRequest);
+            if (!ResultUtil.check(bindResult)) {
+                log.warn("手机号登录绑定微信openid失败: {}", bindResult.getMessage());
+            }
+        } catch (Exception e) {
+            log.warn("手机号登录绑定微信openid异常", e);
+        }
+    }
+
     @Nullable
     @Override
-    public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<MemberInfoResponse> memberResult = memberInfoRemote.getByUsername(username);
+    public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+        TenantUserQueryRequest request = new TenantUserQueryRequest();
+        request.setUsername(username);
+        Result<List<TenantUserQueryResponse>> memberResult = memberRemote.queryList(request);
 
         if (!ResultUtil.check(memberResult)) {
             return null;
         }
-        MemberInfoResponse memberResp = memberResult.getData();
+
+        if (CollectionUtils.isEmpty(memberResult.getData()) || memberResult.getData().size() > 1) {
+            return null;
+        }
+
+        TenantUserQueryResponse memberResp = memberResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, memberResp.getPassword())) {
@@ -76,7 +117,7 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
                         BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
-            return this.buildAuthenticationToken(memberResp, LoginTypeEnum.PASSWORD);
+            return this.buildAuthenticationToken(memberResp);
         } catch (Exception e) {
             this.recordFailedLog(memberResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
@@ -91,95 +132,62 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private CommonAuthenticationToken buildAuthenticationToken(MemberInfoResponse memberResp, LoginTypeEnum loginType) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(TenantUserQueryResponse userResp) {
         // 校验用户状态
-        this.checkAccount(memberResp);
+        this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.getPermission(
-                new MemberPermsQueryRequest(memberResp.getMemberId(), memberResp.getTenantId()));
-        if (!ResultUtil.check(permissionsResult)) {
+        Result<List<UserRole>> userRoleR = memberRemote.queryPermission(
+                new TenantUserPermissionQueryRequest(userResp.getId(), userResp.getTenantId()));
+        if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(
-                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
-                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
+                    BizBaseCodeEnum.API_REQUEST_ERROR.value(), userRoleR.getMessage());
         }
-        MemberPermissionResponse permissions = permissionsResult.getData();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(userResp.getId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(permissions.getAdmin()
-                ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberResp.getUsername());
-        loginUser.setTenantId(memberResp.getTenantId());
+        loginUser.setName(userResp.getUsername());
+        loginUser.setTenantId(userResp.getTenantId());
 
-        Set<String> perms = permissions.getGrantedAuthority() != null
-                ? new HashSet<>(permissions.getGrantedAuthority())
-                : Collections.emptySet();
+        // 租户管理员通过角色名判断
+        boolean isSuperUser = userRoleR.getData().stream()
+                .anyMatch(r -> SecurityConstants.SUPER_ADMIN_NAME.equals(r.getName()));
 
-        return new CommonAuthenticationToken(loginUser, perms, loginType);
+        RoleContext roleContext = new RoleContext(userRoleR.getData(), isSuperUser);
+
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(MemberInfoResponse memberResp) {
+    private void checkAccount(TenantUserQueryResponse memberResp) {
         if (StringUtil.equals(memberResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         } else if (StringUtil.equals(memberResp.getTenantStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.TENANT_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
-        } else if (memberResp.getTenantExpired().getTime() < System.currentTimeMillis()) {
+                    BizLoginCodeEnum.TENANT_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.disabled");
+        } else if (memberResp.getTenantExpired().isBefore(OffsetDateTime.now())) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.TENANT_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
+                    BizLoginCodeEnum.TENANT_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.tenant.expired");
         } else if (StringUtil.equals(memberResp.getPackageStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.TENANT_PACKAGE_EXPIRED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
+                    BizLoginCodeEnum.TENANT_PACKAGE_EXPIRED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.package.disabled");
         }
-    }
-
-    /**
-     * 构建租户登录用户视图
-     */
-    public TenantLoginUser buildLoginTenant(MemberInfoResponse memberResp) {
-        // 校验用户状态
-        this.checkAccount(memberResp);
-
-        // 获取权限信息以判断身份类型
-        Result<MemberPermissionResponse> permissionsResult = memberInfoRemote.getPermission(
-                new MemberPermsQueryRequest(memberResp.getMemberId(), memberResp.getTenantId()));
-        if (!ResultUtil.check(permissionsResult)) {
-            OAuth2ExceptionUtil.throwError(
-                    BizBaseCodeEnum.API_REQUEST_ERROR.value(),
-                    permissionsResult != null ? permissionsResult.getMessage() : "query permission failed");
-        }
-        MemberPermissionResponse permissions = permissionsResult.getData();
-
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
-        loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(permissions.getAdmin()
-                ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberResp.getUsername());
-        loginUser.setTenantId(memberResp.getTenantId());
-
-        return loginUser;
     }
 
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(MemberInfoResponse memberResp, String loginType, String errorMsg) {
+    private void recordFailedLog(TenantUserQueryResponse memberResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        TenantLoginUser loginUser = new TenantLoginUser();
-        loginUser.setUid(memberResp.getMemberId());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(memberResp.getId());
         loginUser.setAuthType(AuthTypeEnum.TENANT);
-        loginUser.setIdentityType(IdentityTypeEnum.NONE);
-        loginUser.setUsername(memberResp.getUsername());
+        loginUser.setName(memberResp.getUsername());
         loginUser.setTenantId(memberResp.getTenantId());
 
         SpringUtil.getContext()
@@ -189,9 +197,8 @@ public class LoginTenantUserServiceImpl implements LoginUserService {
                         false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                        getUserAgent(request),
                         TraceIdUtil.getOrGenerate()));
     }
 
 }
-

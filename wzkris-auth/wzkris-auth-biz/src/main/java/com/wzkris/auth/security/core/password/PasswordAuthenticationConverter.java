@@ -23,8 +23,6 @@ import java.util.Map;
 @Component
 public final class PasswordAuthenticationConverter extends CommonAuthenticationConverter {
 
-    private static final String CAPTCHA_ID = "captcha_id";
-
     @Override
     protected boolean support(LoginTypeEnum loginType) {
         return LoginTypeEnum.PASSWORD.equals(loginType);
@@ -54,24 +52,13 @@ public final class PasswordAuthenticationConverter extends CommonAuthenticationC
                     OAuth2ParameterNames.PASSWORD);
         }
 
-        // captchaId (REQUIRED)
-        String captchaId = parameters.getFirst(CAPTCHA_ID);
-        if (!StringUtils.hasText(captchaId)
-                || parameters.get(CAPTCHA_ID).size() != 1) {
-            OAuth2ExceptionUtil.throwErrorI18n(
-                    BizBaseCodeEnum.REQUEST_ERROR.value(),
-                    OAuth2ErrorCodes.INVALID_REQUEST,
-                    "invalidParameter.captcha.error",
-                    OAuth2ParameterNames.PASSWORD);
-        }
     }
 
     @Override
     protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String username = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.USERNAME));
         String password = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterNames.PASSWORD));
-        String captchaId = StringUtil.toStringOrNull(additionalParameters.get(CAPTCHA_ID));
-        return PasswordAuthenticationToken.unauthenticated(authTypeEnum, username, password, captchaId);
+        return PasswordAuthenticationToken.unauthenticated(authTypeEnum, username, password);
     }
 
 }

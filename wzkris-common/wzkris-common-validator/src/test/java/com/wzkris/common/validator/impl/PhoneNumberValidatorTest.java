@@ -180,11 +180,11 @@ class PhoneNumberValidatorTest {
     @DisplayName("测试所有有效号段")
     void testAllValidSegments() {
         int[] validPrefixes = {13, 14, 15, 16, 17, 18, 19};
-        
+
         for (int prefix : validPrefixes) {
             for (int secondDigit = 0; secondDigit <= 9; secondDigit++) {
                 String phone = prefix + "" + secondDigit + "12345678";
-                assertTrue(PhoneNumberValidator.isPhoneNumber(phone), 
+                assertTrue(PhoneNumberValidator.isPhoneNumber(phone),
                     "Phone number " + phone + " should be valid");
             }
         }
@@ -205,7 +205,7 @@ class PhoneNumberValidatorTest {
         assertTrue(PhoneNumberValidator.isPhoneNumber(" 13812345678 "));
         assertTrue(PhoneNumberValidator.isPhoneNumber("+8613812345678"));
         assertTrue(PhoneNumberValidator.isPhoneNumber("+86 138 1234 5678"));
-        
+
         // 无效格式
         assertFalse(PhoneNumberValidator.isPhoneNumber("02812345678")); // 固定电话格式
         assertFalse(PhoneNumberValidator.isPhoneNumber("4001234567")); // 400电话

@@ -14,6 +14,7 @@
 
     <properties>
         <weixin-java.version>4.6.0</weixin-java.version>
+        <xxl-job.version>3.2.0</xxl-job.version>
     </properties>
 
     <dependencies>
@@ -33,6 +34,11 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-sentinel</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-web</artifactId>
         </dependency>
 
         <!-- 日志服务-->
@@ -57,6 +63,17 @@
         <dependency>
             <groupId>com.wzkris</groupId>
             <artifactId>wzkris-common-redis</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.wzkris</groupId>
+            <artifactId>wzkris-common-weixin-sdk</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
+            <version>${xxl-job.version}</version>
         </dependency>
 
         <!-- springBoot test-->

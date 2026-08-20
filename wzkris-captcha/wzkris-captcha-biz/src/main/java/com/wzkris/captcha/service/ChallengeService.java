@@ -1,7 +1,7 @@
 package com.wzkris.captcha.service;
 
+import com.wzkris.captcha.api.captcha.response.RedeemChallengeResponse;
 import com.wzkris.captcha.domain.ChallengeCaptchaInfo;
-import com.wzkris.captcha.response.RedeemChallengeResponse;
 
 import java.util.List;
 

@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 public class SlideCaptchaConfiguration {
 
     @Bean
-    public SlideCaptchaStore redisSlideCaptchaStore(RedisTemplate<String, Object> redisTemplate, SlideCaptchaProperties captchaProperties) {
+    public SlideCaptchaStore slideCaptchaStore(RedisTemplate<String, Object> redisTemplate, SlideCaptchaProperties captchaProperties) {
         return new RedisSlideCaptchaStore(redisTemplate, captchaProperties);
     }
 

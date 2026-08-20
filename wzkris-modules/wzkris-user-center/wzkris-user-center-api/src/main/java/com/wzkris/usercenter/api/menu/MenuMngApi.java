@@ -1,26 +1,25 @@
 package com.wzkris.usercenter.api.menu;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.menu.MenuMngQueryRequest;
-import com.wzkris.usercenter.request.menu.MenuMngSaveRequest;
-import com.wzkris.usercenter.request.menu.MenuMngUpdateRequest;
-import com.wzkris.usercenter.response.menu.MenuInfoResponse;
+import com.wzkris.common.orm.request.IdRequest;
+import com.wzkris.usercenter.api.menu.request.MenuMngTreeRequest;
+import com.wzkris.usercenter.api.menu.request.MenuMngSaveRequest;
+import com.wzkris.usercenter.api.menu.request.MenuMngUpdateRequest;
+import com.wzkris.usercenter.api.menu.response.MenuMngQueryResponse;
+import com.wzkris.usercenter.api.menu.response.MenuMngListResponse;
 
 import java.util.List;
 
 public interface MenuMngApi {
 
-    Result<List<MenuInfoResponse>> queryList(MenuMngQueryRequest request);
+    Result<List<MenuMngListResponse>> queryList(MenuMngTreeRequest request);
 
-    Result<MenuInfoResponse> queryInfo(Long menuId);
+    Result<MenuMngQueryResponse> queryById(IdRequest request);
 
     Result<Void> save(MenuMngSaveRequest request);
 
     Result<Void> update(MenuMngUpdateRequest request);
 
-    Result<Void> editStatus(StatusUpdateRequest request);
-
-    Result<Void> remove(Long menuId);
+    Result<Void> remove(IdRequest request);
 
 }

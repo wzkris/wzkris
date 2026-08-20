@@ -2,6 +2,7 @@ package com.wzkris.auth.security.core.wexcx;
 
 import com.wzkris.auth.constants.OAuth2ParameterConstant;
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.enums.SocialTypeEnum;
 import com.wzkris.auth.security.core.CommonAuthenticationConverter;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
@@ -41,7 +42,9 @@ public final class WexcxAuthenticationConverter extends CommonAuthenticationConv
     protected Authentication buildToken(AuthTypeEnum authTypeEnum, Map<String, Object> additionalParameters) {
         String wxCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_CODE));
         String phoneCode = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.WXXCX_PHONE_CODE));
-        return WexcxAuthenticationToken.unauthenticated(authTypeEnum, wxCode, phoneCode);
+        String appid = StringUtil.toStringOrNull(additionalParameters.get(OAuth2ParameterConstant.APPID));
+        // 本渠道固定为微信小程序，后续新增渠道各自建 converter 并带出对应 socialType
+        return WexcxAuthenticationToken.unauthenticated(authTypeEnum, SocialTypeEnum.WE_XCX.getValue(), wxCode, phoneCode, appid);
     }
 
 }

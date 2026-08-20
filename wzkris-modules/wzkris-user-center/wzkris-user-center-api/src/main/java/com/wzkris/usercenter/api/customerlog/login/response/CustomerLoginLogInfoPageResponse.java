@@ -1,0 +1,37 @@
+package com.wzkris.usercenter.api.customerlog.login.response;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
+import java.time.OffsetDateTime;
+
+@Data
+public class CustomerLoginLogInfoPageResponse {
+
+    private Long id;
+
+    @Schema(description = "登录类型")
+    private String loginType;
+
+    @Schema(description = "登录ip")
+    private String loginIp;
+
+    @Schema(description = "登录地址")
+    private String loginLocation;
+
+    @Schema(description = "链路追踪ID")
+    private String traceId;
+
+    @Schema(description = "原始UA")
+    private String userAgent;
+
+    @Schema(description = "登录状态")
+    private Boolean success;
+
+    @Schema(description = "失败信息")
+    private String errorMsg;
+
+    @Schema(description = "登录时间")
+    private OffsetDateTime loginTime;
+
+}

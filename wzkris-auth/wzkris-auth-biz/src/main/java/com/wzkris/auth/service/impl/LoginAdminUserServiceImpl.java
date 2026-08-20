@@ -3,27 +3,28 @@ package com.wzkris.auth.service.impl;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.admin.IAdminInfoRemote;
-import com.wzkris.auth.remote.interfaces.admin.request.AdminPermsQueryRequest;
-import com.wzkris.auth.remote.interfaces.admin.response.AdminInfoResponse;
-import com.wzkris.auth.remote.interfaces.admin.response.AdminPermissionResponse;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.remote.interfaces.admin.IAdminRemote;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminPermissionQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.request.AdminQueryRequest;
+import com.wzkris.auth.remote.interfaces.admin.response.AdminListResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.constant.SecurityConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
 import com.wzkris.common.core.enums.BizBaseCodeEnum;
-import com.wzkris.common.core.enums.IdentityTypeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.model.RoleContext;
+import com.wzkris.common.core.model.UserRole;
 import com.wzkris.common.core.utils.*;
+import com.wzkris.common.security.authentication.RoleContextAuthenticationToken;
 import com.wzkris.common.security.exception.CustomErrorCodes;
-import com.wzkris.common.security.model.AdminLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -31,30 +32,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class LoginAdminUserServiceImpl implements LoginUserService {
 
-    private final IAdminInfoRemote adminInfoRemote;
+    private final IAdminRemote adminRemote;
 
     private final PasswordEncoder passwordEncoder;
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.getByPhoneNumber(phoneNumber);
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
+        AdminQueryRequest request = new AdminQueryRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<List<AdminListResponse>> userResult = adminRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
         }
-        AdminInfoResponse userResp = userResult.getData();
+
+        if (CollectionUtils.isEmpty(userResult.getData()) || userResult.getData().size() > 1) {
+            return null;
+        }
+
+        AdminListResponse userResp = userResult.getData().getFirst();
 
         try {
-            return this.buildAuthenticationToken(userResp, LoginTypeEnum.SMS);
+            return this.buildAuthenticationToken(userResp);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
@@ -63,13 +69,20 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
-        Result<AdminInfoResponse> userResult = adminInfoRemote.getByUsername(username);
+    public UsernamePasswordAuthenticationToken loadByUsernameAndPassword(String username, String password) throws UsernameNotFoundException {
+        AdminQueryRequest request = new AdminQueryRequest();
+        request.setUsername(username);
+        Result<List<AdminListResponse>> userResult = adminRemote.queryList(request);
 
         if (!ResultUtil.check(userResult)) {
             return null;
         }
-        AdminInfoResponse userResp = userResult.getData();
+
+        if (CollectionUtils.isEmpty(userResult.getData()) || userResult.getData().size() > 1) {
+            return null;
+        }
+
+        AdminListResponse userResp = userResult.getData().getFirst();
 
         try {
             if (!passwordEncoder.matches(password, userResp.getPassword())) {
@@ -77,7 +90,7 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
                         BizBaseCodeEnum.REQUEST_ERROR.value(), CustomErrorCodes.VALIDATE_ERROR, "oauth2.passlogin.fail");
             }
 
-            return this.buildAuthenticationToken(userResp, LoginTypeEnum.PASSWORD);
+            return this.buildAuthenticationToken(userResp);
         } catch (Exception e) {
             this.recordFailedLog(userResp, LoginTypeEnum.PASSWORD.getValue(), e.getMessage());
             throw e;
@@ -92,66 +105,57 @@ public class LoginAdminUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private CommonAuthenticationToken buildAuthenticationToken(AdminInfoResponse userResp, LoginTypeEnum loginType) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(AdminListResponse userResp) {
         // 校验用户状态
         this.checkAccount(userResp);
 
         // 获取权限信息
-        Result<AdminPermissionResponse> permissionsResult = adminInfoRemote.getPermission(
-                new AdminPermsQueryRequest(userResp.getAdminId(), userResp.getDeptId()));
-        if (!ResultUtil.check(permissionsResult)) {
+        Result<List<UserRole>> userRoleR = adminRemote.queryPermission(
+                new AdminPermissionQueryRequest(userResp.getId(), userResp.getDeptId()));
+        if (!ResultUtil.check(userRoleR)) {
             OAuth2ExceptionUtil.throwError(BizBaseCodeEnum.API_REQUEST_ERROR.value(), "query permission failed");
         }
-        AdminPermissionResponse permissions = permissionsResult.getData();
 
-        AdminLoginUser user = new AdminLoginUser();
-        user.setUid(userResp.getAdminId());
-        user.setAuthType(AuthTypeEnum.ADMIN);
-        user.setIdentityType(SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getAdminId())
-                ? IdentityTypeEnum.SUPER
-                : IdentityTypeEnum.NONE);
-        user.setPhoneNumber(userResp.getPhoneNumber());
-        user.setUsername(userResp.getUsername());
-        user.setDeptScopes(permissions.getDeptScopes());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(userResp.getId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setName(userResp.getUsername());
 
-        Set<String> perms = permissions.getGrantedAuthority() != null
-                ? new HashSet<>(permissions.getGrantedAuthority())
-                : Collections.emptySet();
+        RoleContext roleContext = new RoleContext(userRoleR.getData(),
+                SecurityConstants.SUPER_ADMIN_ID.equals(userResp.getId()));
 
-        return new CommonAuthenticationToken(user, perms, loginType);
+        return RoleContextAuthenticationToken.authenticated(loginUser, null, roleContext);
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(AdminInfoResponse userResp) {
+    private void checkAccount(AdminListResponse userResp) {
         if (StringUtil.equals(userResp.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 
     /**
      * 记录失败日志
      */
-    private void recordFailedLog(AdminInfoResponse userResp, String loginType, String errorMsg) {
+    private void recordFailedLog(AdminListResponse userResp, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        AdminLoginUser user = new AdminLoginUser();
-        user.setUid(userResp.getAdminId());
-        user.setAuthType(AuthTypeEnum.ADMIN);
-        user.setIdentityType(IdentityTypeEnum.NONE);
-        user.setUsername(userResp.getUsername());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(userResp.getId());
+        loginUser.setAuthType(AuthTypeEnum.ADMIN);
+        loginUser.setName(userResp.getUsername());
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
-                        user,
+                        loginUser,
                         loginType,
                         false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                        getUserAgent(request),
                         TraceIdUtil.getOrGenerate()));
     }
 
 }
-

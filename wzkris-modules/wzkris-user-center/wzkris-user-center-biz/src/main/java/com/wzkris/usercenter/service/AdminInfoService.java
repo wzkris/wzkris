@@ -1,6 +1,6 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.AdminInfoDO;
 import jakarta.annotation.Nullable;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface AdminInfoService extends IService<AdminInfoDO> {
+public interface AdminInfoService extends IServicePlus<AdminInfoDO> {
 
     /**
      * 新增管理员信息

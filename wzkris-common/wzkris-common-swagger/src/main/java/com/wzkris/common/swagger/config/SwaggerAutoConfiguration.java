@@ -1,6 +1,6 @@
 package com.wzkris.common.swagger.config;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.wzkris.common.swagger.support.OpenApiMethodPredicates;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -11,7 +11,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author wzkris
+ * Knife4j / SpringDoc 公共装配：双分组——默认分组仅收录带
+ * {@code io.swagger.v3.oas.annotations.tags.Tag} 的业务接口，remote 分组收录服务间远程调用接口。
  */
 @EnableConfigurationProperties(SwaggerProperties.class)
 @ConditionalOnProperty(name = "springdoc.enabled", matchIfMissing = true)
@@ -27,21 +28,31 @@ public class SwaggerAutoConfiguration {
     @Bean
     public GroupedOpenApi groupedOpenApi() {
         return GroupedOpenApi.builder()
-                .group(this.getClass().getName())
-                .addOpenApiMethodFilter(it -> it.getAnnotation(Tag.class) != null)
+                .group(swaggerProperties.getApiGroup())
+                .addOpenApiMethodFilter(OpenApiMethodPredicates::isBusiness)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi remoteGroupedOpenApi() {
+        return GroupedOpenApi.builder()
+                .group(swaggerProperties.getRemoteGroup())
+                .addOpenApiMethodFilter(OpenApiMethodPredicates::isRemoteController)
                 .build();
     }
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title(swaggerProperties.getTitle())
-                        .description(swaggerProperties.getDescription())
-                        .license(new License().url(swaggerProperties.getLicense()))
-                        .version(swaggerProperties.getVersion())
-                        .termsOfService(swaggerProperties.getTermsOfServiceUrl())
-                );
+        return new OpenAPI().info(buildInfo());
+    }
+
+    private Info buildInfo() {
+        return new Info()
+                .title(swaggerProperties.getTitle())
+                .description(swaggerProperties.getDescription())
+                .license(new License().url(swaggerProperties.getLicense()))
+                .version(swaggerProperties.getVersion())
+                .termsOfService(swaggerProperties.getTermsOfServiceUrl());
     }
 
 }

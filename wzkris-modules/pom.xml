@@ -19,8 +19,8 @@
     </description>
 
     <modules>
-        <module>wzkris-system</module>
         <module>wzkris-user-center</module>
+        <module>wzkris-payment</module>
     </modules>
 
 </project>

@@ -1,10 +1,13 @@
 package com.wzkris.common.web.config;
 
-import com.wzkris.common.web.aspect.ControllerStatisticAspect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wzkris.common.web.aspect.ControllerLogAspect;
 import com.wzkris.common.web.filter.TraceIdFilter;
 import com.wzkris.common.web.handler.RestExceptionHandler;
+import com.wzkris.common.web.properties.ControllerLogProperties;
 import com.wzkris.common.web.utils.UserAgentUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -15,9 +18,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableAsync(proxyTargetClass = true)
 @EnableScheduling
+@EnableConfigurationProperties(ControllerLogProperties.class)
 @EnableAspectJAutoProxy(exposeProxy = true, proxyTargetClass = true)
-@Import({ControllerStatisticAspect.class, RestExceptionHandler.class,
-        JacksonConfig.class, UserAgentUtil.class})
+@Import({RestExceptionHandler.class, JacksonConfig.class, UserAgentUtil.class,
+        EnumConvertWebMvcConfigurer.class})
 @AutoConfiguration
 public class WebAutoConfiguration {
 
@@ -27,6 +31,11 @@ public class WebAutoConfiguration {
         registration.setFilter(new TraceIdFilter());
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
         return registration;
+    }
+
+    @Bean
+    public ControllerLogAspect controllerLogAspect(ObjectMapper objectMapper, ControllerLogProperties controllerLogProperties) {
+        return new ControllerLogAspect(objectMapper, controllerLogProperties);
     }
 
 }

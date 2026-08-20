@@ -4,7 +4,9 @@ import com.wzkris.common.core.model.Result;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * @author wzkris
  */
 @Slf4j
+@Order(0)
 @RestControllerAdvice
 public class SecurityExceptionHandler {
 
@@ -27,6 +30,12 @@ public class SecurityExceptionHandler {
     public Result<?> handleAuthenticationException(OAuth2AuthenticationException ex, HttpServletRequest request) {
         log.error("请求地址'{} {}',发生OAuth2异常", request.getMethod(), request.getRequestURI(), ex);
         return OAuth2ExceptionUtil.translate(ex.getError());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Result<?> handleAccessDeniedException(AccessDeniedException ex, HttpServletRequest request) {
+        return Result.accessDenied(ex.getMessage());
     }
 
 }

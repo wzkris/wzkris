@@ -3,15 +3,13 @@ package com.wzkris.usercenter.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wzkris.common.core.utils.StringUtil;
+import com.wzkris.common.orm.plus.ServiceImplPlus;
 import com.wzkris.common.orm.utils.SkipTenantInterceptorUtil;
 import com.wzkris.common.security.component.PasswordEncoderDelegate;
 import com.wzkris.usercenter.domain.*;
 import com.wzkris.usercenter.mapper.*;
-import com.wzkris.usercenter.response.SelectResponse;
-import com.wzkris.usercenter.service.MemberInfoService;
-import com.wzkris.usercenter.service.PostInfoService;
+import com.wzkris.usercenter.service.TenantUserService;
+import com.wzkris.usercenter.service.TenantRoleService;
 import com.wzkris.usercenter.service.TenantInfoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
@@ -19,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 租户层
@@ -29,36 +26,20 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TenantInfoServiceImpl
-        extends ServiceImpl<TenantInfoMapper, TenantInfoDO>
+        extends ServiceImplPlus<TenantInfoMapper, TenantInfoDO>
         implements TenantInfoService {
 
-    private final MemberInfoMapper memberInfoMapper;
+    private final TenantUserMapper tenantUserMapper;
 
-    private final MemberInfoService memberInfoService;
+    private final TenantUserService tenantUserService;
 
-    private final PostInfoMapper postInfoMapper;
+    private final TenantRoleMapper tenantRoleMapper;
 
-    private final PostInfoService postInfoService;
+    private final TenantRoleService tenantRoleService;
+
+    private final TenantPackageInfoMapper tenantPackageInfoMapper;
 
     private final PasswordEncoderDelegate passwordEncoder;
-
-    private final TenantWalletInfoMapper tenantWalletInfoMapper;
-
-    private final TenantWalletRecordMapper tenantWalletRecordMapper;
-
-    @Override
-    public List<SelectResponse> listSelect(String tenantName) {
-        LambdaQueryWrapper<TenantInfoDO> lqw = new LambdaQueryWrapper<TenantInfoDO>()
-                .select(TenantInfoDO::getTenantId, TenantInfoDO::getTenantName)
-                .like(StringUtil.isNotBlank(tenantName), TenantInfoDO::getTenantName, tenantName)
-                .orderByAsc(TenantInfoDO::getTenantId);
-        return baseMapper.selectList(lqw).stream().map(tenantInfoDO -> {
-            SelectResponse SelectResponse = new SelectResponse();
-            SelectResponse.setId(tenantInfoDO.getTenantId());
-            SelectResponse.setLabel(tenantInfoDO.getTenantName());
-            return SelectResponse;
-        }).collect(Collectors.toList());
-    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -66,19 +47,16 @@ public class TenantInfoServiceImpl
         if (!passwordEncoder.isEncode(tenant.getOperPwd())) {
             tenant.setOperPwd(passwordEncoder.encode(tenant.getOperPwd()));
         }
-        long memberId = IdWorker.getId();
-        tenant.setAdministrator(memberId);
+        long tenantUserId = IdWorker.getId();
+        tenant.setAdministrator(tenantUserId);
         baseMapper.insert(tenant);
 
-        TenantWalletInfoDO wallet = new TenantWalletInfoDO(tenant.getTenantId());
-        tenantWalletInfoMapper.insert(wallet);
-
-        MemberInfoDO memberInfoDO = new MemberInfoDO();
-        memberInfoDO.setMemberId(memberId);
-        memberInfoDO.setTenantId(tenant.getTenantId());
-        memberInfoDO.setUsername(username);
-        memberInfoDO.setPassword(password);
-        return memberInfoService.saveMember(memberInfoDO, null);
+        TenantUserDO tenantUserDO = new TenantUserDO();
+        tenantUserDO.setId(tenantUserId);
+        tenantUserDO.setTenantId(tenant.getId());
+        tenantUserDO.setUsername(username);
+        tenantUserDO.setPassword(password);
+        return tenantUserService.saveTenantUser(tenantUserDO, null);
     }
 
     @Override
@@ -87,28 +65,23 @@ public class TenantInfoServiceImpl
         return SkipTenantInterceptorUtil.ignore(() -> {
             boolean success = baseMapper.deleteById(tenantId) > 0;
             if (success) {
-                tenantWalletInfoMapper.deleteById(tenantId);
-                LambdaQueryWrapper<TenantWalletRecordDO> recordw = Wrappers.lambdaQuery(TenantWalletRecordDO.class)
-                        .eq(TenantWalletRecordDO::getTenantId, tenantId);
-                tenantWalletRecordMapper.delete(recordw);
-
-                LambdaQueryWrapper<MemberInfoDO> userw = Wrappers.lambdaQuery(MemberInfoDO.class)
-                        .select(MemberInfoDO::getMemberId)
-                        .eq(MemberInfoDO::getTenantId, tenantId);
-                List<Long> memberIds = memberInfoMapper.selectList(userw).stream()
-                        .map(MemberInfoDO::getMemberId)
+                LambdaQueryWrapper<TenantUserDO> userw = Wrappers.lambdaQuery(TenantUserDO.class)
+                        .select(TenantUserDO::getId)
+                        .eq(TenantUserDO::getTenantId, tenantId);
+                List<Long> tenantUserIds = tenantUserMapper.selectList(userw).stream()
+                        .map(TenantUserDO::getId)
                         .toList();
-                if (CollectionUtils.isNotEmpty(memberIds)) {
-                    memberInfoService.removeMembers(memberIds);
+                if (CollectionUtils.isNotEmpty(tenantUserIds)) {
+                    tenantUserService.removeTenantUsers(tenantUserIds);
                 }
-                LambdaQueryWrapper<PostInfoDO> rolew = Wrappers.lambdaQuery(PostInfoDO.class)
-                        .select(PostInfoDO::getPostId)
-                        .eq(PostInfoDO::getTenantId, tenantId);
-                List<Long> postIds = postInfoMapper.selectList(rolew).stream()
-                        .map(PostInfoDO::getPostId)
+                LambdaQueryWrapper<TenantRoleDO> rolew = Wrappers.lambdaQuery(TenantRoleDO.class)
+                        .select(TenantRoleDO::getId)
+                        .eq(TenantRoleDO::getTenantId, tenantId);
+                List<Long> tenantRoleIds = tenantRoleMapper.selectList(rolew).stream()
+                        .map(TenantRoleDO::getId)
                         .toList();
-                if (CollectionUtils.isNotEmpty(postIds)) {
-                    postInfoService.removePosts(postIds);
+                if (CollectionUtils.isNotEmpty(tenantRoleIds)) {
+                    tenantRoleService.removeRoles(tenantRoleIds);
                 }
             }
             return success;
@@ -119,33 +92,35 @@ public class TenantInfoServiceImpl
     public boolean checkAccountLimit(Long tenantId) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = baseMapper.selectById(tenantId);
-            if (tenant.getAccountLimit() == -1) {
+            TenantPackageInfoDO tenantPackage = tenantPackageInfoMapper.selectById(tenant.getPackageId());
+            if (tenantPackage.getAccountNumLimit() == -1) {
                 return true;
             }
-            Long count = memberInfoMapper.selectCount(
-                    Wrappers.lambdaQuery(MemberInfoDO.class).eq(MemberInfoDO::getTenantId, tenantId));
-            return tenant.getAccountLimit() - count > 0;
+            Long count = tenantUserMapper.selectCount(
+                    Wrappers.lambdaQuery(TenantUserDO.class).eq(TenantUserDO::getTenantId, tenantId));
+            return tenantPackage.getAccountNumLimit() - count > 0;
         });
     }
 
     @Override
-    public boolean checkPostLimit(Long tenantId) {
+    public boolean checkRoleLimit(Long tenantId) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             TenantInfoDO tenant = baseMapper.selectById(tenantId);
-            if (tenant.getPostLimit() == -1) {
+            TenantPackageInfoDO tenantPackage = tenantPackageInfoMapper.selectById(tenant.getPackageId());
+            if (tenantPackage.getRoleNumLimit() == -1) {
                 return true;
             }
-            Long count = postInfoMapper.selectCount(
-                    Wrappers.lambdaQuery(PostInfoDO.class).eq(PostInfoDO::getTenantId, tenantId));
-            return tenant.getPostLimit() - count > 0;
+            Long count = tenantRoleMapper.selectCount(
+                    Wrappers.lambdaQuery(TenantRoleDO.class).eq(TenantRoleDO::getTenantId, tenantId));
+            return tenantPackage.getRoleNumLimit() - count > 0;
         });
     }
 
     @Override
-    public boolean checkAdministrator(List<Long> memberIds) {
+    public boolean checkAdministrator(List<Long> tenantUserIds) {
         return SkipTenantInterceptorUtil.ignore(() -> {
             LambdaQueryWrapper<TenantInfoDO> lqw =
-                    Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getAdministrator, memberIds);
+                    Wrappers.lambdaQuery(TenantInfoDO.class).in(TenantInfoDO::getAdministrator, tenantUserIds);
             return baseMapper.exists(lqw);
         });
     }

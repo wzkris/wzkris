@@ -2,15 +2,15 @@ package com.wzkris.common.orm.plus.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.wzkris.common.core.constant.SecurityConstants;
+import com.wzkris.common.core.support.LoginUser;
+import com.wzkris.common.core.support.UserContextHelper;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.orm.model.BaseEntity;
-import com.wzkris.common.security.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.ibatis.reflection.MetaObject;
 
-import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * @author : wzkris
@@ -21,57 +21,57 @@ import java.util.Date;
 @Slf4j
 public class BaseFieldFillHandler implements MetaObjectHandler {
 
-    private static Long getUserId() {
-        Long id;
-        if (SecurityUtil.isAuth()) {
-            id = SecurityUtil.getUid();
-        } else {
-            id = SecurityConstants.SYSTEM_USER_ID;
-        }
-        return id;
-    }
+    private final UserContextHelper userContextHelper;
 
-    private static String getHint() {
-        String hint;
-        if (SecurityUtil.isAuth()) {
-            hint = SecurityUtil.getHint();
-        } else {
-            hint = StringUtil.EMPTY;
-        }
-        return hint;
+    public BaseFieldFillHandler(UserContextHelper userContextHelper) {
+        this.userContextHelper = userContextHelper;
     }
 
     @Override
     public void insertFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity) {
-            Long id = getUserId();
-            fillInsert(id, metaObject);
+            fillInsert(currentUserId(), currentHint(), metaObject);
         }
     }
 
-    private void fillInsert(Serializable userId, MetaObject metaObject) {
-        Date current = new Date();
+    private void fillInsert(Long userId, String hint, MetaObject metaObject) {
+        OffsetDateTime current = OffsetDateTime.now();
         this.setFieldValByName(BaseEntity.Fields.createAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.creatorId, userId, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
-        this.setFieldValByName(BaseEntity.Fields.hint, getHint(), metaObject);
+        this.setFieldValByName(BaseEntity.Fields.hint, StringUtil.defaultIfEmpty(hint, StringUtil.EMPTY), metaObject);
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         if (ObjectUtils.isNotEmpty(metaObject)
                 && metaObject.getOriginalObject() instanceof BaseEntity) {
-            Long id = getUserId();
-            fillUpdate(id, metaObject);
+            fillUpdate(currentUserId(), metaObject);
         }
     }
 
-    private void fillUpdate(Serializable userId, MetaObject metaObject) {
-        Date current = new Date();
+    private void fillUpdate(Long userId, MetaObject metaObject) {
+        OffsetDateTime current = OffsetDateTime.now();
         this.setFieldValByName(BaseEntity.Fields.updateAt, current, metaObject);
         this.setFieldValByName(BaseEntity.Fields.updaterId, userId, metaObject);
+    }
+
+    /**
+     * 当前操作者用户ID，无登录上下文时兜底为系统用户
+     */
+    private Long currentUserId() {
+        LoginUser loginUser = userContextHelper.getLoginUser();
+        return loginUser != null ? loginUser.getUid() : SecurityConstants.SYSTEM_USER_ID;
+    }
+
+    /**
+     * 当前操作者标签
+     */
+    private String currentHint() {
+        LoginUser loginUser = userContextHelper.getLoginUser();
+        return loginUser != null ? loginUser.getHint() : SecurityConstants.DEFAULT_HINT;
     }
 
 }

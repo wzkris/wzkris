@@ -1,7 +1,7 @@
 package com.wzkris.usercenter.api.menu;
 
 import com.wzkris.common.core.model.Result;
-import com.wzkris.usercenter.response.RouterResponse;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
 
 import java.util.List;
 

@@ -19,10 +19,9 @@
             <artifactId>wzkris-common-swagger</artifactId>
         </dependency>
 
-        <!-- web服务-->
         <dependency>
             <groupId>com.wzkris</groupId>
-            <artifactId>wzkris-common-web</artifactId>
+            <artifactId>wzkris-common-validator</artifactId>
         </dependency>
 
         <dependency>

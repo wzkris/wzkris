@@ -1,5 +1,6 @@
 package com.wzkris.gateway.remote.interfaces.loginuser.request;
 
+import com.wzkris.common.core.enums.AuthTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class LoginUserQueryRequest implements Serializable {
 
-    private String authType;
+    private AuthTypeEnum authType;
 
     private Long uid;
 

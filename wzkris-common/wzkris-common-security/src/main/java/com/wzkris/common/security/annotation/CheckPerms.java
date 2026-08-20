@@ -20,11 +20,11 @@ import java.lang.annotation.Target;
 public @interface CheckPerms {
 
     /**
-     * 多账号体系登录标识
+     * 多账号体系登录标识，支持多类型，命中其一即通过
      *
      * @return /
      */
-    AuthTypeEnum checkType();
+    AuthTypeEnum[] checkTypes() default {};
 
     /**
      * 权限前缀

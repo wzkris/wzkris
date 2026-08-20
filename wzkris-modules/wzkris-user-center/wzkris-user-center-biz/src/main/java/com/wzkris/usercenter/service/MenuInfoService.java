@@ -1,8 +1,8 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
+import com.wzkris.usercenter.api.menu.response.RouterResponse;
 import com.wzkris.usercenter.domain.MenuInfoDO;
-import com.wzkris.usercenter.response.RouterResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
 import org.springframework.lang.Nullable;
 
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author wzkris
  */
-public interface MenuInfoService extends IService<MenuInfoDO> {
+public interface MenuInfoService extends IServicePlus<MenuInfoDO> {
 
     /**
      * 根据角色ID集合查询权限
@@ -24,12 +24,12 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
     List<String> listPermsByRoleIds(@Nullable List<Long> roleIds);
 
     /**
-     * 根据职位ID集合查询权限
+     * 根据角色ID集合查询权限
      *
-     * @param postIds 职位ID集合
+     * @param tenantRoleIds 角色ID集合
      * @return 权限列表
      */
-    List<String> listPermsByPostIds(@Nullable List<Long> postIds);
+    List<String> listPermsByTenantRoleIds(@Nullable List<Long> tenantRoleIds);
 
     /**
      * 根据菜单ID集合查询权限
@@ -58,10 +58,10 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
     /**
      * 查询租户菜单选择树
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 菜单列表
      */
-    List<SelectTreeResponse> listTenantSelectTree(Long memberId);
+    List<SelectTreeResponse> listTenantSelectTree(Long tenantUserId);
 
     /**
      * 查询所有租户菜单选择树
@@ -79,12 +79,12 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
     List<RouterResponse> listSystemRoutes(Long adminId);
 
     /**
-     * 根据租户成员ID查询租户路由
+     * 根据租户用户ID查询租户路由
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 前端路由
      */
-    List<RouterResponse> listTenantRoutes(Long memberId);
+    List<RouterResponse> listTenantRoutes(Long tenantUserId);
 
     /**
      * 查询管理员对应菜单id
@@ -95,12 +95,12 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
     List<Long> listMenuIdByAdminId(Long adminId);
 
     /**
-     * 查询租户租户成员对应菜单id
+     * 查询租户租户用户对应菜单id
      *
-     * @param memberId 成员ID
+     * @param tenantUserId 用户ID
      * @return 菜单ID
      */
-    List<Long> listMenuIdByMemberId(Long memberId);
+    List<Long> listMenuIdByTenantUserId(Long tenantUserId);
 
     /**
      * 根据角色ID查询菜单ID
@@ -111,12 +111,12 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
     List<Long> listMenuIdByRoleId(@Nullable Long roleId);
 
     /**
-     * 根据职位ID查询菜单ID
+     * 根据角色ID查询菜单ID
      *
-     * @param postId 职位ID
+     * @param tenantRoleId 角色ID
      * @return 菜单ID
      */
-    List<Long> listMenuIdByPostId(@Nullable Long postId);
+    List<Long> listMenuIdByTenantRoleId(@Nullable Long tenantRoleId);
 
     /**
      * 是否存在菜单子节点
@@ -124,7 +124,7 @@ public interface MenuInfoService extends IService<MenuInfoDO> {
      * @param menuId 菜单ID
      * @return 结果 true 存在 false 不存在
      */
-    boolean existSubMenu(Long menuId);
+    boolean existChildren(Long menuId);
 
     /**
      * 删除菜单

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 /**
  * 在线会话
@@ -47,6 +47,6 @@ public class OnlineSession implements Serializable {
     /**
      * 登录时间
      */
-    private Date loginTime;
+    private OffsetDateTime loginTime;
 
 }

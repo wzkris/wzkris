@@ -10,12 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
-/**
- * 用户信息控制器
- * 用于获取当前登录用户信息
- *
- * @author wzkris
- */
 @Tag(name = "用户")
 @RestController
 @RequestMapping("/user")

@@ -1,29 +1,30 @@
 package com.wzkris.usercenter.impl.admin;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.wzkris.common.core.model.Result;
+import com.wzkris.common.core.utils.BeanCopierUtil;
 import com.wzkris.common.core.utils.SpringUtil;
 import com.wzkris.common.core.utils.StringUtil;
 import com.wzkris.common.excel.utils.ExcelUtil;
-import com.wzkris.common.orm.model.AbstractApi;
 import com.wzkris.common.orm.model.Page;
+import com.wzkris.common.orm.request.IdListRequest;
+import com.wzkris.common.orm.request.IdRequest;
 import com.wzkris.common.security.utils.SecurityUtil;
-import com.wzkris.common.web.utils.BeanUtil;
+import com.wzkris.common.web.model.AbstractApi;
 import com.wzkris.usercenter.api.admin.AdminMngApi;
+import com.wzkris.usercenter.api.admin.request.*;
+import com.wzkris.usercenter.api.admin.response.AdminMngExportResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngPageResponse;
+import com.wzkris.usercenter.api.admin.response.AdminMngQueryResponse;
 import com.wzkris.usercenter.domain.AdminInfoDO;
+import com.wzkris.usercenter.domain.RoleInfoDO;
 import com.wzkris.usercenter.event.CreateAdminEvent;
 import com.wzkris.usercenter.mapper.AdminInfoMapper;
 import com.wzkris.usercenter.mapper.RoleInfoMapper;
 import com.wzkris.usercenter.request.PwdResetRequest;
-import com.wzkris.usercenter.request.StatusUpdateRequest;
-import com.wzkris.usercenter.request.admin.AdminMngGrantRequest;
-import com.wzkris.usercenter.request.admin.AdminMngQueryRequest;
-import com.wzkris.usercenter.request.admin.AdminMngSaveRequest;
-import com.wzkris.usercenter.request.admin.AdminMngUpdateRequest;
 import com.wzkris.usercenter.response.CheckedSelectResponse;
 import com.wzkris.usercenter.response.SelectTreeResponse;
-import com.wzkris.usercenter.response.admin.AdminInfoExportResponse;
-import com.wzkris.usercenter.response.admin.AdminMngResponse;
 import com.wzkris.usercenter.service.AdminInfoService;
 import com.wzkris.usercenter.service.DeptInfoService;
 import com.wzkris.usercenter.service.RoleInfoService;
@@ -49,19 +50,19 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     private final DeptInfoService deptInfoService;
 
-    private final PasswordEncoder passwordEncoder;
-
     private final RoleInfoMapper roleInfoMapper;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
-    public Result<Page<AdminMngResponse>> queryPage(AdminMngQueryRequest request) {
-        startPage();
-        List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        return getDataTable(list);
+    public Result<Page<AdminMngPageResponse>> queryPage(AdminMngPageRequest request) {
+        IPage<AdminMngPageResponse> page = adminInfoMapper.selectVOPage(request.buildPage(), this.buildPageWrapper(request));
+        return ok(Page.of(page));
     }
 
-    private QueryWrapper<AdminInfoDO> buildPageWrapper(AdminMngQueryRequest request) {
+    private QueryWrapper<AdminInfoDO> buildPageWrapper(AdminMngPageRequest request) {
         return new QueryWrapper<AdminInfoDO>()
+                .apply("u.deleted = false")
                 .like(ObjectUtils.isNotEmpty(request.getUsername()), "username", request.getUsername())
                 .like(ObjectUtils.isNotEmpty(request.getNickname()), "nickname", request.getNickname())
                 .like(ObjectUtils.isNotEmpty(request.getPhoneNumber()), "phone_number", request.getPhoneNumber())
@@ -70,33 +71,35 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 .eq(ObjectUtils.isNotEmpty(request.getDeptId()), "u.dept_id", request.getDeptId())
                 .between(request.getBeginTime() != null && request.getEndTime() != null,
                         "u.create_at",
-                        request.getBeginTime(),
-                        request.getEndTime())
-                .orderByDesc("u.admin_id");
+                        request.getBeginTime(), request.getEndTime())
+                .orderByDesc("u.id");
     }
 
     @Override
-    public Result<List<SelectTreeResponse>> queryDeptSelectTree(String deptName) {
+    public Result<List<SelectTreeResponse>> queryDeptSelectTree(AdminMngDeptSelectRequest request) {
+        String deptName = request.getDeptName();
         return ok(deptInfoService.listSelectTree(deptName));
     }
 
     @Override
-    public Result<CheckedSelectResponse> queryRoleSelect(Long adminId, String roleName) {
+    public Result<CheckedSelectResponse> queryRoleSelect(AdminMngRoleSelectRequest request) {
+        Long adminId = request.getId();
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
         CheckedSelectResponse checkedSelectResponse = new CheckedSelectResponse();
-        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listIdByAdminId(adminId));
-        checkedSelectResponse.setSelects(roleInfoService.listRoleSelect(roleName));
+        checkedSelectResponse.setCheckedKeys(adminId == null ? Collections.emptyList() : roleInfoService.listByAdminId(adminId, false).stream().map(RoleInfoDO::getId).toList());
+        checkedSelectResponse.setSelects(roleInfoService.listRoleSelect(request.getRoleName()));
         return ok(checkedSelectResponse);
     }
 
     @Override
-    public Result<AdminMngResponse> queryInfo(Long adminId) {
+    public Result<AdminMngQueryResponse> queryById(IdRequest request) {
+        Long adminId = request.getId();
         if (!adminInfoMapper.checkDataScopes(adminId)) {
             return accessDenied("数据权限不足");
         }
-        return ok(BeanUtil.convert(adminInfoMapper.selectById(adminId), AdminMngResponse.class));
+        return ok(BeanCopierUtil.copy(adminInfoService.getById(adminId), AdminMngQueryResponse.class));
     }
 
     @Override
@@ -107,7 +110,8 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
                 && adminInfoService.existByPhoneNumber(null, request.getPhoneNumber())) {
             return requestFail("添加管理员'" + request.getUsername() + "'失败，手机号码已存在");
         }
-        AdminInfoDO admin = BeanUtil.convert(request, AdminInfoDO.class);
+        AdminInfoDO admin = BeanCopierUtil.copy(request, AdminInfoDO.class);
+        admin.setStatus(request.getStatus());
         String password = RandomStringUtils.secure().nextAlphabetic(8);
         admin.setPassword(password);
         boolean success = adminInfoService.saveAdmin(admin, request.getRoleIds());
@@ -120,32 +124,34 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
 
     @Override
     public Result<Void> update(AdminMngUpdateRequest request) {
-        if (!adminInfoMapper.checkDataScopes(request.getAdminId())) {
+        if (!adminInfoMapper.checkDataScopes(request.getId())) {
             return accessDenied("数据权限不足");
         }
-        if (adminInfoService.existByUsername(request.getAdminId(), request.getUsername())) {
+        if (adminInfoService.existByUsername(request.getId(), request.getUsername())) {
             return requestFail("修改管理员'" + request.getUsername() + "'失败，登录账号已存在");
         } else if (StringUtil.isNotEmpty(request.getPhoneNumber())
-                && adminInfoService.existByPhoneNumber(request.getAdminId(), request.getPhoneNumber())) {
+                && adminInfoService.existByPhoneNumber(request.getId(), request.getPhoneNumber())) {
             return requestFail("修改管理员'" + request.getUsername() + "'失败，手机号码已存在");
         }
-        AdminInfoDO admin = BeanUtil.convert(request, AdminInfoDO.class);
+        AdminInfoDO admin = BeanCopierUtil.copy(request, AdminInfoDO.class);
+        admin.setStatus(request.getStatus());
         return toRes(adminInfoService.updateAdmin(admin, request.getRoleIds()));
     }
 
     @Override
     public Result<Void> grantRoles(AdminMngGrantRequest request) {
-        if (!adminInfoMapper.checkDataScopes(request.getAdminId())) {
+        if (!adminInfoMapper.checkDataScopes(request.getId())) {
             return accessDenied("数据权限不足");
         }
         if (!roleInfoMapper.checkDataScopes(request.getRoleIds())) {
             return accessDenied("数据权限不足");
         }
-        return toRes(adminInfoService.grantRoles(request.getAdminId(), request.getRoleIds()));
+        return toRes(adminInfoService.grantRoles(request.getId(), request.getRoleIds()));
     }
 
     @Override
-    public Result<Void> remove(List<Long> userIds) {
+    public Result<Void> remove(IdListRequest request) {
+        List<Long> userIds = request.getIdList();
         if (!adminInfoMapper.checkDataScopes(userIds)) {
             return accessDenied("数据权限不足");
         }
@@ -159,24 +165,14 @@ public class AdminMngApiImpl extends AbstractApi implements AdminMngApi {
         }
         AdminInfoDO update = new AdminInfoDO(request.getId());
         update.setPassword(passwordEncoder.encode(request.getPassword()));
-        return toRes(adminInfoMapper.updateById(update));
+        return toRes(adminInfoService.updateById(update));
     }
 
     @Override
-    public Result<Void> updateStatus(StatusUpdateRequest request) {
-        if (!adminInfoMapper.checkDataScopes(request.getId())) {
-            return accessDenied("数据权限不足");
-        }
-        AdminInfoDO update = new AdminInfoDO(request.getId());
-        update.setStatus(request.getStatus());
-        return toRes(adminInfoMapper.updateById(update));
-    }
-
-    @Override
-    public void export(HttpServletResponse response, AdminMngQueryRequest request) {
-        List<AdminMngResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
-        List<AdminInfoExportResponse> convert = BeanUtil.convert(list, AdminInfoExportResponse.class);
-        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminInfoExportResponse.class, false, response, null);
+    public void export(HttpServletResponse response, AdminMngPageRequest request) {
+        List<AdminMngPageResponse> list = adminInfoMapper.selectVOList(this.buildPageWrapper(request));
+        List<AdminMngExportResponse> convert = BeanCopierUtil.copyList(list, AdminMngExportResponse.class);
+        ExcelUtil.exportExcel(convert, "后台管理员数据", AdminMngExportResponse.class, false, response, null);
     }
 
 }

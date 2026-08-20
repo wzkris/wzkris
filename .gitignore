@@ -27,8 +27,10 @@ target/
 *.ipr
 *.pid
 
-### vscode ###
 .vscode
+.github
+.trae
+.claude
 
 ### JRebel ###
 rebel.xml

@@ -1,10 +1,10 @@
 package com.wzkris.usercenter.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.wzkris.common.orm.plus.IServicePlus;
 import com.wzkris.usercenter.domain.CustomerInfoDO;
 import com.wzkris.usercenter.domain.CustomerSocialInfoDO;
 
-public interface CustomerInfoService extends IService<CustomerInfoDO> {
+public interface CustomerInfoService extends IServicePlus<CustomerInfoDO> {
 
     /**
      * 添加顾客

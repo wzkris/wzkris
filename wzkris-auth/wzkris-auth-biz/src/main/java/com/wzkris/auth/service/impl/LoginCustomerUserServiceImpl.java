@@ -1,111 +1,110 @@
 package com.wzkris.auth.service.impl;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import com.wzkris.auth.enums.BizLoginCodeEnum;
 import com.wzkris.auth.enums.LoginTypeEnum;
+import com.wzkris.auth.enums.SocialTypeEnum;
 import com.wzkris.auth.event.LoginEvent;
-import com.wzkris.auth.remote.interfaces.customer.ICustomerInfoRemote;
-import com.wzkris.auth.remote.interfaces.customer.request.WexcxLoginRequest;
-import com.wzkris.auth.remote.interfaces.customer.response.CustomerResponse;
-import com.wzkris.auth.security.core.CommonAuthenticationToken;
+import com.wzkris.auth.remote.interfaces.customer.ICustomerRemote;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerQueryRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.CustomerSocialUpdateRequest;
+import com.wzkris.auth.remote.interfaces.customer.request.SocialLoginRequest;
+import com.wzkris.auth.remote.interfaces.customer.response.CustomerQueryResponse;
 import com.wzkris.auth.service.LoginUserService;
 import com.wzkris.common.core.constant.CommonConstants;
 import com.wzkris.common.core.enums.AuthTypeEnum;
-import com.wzkris.common.core.enums.BizCallCodeEnum;
+import com.wzkris.common.core.model.DefaultLoginUser;
 import com.wzkris.common.core.model.Result;
 import com.wzkris.common.core.utils.*;
-import com.wzkris.common.security.exception.CustomOAuth2Error;
-import com.wzkris.common.security.model.CustomerLoginUser;
 import com.wzkris.common.security.utils.OAuth2ExceptionUtil;
-import com.wzkris.common.web.utils.UserAgentUtil;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.mp.api.WxMpService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class LoginCustomerUserServiceImpl implements LoginUserService {
 
-    private final ICustomerInfoRemote customerInfoRemote;
-
-    @Autowired
-    @Lazy
-    private WxMaService wxMaService;
-
-    @Autowired
-    @Lazy
-    private WxMpService wxMpService;
+    private final ICustomerRemote customerRemote;
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByPhoneNumber(String phoneNumber) {
-        Result<CustomerResponse> customerResult = customerInfoRemote.getByPhoneNumber(phoneNumber);
+    public UsernamePasswordAuthenticationToken loadUserByPhoneNumber(String phoneNumber, @Nullable String wxCode, @Nullable String appid) {
+        CustomerQueryRequest request = new CustomerQueryRequest();
+        request.setPhoneNumber(phoneNumber);
+        Result<List<CustomerQueryResponse>> listResult = customerRemote.queryList(request);
 
-        if (!ResultUtil.check(customerResult)) {
+        if (!ResultUtil.check(listResult)) {
             return null;
         }
-        CustomerResponse CustomerResponse = customerResult.getData();
+
+        if (CollectionUtils.isEmpty(listResult.getData()) || listResult.getData().size() > 1) {
+            return null;
+        }
+
+        CustomerQueryResponse customerResponse = listResult.getData().getFirst();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse, LoginTypeEnum.SMS);
+            // 手机号登录时绑定当前微信openid，用于后续微信支付
+            if (StringUtil.isNotBlank(wxCode)) {
+                this.bindWeXcxOpenid(customerResponse.getId(), wxCode, appid);
+            }
+            return this.buildAuthenticationToken(customerResponse);
         } catch (Exception e) {
-            this.recordFailedLog(CustomerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
+            this.recordFailedLog(customerResponse, LoginTypeEnum.SMS.getValue(), e.getMessage());
             throw e;
+        }
+    }
+
+    /**
+     * 绑定当前微信openid到客户，失败仅记录日志不阻断登录
+     */
+    private void bindWeXcxOpenid(Long customerId, String wxCode, String appid) {
+        try {
+            CustomerSocialUpdateRequest bindRequest = new CustomerSocialUpdateRequest();
+            bindRequest.setCustomerId(customerId);
+            bindRequest.setSocialType(SocialTypeEnum.WE_XCX.getValue());
+            bindRequest.setWxCode(wxCode);
+            bindRequest.setAppid(appid);
+            Result<Void> bindResult = customerRemote.updateSocialInfo(bindRequest);
+            if (!ResultUtil.check(bindResult)) {
+                log.warn("手机号登录绑定微信openid失败: {}", bindResult.getMessage());
+            }
+        } catch (Exception e) {
+            log.warn("手机号登录绑定微信openid异常", e);
         }
     }
 
     @Nullable
     @Override
-    public CommonAuthenticationToken loadUserByWxXcx(String wxCode, String phoneCode) {
-        String identifier;
-        String phoneNumber = null;
-        try {
-            identifier = wxMaService
-                    .getUserService()
-                    .getSessionInfo(wxCode)
-                    .getOpenid();
-            if (StringUtil.isNotBlank(phoneCode)) {
-                phoneNumber = wxMaService.getUserService()
-                        .getPhoneNumber(phoneCode).getPhoneNumber();
-            }
-        } catch (WxErrorException e) {
-            CustomOAuth2Error error = new CustomOAuth2Error(BizCallCodeEnum.WX_ERROR.value(), e.getError().getErrorMsg());
-            throw new OAuth2AuthenticationException(error);
-        }
-
-        if (StringUtil.isAnyBlank(identifier)) {
-            log.error("微信小程序登录api查询结果为null，登录失败");
-            return null;
-        }
-
-        WexcxLoginRequest WexcxLoginRequest = new WexcxLoginRequest();
-        WexcxLoginRequest.setIdentifier(identifier);
-        WexcxLoginRequest.setPhoneNumber(phoneNumber);
-        Result<CustomerResponse> customerResult = customerInfoRemote.wexcxLogin(WexcxLoginRequest);
+    public UsernamePasswordAuthenticationToken loadUserBySocial(String socialType, String wxCode, @Nullable String phoneCode, @Nullable String appid) {
+        SocialLoginRequest socialLoginRequest = new SocialLoginRequest();
+        socialLoginRequest.setSocialType(socialType);
+        socialLoginRequest.setWxCode(wxCode);
+        socialLoginRequest.setPhoneCode(phoneCode);
+        socialLoginRequest.setAppid(appid);
+        Result<CustomerQueryResponse> customerResult = customerRemote.socialLogin(socialLoginRequest);
 
         if (!ResultUtil.check(customerResult)) {
             return null;
         }
-        CustomerResponse CustomerResponse = customerResult.getData();
+        CustomerQueryResponse customerResponse = customerResult.getData();
 
         try {
-            return this.buildAuthenticationToken(CustomerResponse, LoginTypeEnum.WE_XCX);
+            return this.buildAuthenticationToken(customerResponse);
         } catch (Exception e) {
-            this.recordFailedLog(CustomerResponse, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
+            this.recordFailedLog(customerResponse, LoginTypeEnum.WE_XCX.getValue(), e.getMessage());
             throw e;
         }
     }
@@ -118,36 +117,37 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
     /**
      * 构建认证Token
      */
-    private CommonAuthenticationToken buildAuthenticationToken(CustomerResponse CustomerResponse, LoginTypeEnum loginType) {
+    private UsernamePasswordAuthenticationToken buildAuthenticationToken(CustomerQueryResponse customerResponse) {
         // 校验用户状态
-        this.checkAccount(CustomerResponse);
+        this.checkAccount(customerResponse);
 
-        CustomerLoginUser loginUser = new CustomerLoginUser();
-        loginUser.setUid(CustomerResponse.getCustomerId());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(customerResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setPhoneNumber(CustomerResponse.getPhoneNumber());
+        loginUser.setName(String.valueOf(customerResponse.getId()));
 
         // Customer 用户没有权限，使用空集合
-        return new CommonAuthenticationToken(loginUser, Collections.emptySet(), loginType);
+        return UsernamePasswordAuthenticationToken.authenticated(
+                loginUser, null, AuthorityUtils.createAuthorityList(Collections.emptySet()));
     }
 
     /**
      * 校验用户账号
      */
-    private void checkAccount(CustomerResponse CustomerResponse) {
-        if (StringUtil.equals(CustomerResponse.getStatus(), CommonConstants.STATUS_DISABLE)) {
+    private void checkAccount(CustomerQueryResponse customerResponse) {
+        if (StringUtil.equals(customerResponse.getStatus(), CommonConstants.STATUS_DISABLE)) {
             OAuth2ExceptionUtil.throwErrorI18n(
-                    BizLoginCodeEnum.USER_DISABLED.value(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
+                    BizLoginCodeEnum.USER_DISABLED.getCode(), OAuth2ErrorCodes.INVALID_REQUEST, "oauth2.account.disabled");
         }
     }
 
-    private void recordFailedLog(CustomerResponse CustomerResponse, String loginType, String errorMsg) {
+    private void recordFailedLog(CustomerQueryResponse customerResponse, String loginType, String errorMsg) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 
-        CustomerLoginUser loginUser = new CustomerLoginUser();
-        loginUser.setUid(CustomerResponse.getCustomerId());
+        DefaultLoginUser loginUser = new DefaultLoginUser();
+        loginUser.setUid(customerResponse.getId());
         loginUser.setAuthType(AuthTypeEnum.CUSTOMER);
-        loginUser.setPhoneNumber(CustomerResponse.getPhoneNumber());
+        loginUser.setName(String.valueOf(customerResponse.getId()));
 
         SpringUtil.getContext()
                 .publishEvent(new LoginEvent(
@@ -156,9 +156,8 @@ public class LoginCustomerUserServiceImpl implements LoginUserService {
                         false,
                         errorMsg,
                         ServletUtil.getClientIP(request),
-                        UserAgentUtil.INSTANCE.parse(request.getHeader(HttpHeaders.USER_AGENT)),
+                        getUserAgent(request),
                         TraceIdUtil.getOrGenerate()));
     }
 
 }
-
